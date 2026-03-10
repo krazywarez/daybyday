@@ -2,6 +2,10 @@
 
 iPad app for young children to explore days of the week, months, and seasons — tap a card to hear it read aloud.
 
+| iPad                       | iPhone                       |
+|----------------------------|------------------------------|
+| [](./Screenshots/ipad.png) | [](./screenshots/iphone.png) |
+
 ## Features
 
 - Days of the week, months of the year, and seasons displayed as large colorful cards
