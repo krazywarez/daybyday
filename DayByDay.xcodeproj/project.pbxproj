@@ -7,17 +7,64 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8B1B4FF92F659AD1005C246F /* WeatherCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1B4FF82F659AD1005C246F /* WeatherCard.swift */; };
+		8B1B4FFB2F659AD1005C246F /* WeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1B4FFA2F659AD1005C246F /* WeatherView.swift */; };
+		8B1B4FFD2F659AD2005C246F /* BodyPartCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1B4FFC2F659AD2005C246F /* BodyPartCard.swift */; };
+		8B1B4FFF2F659AD2005C246F /* BodyPartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1B4FFE2F659AD2005C246F /* BodyPartsView.swift */; };
+		8B1B50012F659AD3005C246F /* FoodCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1B50002F659AD3005C246F /* FoodCard.swift */; };
+		8B1B50032F659AD4005C246F /* FoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1B50022F659AD4005C246F /* FoodView.swift */; };
+		8B57F7282F63BBB4001F6F5E /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F7272F63BBB4001F6F5E /* TodayView.swift */; };
+		8B57F72A2F63BBB5001F6F5E /* NumberCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F7292F63BBB5001F6F5E /* NumberCard.swift */; };
+		8B57F72C2F63BBB6001F6F5E /* NumbersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F72B2F63BBB6001F6F5E /* NumbersView.swift */; };
+		8B57F72E2F63BBB7001F6F5E /* ColorCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F72D2F63BBB7001F6F5E /* ColorCard.swift */; };
+		8B57F7302F63BBB8001F6F5E /* ColorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F72F2F63BBB8001F6F5E /* ColorsView.swift */; };
+		8B57F7322F63BBB9001F6F5E /* ShapeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F7312F63BBB9001F6F5E /* ShapeCard.swift */; };
+		8B57F7342F63BBBA001F6F5E /* ShapesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F7332F63BBBA001F6F5E /* ShapesView.swift */; };
+		8B57F7362F63BBBA001F6F5E /* AnimalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F7352F63BBBA001F6F5E /* AnimalCard.swift */; };
+		8B57F7382F63BBBB001F6F5E /* AnimalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F7372F63BBBB001F6F5E /* AnimalsView.swift */; };
+		8B57F73A2F63BBBD001F6F5E /* LetterCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F7392F63BBBD001F6F5E /* LetterCard.swift */; };
+		8B57F73C2F63BBBD001F6F5E /* AlphabetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F73B2F63BBBD001F6F5E /* AlphabetView.swift */; };
 		8B7051C12F5F90CD00491D58 /* claude.md in Resources */ = {isa = PBXBuildFile; fileRef = 8B7051C02F5F90C800491D58 /* claude.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8B1B4FF82F659AD1005C246F /* WeatherCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCard.swift; sourceTree = "<group>"; };
+		8B1B4FFA2F659AD1005C246F /* WeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherView.swift; sourceTree = "<group>"; };
+		8B1B4FFC2F659AD2005C246F /* BodyPartCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyPartCard.swift; sourceTree = "<group>"; };
+		8B1B4FFE2F659AD2005C246F /* BodyPartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyPartsView.swift; sourceTree = "<group>"; };
+		8B1B50002F659AD3005C246F /* FoodCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodCard.swift; sourceTree = "<group>"; };
+		8B1B50022F659AD4005C246F /* FoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodView.swift; sourceTree = "<group>"; };
+		8B57F7272F63BBB4001F6F5E /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		8B57F7292F63BBB5001F6F5E /* NumberCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberCard.swift; sourceTree = "<group>"; };
+		8B57F72B2F63BBB6001F6F5E /* NumbersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumbersView.swift; sourceTree = "<group>"; };
+		8B57F72D2F63BBB7001F6F5E /* ColorCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCard.swift; sourceTree = "<group>"; };
+		8B57F72F2F63BBB8001F6F5E /* ColorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsView.swift; sourceTree = "<group>"; };
+		8B57F7312F63BBB9001F6F5E /* ShapeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeCard.swift; sourceTree = "<group>"; };
+		8B57F7332F63BBBA001F6F5E /* ShapesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapesView.swift; sourceTree = "<group>"; };
+		8B57F7352F63BBBA001F6F5E /* AnimalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalCard.swift; sourceTree = "<group>"; };
+		8B57F7372F63BBBB001F6F5E /* AnimalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalsView.swift; sourceTree = "<group>"; };
+		8B57F7392F63BBBD001F6F5E /* LetterCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterCard.swift; sourceTree = "<group>"; };
+		8B57F73B2F63BBBD001F6F5E /* AlphabetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlphabetView.swift; sourceTree = "<group>"; };
 		8B7051B22F5F908800491D58 /* DayByDay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DayByDay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B7051C02F5F90C800491D58 /* claude.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = claude.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8B5214E62F621E0200E1D35A /* Exceptions for "DayByDay" folder in "DayByDay" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8B7051B12F5F908800491D58 /* DayByDay */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8B7051B42F5F908800491D58 /* DayByDay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8B5214E62F621E0200E1D35A /* Exceptions for "DayByDay" folder in "DayByDay" target */,
+			);
 			path = DayByDay;
 			sourceTree = "<group>";
 		};
@@ -40,6 +87,23 @@
 				8B7051C02F5F90C800491D58 /* claude.md */,
 				8B7051B42F5F908800491D58 /* DayByDay */,
 				8B7051B32F5F908800491D58 /* Products */,
+				8B57F7272F63BBB4001F6F5E /* TodayView.swift */,
+				8B57F7292F63BBB5001F6F5E /* NumberCard.swift */,
+				8B57F72B2F63BBB6001F6F5E /* NumbersView.swift */,
+				8B57F72D2F63BBB7001F6F5E /* ColorCard.swift */,
+				8B57F72F2F63BBB8001F6F5E /* ColorsView.swift */,
+				8B57F7312F63BBB9001F6F5E /* ShapeCard.swift */,
+				8B57F7332F63BBBA001F6F5E /* ShapesView.swift */,
+				8B57F7352F63BBBA001F6F5E /* AnimalCard.swift */,
+				8B57F7372F63BBBB001F6F5E /* AnimalsView.swift */,
+				8B57F7392F63BBBD001F6F5E /* LetterCard.swift */,
+				8B57F73B2F63BBBD001F6F5E /* AlphabetView.swift */,
+				8B1B4FF82F659AD1005C246F /* WeatherCard.swift */,
+				8B1B4FFA2F659AD1005C246F /* WeatherView.swift */,
+				8B1B4FFC2F659AD2005C246F /* BodyPartCard.swift */,
+				8B1B4FFE2F659AD2005C246F /* BodyPartsView.swift */,
+				8B1B50002F659AD3005C246F /* FoodCard.swift */,
+				8B1B50022F659AD4005C246F /* FoodView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -126,6 +190,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B1B50032F659AD4005C246F /* FoodView.swift in Sources */,
+				8B57F72E2F63BBB7001F6F5E /* ColorCard.swift in Sources */,
+				8B57F73C2F63BBBD001F6F5E /* AlphabetView.swift in Sources */,
+				8B57F73A2F63BBBD001F6F5E /* LetterCard.swift in Sources */,
+				8B57F7382F63BBBB001F6F5E /* AnimalsView.swift in Sources */,
+				8B57F72C2F63BBB6001F6F5E /* NumbersView.swift in Sources */,
+				8B57F72A2F63BBB5001F6F5E /* NumberCard.swift in Sources */,
+				8B1B50012F659AD3005C246F /* FoodCard.swift in Sources */,
+				8B1B4FF92F659AD1005C246F /* WeatherCard.swift in Sources */,
+				8B1B4FFB2F659AD1005C246F /* WeatherView.swift in Sources */,
+				8B1B4FFD2F659AD2005C246F /* BodyPartCard.swift in Sources */,
+				8B1B4FFF2F659AD2005C246F /* BodyPartsView.swift in Sources */,
+				8B57F7342F63BBBA001F6F5E /* ShapesView.swift in Sources */,
+				8B57F7362F63BBBA001F6F5E /* AnimalCard.swift in Sources */,
+				8B57F7322F63BBB9001F6F5E /* ShapeCard.swift in Sources */,
+				8B57F7282F63BBB4001F6F5E /* TodayView.swift in Sources */,
+				8B57F7302F63BBB8001F6F5E /* ColorsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,21 +340,21 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = ZCNAX3VL9D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DayByDay/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Day By Day";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = net.cleberg.DayByDay;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -292,21 +373,21 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = ZCNAX3VL9D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DayByDay/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Day By Day";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = net.cleberg.DayByDay;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;

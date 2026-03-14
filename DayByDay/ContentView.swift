@@ -7,60 +7,178 @@
 
 import SwiftUI
 
+// MARK: - Category model
+
+enum Category: Int, CaseIterable, Identifiable {
+    case today, days, months, seasons, numbers, colors, shapes, animals, alphabet,
+         weather, bodyParts, food
+
+    var id: Int { rawValue }
+
+    var label: String {
+        switch self {
+        case .today:     "Today"
+        case .days:      "Days"
+        case .months:    "Months"
+        case .seasons:   "Seasons"
+        case .numbers:   "Numbers"
+        case .colors:    "Colors"
+        case .shapes:    "Shapes"
+        case .animals:   "Animals"
+        case .alphabet:  "Alphabet"
+        case .weather:   "Weather"
+        case .bodyParts: "Body"
+        case .food:      "Food"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .today:     "sun.horizon.fill"
+        case .days:      "calendar"
+        case .months:    "calendar.badge.clock"
+        case .seasons:   "leaf.fill"
+        case .numbers:   "123.rectangle.fill"
+        case .colors:    "paintpalette.fill"
+        case .shapes:    "pentagon.fill"
+        case .animals:   "pawprint.fill"
+        case .alphabet:  "abc"
+        case .weather:   "cloud.sun.rain.fill"
+        case .bodyParts: "figure.stand"
+        case .food:      "carrot.fill"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .today:     .orange
+        case .days:      .blue
+        case .months:    .purple
+        case .seasons:   .green
+        case .numbers:   .red
+        case .colors:    .pink
+        case .shapes:    .teal
+        case .animals:   Color(red: 0.7, green: 0.45, blue: 0.2)
+        case .alphabet:  .indigo
+        case .weather:   Color(red: 0.4, green: 0.75, blue: 0.95)
+        case .bodyParts: Color(red: 0.9, green: 0.5, blue: 0.6)
+        case .food:      Color(red: 0.95, green: 0.6, blue: 0.2)
+        }
+    }
+
+    /// Whether this tile uses a special gradient background instead of the solid color.
+    var usesGradientBackground: Bool {
+        self == .colors
+    }
+}
+
+// MARK: - Home grid tile
+
+struct CategoryTile: View {
+    let category: Category
+
+    var body: some View {
+        ZStack {
+            if category.usesGradientBackground {
+                RoundedRectangle(cornerRadius: 32, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [.red, .orange, .yellow, .green, .blue, .purple],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .shadow(color: category.color.opacity(0.4), radius: 8, y: 4)
+            } else {
+                RoundedRectangle(cornerRadius: 32, style: .continuous)
+                    .fill(category.color.gradient)
+                    .shadow(color: category.color.opacity(0.4), radius: 8, y: 4)
+            }
+
+            VStack(spacing: 12) {
+                Image(systemName: category.symbol)
+                    .font(.system(size: 48))
+                    .foregroundStyle(.white)
+                    .symbolRenderingMode(.hierarchical)
+
+                Text(category.label)
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+            }
+        }
+        .accessibilityLabel(category.label)
+    }
+}
+
+// MARK: - Content view
+
 struct ContentView: View {
-    @State private var selectedTab = 0
     @AppStorage("hasSeenVoiceTip") private var hasSeenVoiceTip = false
 
-    private let tabs: [(label: String, symbol: String)] = [
-        ("Days", "calendar"),
-        ("Months", "calendar.badge.clock"),
-        ("Seasons", "leaf.fill"),
+    private let columns = [
+        GridItem(.flexible(), spacing: 24),
+        GridItem(.flexible(), spacing: 24)
     ]
 
     var body: some View {
-        VStack(spacing: 0) {
-            Group {
-                switch selectedTab {
-                case 0:  DaysOfWeekView()
-                case 1:  MonthsOfYearView()
-                default: SeasonsView()
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            Divider()
-
-            // Bottom tab bar with large tap targets
-            HStack(spacing: 0) {
-                ForEach(Array(tabs.enumerated()), id: \.offset) { index, tab in
-                    Button {
-                        selectedTab = index
-                    } label: {
-                        VStack(spacing: 6) {
-                            Image(systemName: tab.symbol)
-                                .font(.system(size: 32))
-                            Text(tab.label)
-                                .font(.system(size: 18, weight: .semibold, design: .rounded))
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 24) {
+                    ForEach(Category.allCases) { category in
+                        NavigationLink(value: category) {
+                            CategoryTile(category: category)
+                                .aspectRatio(1, contentMode: .fit)
                         }
-                        .foregroundStyle(selectedTab == index ? Color.accentColor : Color.secondary)
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(24)
+
+                Button {
+                    hasSeenVoiceTip = false
+                } label: {
+                    Label("Voice Quality Tips", systemImage: "speaker.wave.2.fill")
+                        .font(.system(size: 16, weight: .medium, design: .rounded))
+                        .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .contentShape(Rectangle())
+                        .background(Color(.systemGray6))
+                        .cornerRadius(16)
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 24)
+            }
+            .navigationTitle("DayByDay")
+            .navigationDestination(for: Category.self) { category in
+                destinationView(for: category)
+                    .navigationTitle(category.label)
+            }
+            .overlay {
+                if !hasSeenVoiceTip {
+                    VoiceTipOverlay {
+                        withAnimation { hasSeenVoiceTip = true }
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(tab.label)
                 }
             }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 8)
-            .background(.bar)
         }
-        .overlay {
-            if !hasSeenVoiceTip {
-                VoiceTipOverlay {
-                    withAnimation { hasSeenVoiceTip = true }
-                }
-            }
+    }
+
+    @ViewBuilder
+    private func destinationView(for category: Category) -> some View {
+        switch category {
+        case .today:     TodayView()
+        case .days:      DaysOfWeekView()
+        case .months:    MonthsOfYearView()
+        case .seasons:   SeasonsView()
+        case .numbers:   NumbersView()
+        case .colors:    ColorsView()
+        case .shapes:    ShapesView()
+        case .animals:   AnimalsView()
+        case .alphabet:  AlphabetView()
+        case .weather:   WeatherView()
+        case .bodyParts: BodyPartsView()
+        case .food:      FoodView()
         }
     }
 }
@@ -83,7 +201,7 @@ struct VoiceTipOverlay: View {
                 Text("Better Voices Available")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
 
-                Text("For the best experience, download an enhanced voice on your iPad.\n\nSettings → Accessibility → Spoken Content → Voices → English → tap a voice marked Enhanced or Premium to download it.")
+                Text("For the best experience, download an enhanced voice on your device.\n\nSettings → Accessibility → Read & Speak → Voices → English → tap a voice marked Enhanced or Premium to download it.")
                     .font(.system(size: 18, design: .rounded))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)

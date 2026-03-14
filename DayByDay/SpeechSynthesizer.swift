@@ -18,7 +18,16 @@ final class SpeechSynthesizer {
         self.voice = Self.bestAvailableVoice()
     }
 
+    /// Speaks a pre-configured utterance directly. Used for warmup at launch.
+    func speakUtterance(_ utterance: AVSpeechUtterance) {
+        synthesizer.speak(utterance)
+    }
+
     func speak(_ text: String) {
+        // Ensure speech plays through the speaker even when the silent switch is on.
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+        try? AVAudioSession.sharedInstance().setActive(true)
+
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
         }
@@ -32,21 +41,19 @@ final class SpeechSynthesizer {
     }
 
     /// Picks the best en-US voice on the device.
-    /// Preference order: premium > enhanced > default quality.
-    /// Skips novelty voices so the child always hears a natural-sounding voice.
+    /// Filters for en-US, excludes novelty voices, then sorts by quality
+    /// descending so premium (3) > enhanced (2) > default (1).
     private static func bestAvailableVoice() -> AVSpeechSynthesisVoice? {
-        let candidates = AVSpeechSynthesisVoice.speechVoices().filter { voice in
-            voice.language.hasPrefix("en-US")
-            && !voice.voiceTraits.contains(.isNoveltyVoice)
-        }
+        let best = AVSpeechSynthesisVoice.speechVoices()
+            .filter { voice in
+                voice.language.hasPrefix("en-US")
+                && !voice.voiceTraits.contains(.isNoveltyVoice)
+            }
+            .sorted { $0.quality.rawValue > $1.quality.rawValue }
+            .first
 
-        if let premium = candidates.first(where: { $0.quality == .premium }) {
-            return premium
-        }
-        if let enhanced = candidates.first(where: { $0.quality == .enhanced }) {
-            return enhanced
-        }
-        // Fall back to the best default-quality voice.
-        return candidates.first ?? AVSpeechSynthesisVoice(language: "en-US")
+        let selected = best ?? AVSpeechSynthesisVoice(language: "en-US")
+        print("[DayByDay] Selected voice: \(selected?.name ?? "nil"), quality: \(selected?.quality.rawValue ?? -1)")
+        return selected
     }
 }
