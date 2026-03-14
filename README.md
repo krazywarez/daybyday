@@ -3,9 +3,9 @@
 iOS app for young children to explore days of the week, months, and seasons —
 tap a card to hear it read aloud.
 
-| iPad                       | iPhone                       |
-|----------------------------|------------------------------|
-| [](./Screenshots/ipad.png) | [](./screenshots/iphone.png) |
+| iPhone                        | iPad                        |
+|-------------------------------|-----------------------------|
+| ![](./Screenshots/iphone.png) | ![](./Screenshots/ipad.png) |
 
 ## Features
 
@@ -19,10 +19,9 @@ tap a card to hear it read aloud.
 
 ## Requirements
 
-- iPad running iPadOS 26 or later. Alternatively, an iPhone running iOS 26 or
-  later.
+- iOS 26 or later.
 - For best audio quality, download an enhanced voice under `Settings` →
-  `Accessibility` → `Spoken Content` → `Voices`.
+  `Accessibility` → `Read & Speak` → `Voices`.
 
 ## License
 
