@@ -12,6 +12,12 @@ struct DayCard: View {
     var isHighlighted = false
     @State private var isTapped = false
 
+    private var cardScale: CGFloat {
+        if isTapped { return 1.12 }
+        if isHighlighted { return 1.04 }
+        return 1.0
+    }
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
@@ -36,7 +42,7 @@ struct DayCard: View {
             }
         }
         .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
-        .scaleEffect(isTapped ? 1.12 : (isHighlighted ? 1.04 : 1.0))
+        .scaleEffect(cardScale)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
         .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
         .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
