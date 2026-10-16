@@ -45,7 +45,7 @@ struct ShapeCard: View {
 
 // MARK: - Shape model
 
-enum LearnShape: Int, CaseIterable, Identifiable {
+nonisolated enum LearnShape: Int, CaseIterable, Identifiable {
     case circle, square, triangle, star, heart, oval, diamond, rectangle
 
     var id: Int { rawValue }
@@ -63,7 +63,16 @@ enum LearnShape: Int, CaseIterable, Identifiable {
         }
     }
 
-    @ViewBuilder
+    /// Nil where a child could reasonably answer either way (a heart's point).
+    var hasCorners: Bool? {
+        switch self {
+        case .circle, .oval: false
+        case .heart: nil
+        default: true
+        }
+    }
+
+    @MainActor @ViewBuilder
     var shapeView: some View {
         switch self {
         case .circle:

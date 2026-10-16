@@ -39,7 +39,7 @@ struct LetterCard: View {
 
 // MARK: - Letter model
 
-enum LearnLetter: Int, CaseIterable, Identifiable {
+nonisolated enum LearnLetter: Int, CaseIterable, Identifiable {
     case a, b, c, d, e, f, g, h, i, j, k, l, m,
          n, o, p, q, r, s, t, u, v, w, x, y, z
 
@@ -53,6 +53,14 @@ enum LearnLetter: Int, CaseIterable, Identifiable {
     /// Lowercase prevents TTS from saying "Capital A".
     var spokenName: String {
         character.lowercased()
+    }
+
+    /// A word whose first sound is this letter's sound. X has none that a
+    /// child would know, so its word ends with the sound instead.
+    var exampleWord: String {
+        ["apple", "ball", "cat", "dog", "egg", "fish", "goat", "hat", "igloo",
+         "jam", "kite", "lion", "moon", "nest", "octopus", "pig", "queen", "rain",
+         "sun", "tiger", "umbrella", "van", "web", "fox", "yo-yo", "zebra"][rawValue]
     }
 
     /// Cycle through 8 bright colors to give variety without unique-per-letter mapping.

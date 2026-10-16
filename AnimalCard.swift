@@ -18,10 +18,10 @@ struct AnimalCard: View {
                 .shadow(color: animal.color.opacity(0.4), radius: 8, y: 4)
 
             VStack(spacing: 16) {
-                Image(systemName: animal.symbol)
+                AnimalIcon(animal: animal)
                     .font(.system(size: 64))
+                    .frame(height: 72)
                     .foregroundStyle(.white)
-                    .symbolRenderingMode(.hierarchical)
 
                 Text(animal.name)
                     .font(.system(size: 32, weight: .bold, design: .rounded))
@@ -46,8 +46,8 @@ struct AnimalCard: View {
 
 // MARK: - Animal model
 
-enum LearnAnimal: Int, CaseIterable, Identifiable {
-    case cat, dog, bird, fish, rabbit, turtle, ladybug, ant, lizard
+nonisolated enum LearnAnimal: Int, CaseIterable, Identifiable {
+    case cat, dog, bird, fish, rabbit, turtle, ladybug, cow, duck, sheep, pig
 
     var id: Int { rawValue }
 
@@ -60,12 +60,15 @@ enum LearnAnimal: Int, CaseIterable, Identifiable {
         case .rabbit:    "Rabbit"
         case .turtle:    "Turtle"
         case .ladybug:   "Ladybug"
-        case .ant:       "Ant"
-        case .lizard:    "Lizard"
+        case .cow:       "Cow"
+        case .duck:      "Duck"
+        case .sheep:     "Sheep"
+        case .pig:       "Pig"
         }
     }
 
-    var symbol: String {
+    /// Nil for animals without an SF Symbol; `AnimalIcon` draws those.
+    var symbol: String? {
         switch self {
         case .cat:       "cat.fill"
         case .dog:       "dog.fill"
@@ -74,8 +77,7 @@ enum LearnAnimal: Int, CaseIterable, Identifiable {
         case .rabbit:    "hare.fill"
         case .turtle:    "tortoise.fill"
         case .ladybug:   "ladybug.fill"
-        case .ant:       "ant.fill"
-        case .lizard:    "lizard.fill"
+        case .cow, .duck, .sheep, .pig: nil
         }
     }
 
@@ -88,8 +90,17 @@ enum LearnAnimal: Int, CaseIterable, Identifiable {
         case .rabbit:    Color(red: 0.75, green: 0.6, blue: 0.8)   // lavender
         case .turtle:    Color(red: 0.35, green: 0.7, blue: 0.4)   // green
         case .ladybug:   Color(red: 0.9, green: 0.25, blue: 0.25)  // red
-        case .ant:       Color(red: 0.3, green: 0.3, blue: 0.3)    // dark gray
-        case .lizard:    Color(red: 0.45, green: 0.75, blue: 0.35)  // lime
+        case .cow:       Color(red: 0.35, green: 0.38, blue: 0.45) // slate
+        case .duck:      Color(red: 0.95, green: 0.75, blue: 0.2)  // yellow
+        case .sheep:     Color(red: 0.55, green: 0.6, blue: 0.7)   // blue gray
+        case .pig:       Color(red: 0.95, green: 0.5, blue: 0.65)  // pink
+        }
+    }
+
+    var canFly: Bool {
+        switch self {
+        case .bird, .ladybug, .duck: true
+        default: false
         }
     }
 }

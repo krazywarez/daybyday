@@ -70,4 +70,15 @@ struct ProfileStoreTests {
         #expect(remaining.count == 1)
         #expect(s.all().map(\.name) == ["Sam"])
     }
+
+    @Test func recordsChosenItemAndGame() throws {
+        let s = store
+        let maya = try s.create(name: "Maya", avatar: .cat, color: .red, birthday: nil)
+        let days = Category.days.quizItems
+        s.record(days[2], chosen: days[1], game: .findIt, correct: false, for: maya, at: Date(timeIntervalSince1970: 1))
+        s.record(days[3], correct: true, for: maya, at: Date(timeIntervalSince1970: 2))
+        let records = s.answers(for: maya, category: .days).sorted { $0.timestamp < $1.timestamp }
+        #expect(records.map(\.chosenID) == ["days.monday", nil])
+        #expect(records.map(\.gameRaw) == ["findIt", nil])
+    }
 }

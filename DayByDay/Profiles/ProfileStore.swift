@@ -55,8 +55,11 @@ final class ProfileStore {
         try? context.save()
     }
 
-    func record(_ item: QuizItem, correct: Bool, for profile: Profile, at date: Date = .now) {
+    /// `item` is the question's answer; `chosen` is what the child tapped.
+    func record(_ item: QuizItem, chosen: QuizItem? = nil, game: Game? = nil, correct: Bool,
+                for profile: Profile, at date: Date = .now) {
         context.insert(AnswerRecord(categoryRaw: item.category.rawValue, itemID: item.id,
+                                    chosenID: chosen?.id, gameRaw: game?.rawValue,
                                     isCorrect: correct, timestamp: date, profile: profile))
         try? context.save()
     }

@@ -60,7 +60,7 @@ struct MonthCard: View {
 
 // MARK: - Month model
 
-enum MonthOfYear: Int, CaseIterable, Identifiable {
+nonisolated enum MonthOfYear: Int, CaseIterable, Identifiable {
     case january, february, march, april, may, june,
          july, august, september, october, november, december
 

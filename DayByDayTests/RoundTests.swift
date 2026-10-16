@@ -3,12 +3,12 @@ import Testing
 
 struct RoundTests {
     let days = Category.days.quizItems
-    let picker = QuestionPicker(choiceCount: 4) { "Can you find \($0.name)?" }
+    var picker: QuestionPicker { QuestionPicker(answers: days) { "Can you find \($0.name)?" } }
 
     @Test func choicesIncludeAnswerAndAreDistinct() {
         var rng = SeededGenerator(seed: 1)
         for _ in 0..<50 {
-            let q = picker.next(from: days, excluding: nil, using: &rng)
+            let q = picker.next(correctCount: 4, excluding: nil, using: &rng)
             #expect(q.choices.count == 4)
             #expect(q.choices.contains(q.answer))
             #expect(Set(q.choices).count == 4)
@@ -17,27 +17,27 @@ struct RoundTests {
 
     @Test func choiceCountClampsToItemCount() {
         var rng = SeededGenerator(seed: 2)
-        let wide = QuestionPicker(choiceCount: 6) { $0.name }
-        let q = wide.next(from: Category.seasons.quizItems, excluding: nil, using: &rng)
-        #expect(q.choices.count == 4)
+        let small = QuestionPicker(answers: Array(Category.seasons.quizItems.prefix(2))) { $0.name }
+        let q = small.next(correctCount: 4, excluding: nil, using: &rng)
+        #expect(q.choices.count == 2)
     }
 
     @Test func neverRepeatsPreviousAnswer() {
         var rng = SeededGenerator(seed: 3)
         let previous = days[0]
         for _ in 0..<200 {
-            #expect(picker.next(from: days, excluding: previous, using: &rng).answer != previous)
+            #expect(picker.next(correctCount: 0, excluding: previous, using: &rng).answer != previous)
         }
     }
 
     @Test func promptUsesClosure() {
         var rng = SeededGenerator(seed: 4)
-        let q = picker.next(from: days, excluding: nil, using: &rng)
+        let q = picker.next(correctCount: 0, excluding: nil, using: &rng)
         #expect(q.prompt == "Can you find \(q.answer.name)?")
     }
 
     @Test func wrongAnswerRetriesSameQuestion() {
-        var round = Round(items: days, picker: picker, rng: SeededGenerator(seed: 5))
+        var round = Round(source: picker, rng: SeededGenerator(seed: 5))
         let question = round.current
         let wrong = question.choices.first { $0 != question.answer }!
         #expect(round.answer(wrong) == .incorrect(correctName: question.answer.name))
@@ -47,7 +47,7 @@ struct RoundTests {
     }
 
     @Test func tapsWhileAwaitingNextAreIgnored() {
-        var round = Round(items: days, picker: picker, rng: SeededGenerator(seed: 6))
+        var round = Round(source: picker, rng: SeededGenerator(seed: 6))
         let answer = round.current.answer
         #expect(round.answer(answer) == .correct)
         #expect(round.isAwaitingNext)
@@ -57,7 +57,7 @@ struct RoundTests {
     }
 
     @Test func finishesAfterFiveCorrect() {
-        var round = Round(items: days, picker: picker, rng: SeededGenerator(seed: 7))
+        var round = Round(source: picker, rng: SeededGenerator(seed: 7))
         for _ in 0..<Round.length {
             #expect(!round.isFinished)
             _ = round.answer(round.current.answer)
@@ -68,7 +68,7 @@ struct RoundTests {
     }
 
     @Test func tapsDuringCorrectionAreIgnored() {
-        var round = Round(items: days, picker: picker, rng: SeededGenerator(seed: 8))
+        var round = Round(source: picker, rng: SeededGenerator(seed: 8))
         let question = round.current
         let wrong = question.choices.filter { $0 != question.answer }
         #expect(round.answer(wrong[0]) == .incorrect(correctName: question.answer.name))
@@ -79,7 +79,7 @@ struct RoundTests {
     }
 
     @Test func finalAnswerCelebratesBeforeCompleting() {
-        var round = Round(items: days, picker: picker, rng: SeededGenerator(seed: 9))
+        var round = Round(source: picker, rng: SeededGenerator(seed: 9))
         for _ in 0..<(Round.length - 1) {
             _ = round.answer(round.current.answer)
             round.advance()
@@ -89,5 +89,102 @@ struct RoundTests {
         #expect(!round.isComplete)
         round.advance()
         #expect(round.isComplete)
+    }
+
+    @Test func choicesGrowWithinRound() {
+        var round = Round(source: picker, rng: SeededGenerator(seed: 10))
+        var counts: [Int] = []
+        for _ in 0..<Round.length {
+            counts.append(round.current.choices.count)
+            _ = round.answer(round.current.answer)
+            round.advance()
+        }
+        #expect(counts == [3, 3, 4, 4, 4])
+    }
+
+    @Test func distractorsComeFromTheirPool() {
+        var rng = SeededGenerator(seed: 11)
+        let source = QuestionPicker(answers: Array(days.prefix(3)), distractors: days) { $0.name }
+        var distractorsSeen = Set<QuizItem>()
+        for _ in 0..<300 {
+            let q = source.next(correctCount: 4, excluding: nil, using: &rng)
+            #expect(days.prefix(3).contains(q.answer))
+            #expect(q.choices.allSatisfy(days.contains))
+            #expect(Set(q.choices).count == 4)
+            distractorsSeen.formUnion(q.choices.filter { $0 != q.answer })
+        }
+        #expect(distractorsSeen.contains { !days.prefix(3).contains($0) })
+    }
+
+    @Test func smallAnswerPoolStillVaries() {
+        var rng = SeededGenerator(seed: 12)
+        let source = QuestionPicker(answers: Array(days.prefix(2)), distractors: days) { $0.name }
+        for _ in 0..<100 {
+            #expect(source.next(correctCount: 0, excluding: days[0], using: &rng).answer == days[1])
+        }
+    }
+
+    @Test func soundComesFromClosure() {
+        var rng = SeededGenerator(seed: 13)
+        let source = QuestionPicker(answers: days, prompt: { $0.name }, sound: { _ in .moo })
+        #expect(source.next(correctCount: 0, excluding: nil, using: &rng).sound == .moo)
+        #expect(picker.next(correctCount: 0, excluding: nil, using: &rng).sound == nil)
+    }
+
+    let food = Category.food
+    var fruits: [QuizItem] { LearnFood.allCases.filter(\.isFruit).map(food.item) }
+    var vegetables: [QuizItem] { LearnFood.allCases.filter { !$0.isFruit }.map(food.item) }
+    var fruitOrVegetable: OddOneOut {
+        OddOneOut(.init(members: fruits, question: "Which one is a fruit?") { "\($0.name) is a fruit." },
+                  .init(members: vegetables, question: "Which one is a vegetable?") { "\($0.name) is a vegetable." })
+    }
+
+    @Test func correctionUsesFactWhenPresent() {
+        let apple = food.item(LearnFood.apple), carrot = food.item(LearnFood.carrot)
+        let q = Question(prompt: "", choices: [apple, carrot], answer: carrot, facts: [apple: "Apple is a fruit."])
+        #expect(q.correction(for: apple) == "Apple is a fruit. Try again!")
+        let plain = Question(prompt: "", choices: [apple, carrot], answer: carrot)
+        #expect(plain.correction(for: apple) == "That's Carrot! Try again.")
+    }
+
+    @Test func oddOneOutShape() {
+        var rng = SeededGenerator(seed: 14)
+        for correctCount in [0, 4] {
+            for _ in 0..<300 {
+                let q = fruitOrVegetable.next(correctCount: correctCount, excluding: nil, using: &rng)
+                let oddGroup = fruits.contains(q.answer) ? fruits : vegetables
+                #expect(q.choices.filter(oddGroup.contains) == [q.answer])
+                #expect(q.choices.count == Round.choiceCount(correctCount: correctCount))
+                #expect(Set(q.choices).count == q.choices.count)
+                #expect(q.facts.count == q.choices.count)
+                #expect(q.prompt == (oddGroup == fruits ? "Which one is a fruit?" : "Which one is a vegetable?"))
+            }
+        }
+    }
+
+    @Test func oddOneOutNeverRepeatsPrevious() {
+        var rng = SeededGenerator(seed: 15)
+        let previous = vegetables[0]
+        for _ in 0..<200 {
+            #expect(fruitOrVegetable.next(correctCount: 0, excluding: previous, using: &rng).answer != previous)
+        }
+    }
+
+    @Test func oddOneOutFallsBackToThree() {
+        var rng = SeededGenerator(seed: 16)
+        let source = OddOneOut(.init(members: Array(fruits.prefix(2)), question: "") { $0.name },
+                               .init(members: Array(vegetables.prefix(2)), question: "") { $0.name })
+        #expect(source.next(correctCount: 4, excluding: nil, using: &rng).choices.count == 3)
+    }
+
+    @Test func choiceCountGrows() {
+        #expect((0...4).map(Round.choiceCount) == [3, 3, 4, 4, 4])
+    }
+
+    @Test func newRoundAvoidsPreviousAnswer() {
+        for seed in 0..<200 {
+            let round = Round(source: picker, after: days[3], rng: SeededGenerator(seed: UInt64(seed)))
+            #expect(round.current.answer != days[3])
+        }
     }
 }

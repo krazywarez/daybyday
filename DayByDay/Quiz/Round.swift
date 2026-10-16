@@ -15,8 +15,7 @@ nonisolated enum AnswerOutcome: Equatable {
 nonisolated struct Round {
     static let length = 5
 
-    private let items: [QuizItem]
-    private let picker: QuestionPicker
+    private let source: any QuestionSource
     private var rng: any RandomNumberGenerator
     private(set) var current: Question
     private(set) var correctCount = 0
@@ -28,11 +27,18 @@ nonisolated struct Round {
     /// True once the last correct answer's feedback is done.
     var isComplete: Bool { isFinished && !isAwaitingNext }
 
-    init(items: [QuizItem], picker: QuestionPicker, rng: some RandomNumberGenerator = SystemRandomNumberGenerator()) {
+    /// Choices on screen: 3 to start, 4 once the child has two right.
+    static func choiceCount(correctCount: Int) -> Int {
+        correctCount < 2 ? 3 : 4
+    }
+
+    /// `previous` is the last answer of an earlier round, so a replay does not
+    /// open with it.
+    init(source: any QuestionSource, after previous: QuizItem? = nil,
+         rng: some RandomNumberGenerator = SystemRandomNumberGenerator()) {
         var rng: any RandomNumberGenerator = rng
-        self.items = items
-        self.picker = picker
-        self.current = picker.next(from: items, excluding: nil, using: &rng)
+        self.source = source
+        self.current = source.next(correctCount: 0, excluding: previous, using: &rng)
         self.rng = rng
     }
 
@@ -55,6 +61,6 @@ nonisolated struct Round {
         guard isAwaitingNext else { return }
         isAwaitingNext = false
         guard !isFinished else { return }
-        current = picker.next(from: items, excluding: current.answer, using: &rng)
+        current = source.next(correctCount: correctCount, excluding: current.answer, using: &rng)
     }
 }

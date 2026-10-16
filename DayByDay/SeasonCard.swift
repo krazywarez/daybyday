@@ -60,7 +60,7 @@ struct SeasonCard: View {
 
 // MARK: - Season model
 
-enum Season: Int, CaseIterable, Identifiable {
+nonisolated enum Season: Int, CaseIterable, Identifiable {
     case spring, summer, fall, winter
 
     var id: Int { rawValue }

@@ -10,7 +10,7 @@ import SwiftUI
 
 // MARK: - Category model
 
-enum Category: Int, CaseIterable, Identifiable {
+nonisolated enum Category: Int, CaseIterable, Identifiable {
     case today, days, months, seasons, numbers, colors, shapes, animals, alphabet,
          weather, bodyParts, food
 

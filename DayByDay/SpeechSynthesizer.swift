@@ -47,6 +47,10 @@ final class SpeechSynthesizer {
         synthesizer.speak(utterance)
     }
 
+    func stop() {
+        synthesizer.stopSpeaking(at: .immediate)
+    }
+
     /// Picks the best en-US voice on the device.
     /// Filters for en-US, excludes novelty voices, then sorts by quality
     /// descending so premium (3) > enhanced (2) > default (1).

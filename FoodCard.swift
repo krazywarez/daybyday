@@ -46,7 +46,7 @@ struct FoodCard: View {
 
 // MARK: - Food model
 
-enum LearnFood: Int, CaseIterable, Identifiable {
+nonisolated enum LearnFood: Int, CaseIterable, Identifiable {
     case apple, banana, carrot, strawberry, grapes, lemon,
          broccoli, watermelon, cherry, orange, corn, pear
 
@@ -66,6 +66,13 @@ enum LearnFood: Int, CaseIterable, Identifiable {
         case .orange:     "Orange"
         case .corn:       "Corn"
         case .pear:       "Pear"
+        }
+    }
+
+    var isFruit: Bool {
+        switch self {
+        case .carrot, .broccoli, .corn: false
+        default: true
         }
     }
 

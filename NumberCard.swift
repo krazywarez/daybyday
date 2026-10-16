@@ -63,7 +63,7 @@ struct NumberCard: View {
 
 // MARK: - Number model
 
-enum LearnNumber: Int, CaseIterable, Identifiable {
+nonisolated enum LearnNumber: Int, CaseIterable, Identifiable {
     case one = 1, two, three, four, five, six, seven, eight, nine, ten
 
     var id: LearnNumber { self }

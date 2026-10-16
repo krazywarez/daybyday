@@ -46,7 +46,7 @@ struct BodyPartCard: View {
 
 // MARK: - Body part model
 
-enum LearnBodyPart: Int, CaseIterable, Identifiable {
+nonisolated enum LearnBodyPart: Int, CaseIterable, Identifiable {
     case head, eyes, ears, nose, mouth, hands, fingers, arms, legs, feet, heart, belly
 
     var id: Int { rawValue }

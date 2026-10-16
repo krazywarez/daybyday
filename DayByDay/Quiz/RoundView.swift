@@ -7,12 +7,14 @@ import SwiftUI
 
 enum RoundStyle {
     static let playAgainFill = Color(red: 0.18, green: 0.56, blue: 0.28)
+    /// Gap between a feedback sound and the speech that follows it.
+    static let speechDelay = 0.25
 }
 
 /// Runs a round of questions. The caller supplies how each choice looks.
 struct RoundView<Choice: View>: View {
-    private let items: [QuizItem]
-    private let picker: QuestionPicker
+    private let source: any QuestionSource
+    private let game: Game
     private let choice: (QuizItem) -> Choice
 
     @Environment(ProfileSession.self) private var session
@@ -20,14 +22,17 @@ struct RoundView<Choice: View>: View {
     @State private var praise = PraisePhrases()
     @State private var celebrating = false
     @State private var dimmed: QuizItem?
+    /// Bumped whenever something new is said, so a delayed prompt that has
+    /// been overtaken stays quiet.
+    @State private var speechToken = 0
 
     private let columns = [GridItem(.adaptive(minimum: 150, maximum: 320), spacing: 20)]
 
-    init(items: [QuizItem], picker: QuestionPicker, @ViewBuilder choice: @escaping (QuizItem) -> Choice) {
-        self.items = items
-        self.picker = picker
+    init(source: any QuestionSource, game: Game, @ViewBuilder choice: @escaping (QuizItem) -> Choice) {
+        self.source = source
+        self.game = game
         self.choice = choice
-        _round = State(initialValue: Round(items: items, picker: picker))
+        _round = State(initialValue: Round(source: source))
     }
 
     var body: some View {
@@ -39,6 +44,10 @@ struct RoundView<Choice: View>: View {
             }
         }
         .onAppear { speakPrompt() }
+        .onDisappear {
+            speechToken += 1
+            SpeechSynthesizer.shared.stop()
+        }
         .onChange(of: round.current) { speakPrompt() }
     }
 
@@ -80,7 +89,7 @@ struct RoundView<Choice: View>: View {
             Text("You did it!")
                 .font(.system(size: 48, weight: .heavy, design: .rounded))
             Button {
-                round = Round(items: items, picker: picker)
+                round = Round(source: source, after: round.current.answer)
             } label: {
                 Label("Play again", systemImage: "arrow.clockwise")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
@@ -94,7 +103,7 @@ struct RoundView<Choice: View>: View {
         .padding(32)
         .onAppear {
             SoundEngine.shared.play(.roundComplete)
-            SpeechSynthesizer.shared.speak("You did it!")
+            say("You did it!", after: 0.4)
         }
     }
 
@@ -102,21 +111,22 @@ struct RoundView<Choice: View>: View {
         let outcome = round.answer(item)
         guard outcome != .ignored else { return }
         if let profile = session.current {
-            session.store.record(round.current.answer, correct: outcome == .correct, for: profile)
+            session.store.record(round.current.answer, chosen: item, game: game,
+                                 correct: outcome == .correct, for: profile)
         }
         switch outcome {
         case .correct:
             SoundEngine.shared.play(.success)
             var rng = SystemRandomNumberGenerator()
-            SpeechSynthesizer.shared.speak(praise.next(using: &rng))
+            say(praise.next(using: &rng), after: RoundStyle.speechDelay)
             celebrating = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
                 celebrating = false
                 round.advance()
             }
-        case .incorrect(let correctName):
+        case .incorrect:
             SoundEngine.shared.play(.gentleMiss)
-            SpeechSynthesizer.shared.speak(PraisePhrases.correction(for: correctName))
+            say(round.current.correction(for: item), after: RoundStyle.speechDelay)
             withAnimation(.easeOut(duration: 0.2)) { dimmed = item }
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                 withAnimation { if dimmed == item { dimmed = nil } }
@@ -127,9 +137,25 @@ struct RoundView<Choice: View>: View {
         }
     }
 
+    /// Plays the question's sound cue, if any, then speaks the prompt.
     private func speakPrompt() {
-        guard !round.isFinished else { return }
-        SpeechSynthesizer.shared.speak(round.current.prompt)
+        guard !round.isFinished, !round.isAwaitingNext else { return }
+        if let sound = round.current.sound {
+            speechToken += 1
+            SpeechSynthesizer.shared.stop()
+            SoundEngine.shared.play(sound)
+            say(round.current.prompt, after: SoundEngine.shared.remaining(sound) + 0.2)
+        } else {
+            say(round.current.prompt, after: 0)
+        }
+    }
+
+    private func say(_ text: String, after delay: TimeInterval) {
+        speechToken += 1
+        let token = speechToken
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            if token == speechToken { SpeechSynthesizer.shared.speak(text) }
+        }
     }
 }
 

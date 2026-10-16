@@ -44,4 +44,16 @@ struct ContrastTests {
             #expect(contrast(color.symbolColor, color.color, style) >= 3, "\(color) \(style.rawValue)")
         }
     }
+
+    /// White and black color swatches need an edge that shows on either background.
+    @Test func swatchOutlineAgainstBackgrounds() {
+        #expect(contrast(ChoiceStyle.swatchOutline, .white, .light) >= 3)
+        #expect(contrast(ChoiceStyle.swatchOutline, .black, .dark) >= 3)
+    }
+
+    @Test func foodFillAgainstWhite() {
+        for style in Self.styles {
+            #expect(contrast(ChoiceStyle.foodFill, .white, style) >= 3)
+        }
+    }
 }

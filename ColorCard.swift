@@ -39,7 +39,7 @@ struct ColorCard: View {
 
 // MARK: - Color model
 
-enum LearnColor: Int, CaseIterable, Identifiable {
+nonisolated enum LearnColor: Int, CaseIterable, Identifiable {
     case red, orange, yellow, green, blue, purple, pink, brown, black, white
 
     var id: Int { rawValue }

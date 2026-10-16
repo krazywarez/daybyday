@@ -46,7 +46,7 @@ struct WeatherCard: View {
 
 // MARK: - Weather model
 
-enum LearnWeather: Int, CaseIterable, Identifiable {
+nonisolated enum LearnWeather: Int, CaseIterable, Identifiable {
     case sunny, cloudy, rainy, snowy, windy, stormy, foggy, rainbow
 
     var id: Int { rawValue }

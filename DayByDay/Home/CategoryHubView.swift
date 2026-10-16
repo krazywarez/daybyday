@@ -16,6 +16,14 @@ struct CategoryHubView: View {
                     category.lookAndListenView
                         .navigationTitle(category.label)
                 }
+                ForEach(category.games, id: \.self) { game in
+                    activity(game.title, systemImage: game.symbol, color: category.color) {
+                        RoundView(source: category.questionSource(for: game), game: game) {
+                            ChoiceTile(item: $0)
+                        }
+                        .navigationTitle(game.title)
+                    }
+                }
             }
             .padding(32)
             .frame(maxWidth: 640)

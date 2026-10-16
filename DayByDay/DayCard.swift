@@ -60,7 +60,7 @@ struct DayCard: View {
 
 // MARK: - Day model
 
-enum DayOfWeek: Int, CaseIterable, Identifiable {
+nonisolated enum DayOfWeek: Int, CaseIterable, Identifiable {
     case sunday, monday, tuesday, wednesday, thursday, friday, saturday
 
     var id: Int { rawValue }
