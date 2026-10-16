@@ -5,6 +5,7 @@
 //  Created by cmc on 2026-03-09.
 //
 
+import SwiftData
 import SwiftUI
 
 // MARK: - Category model
@@ -49,20 +50,21 @@ enum Category: Int, CaseIterable, Identifiable {
         }
     }
 
+    /// Fixed colors with at least 3:1 contrast against white labels in light and dark mode.
     var color: Color {
         switch self {
-        case .today:     .orange
-        case .days:      .blue
-        case .months:    .purple
-        case .seasons:   .green
-        case .numbers:   .red
-        case .colors:    .pink
-        case .shapes:    .teal
-        case .animals:   Color(red: 0.7, green: 0.45, blue: 0.2)
-        case .alphabet:  .indigo
-        case .weather:   Color(red: 0.4, green: 0.75, blue: 0.95)
-        case .bodyParts: Color(red: 0.9, green: 0.5, blue: 0.6)
-        case .food:      Color(red: 0.95, green: 0.6, blue: 0.2)
+        case .today:     Color(red: 0.84, green: 0.40, blue: 0.08)
+        case .days:      Color(red: 0.0, green: 0.42, blue: 0.85)
+        case .months:    Color(red: 0.62, green: 0.22, blue: 0.78)
+        case .seasons:   Color(red: 0.18, green: 0.56, blue: 0.28)
+        case .numbers:   Color(red: 0.86, green: 0.20, blue: 0.22)
+        case .colors:    Color(red: 0.82, green: 0.25, blue: 0.52)
+        case .shapes:    Color(red: 0.0, green: 0.53, blue: 0.56)
+        case .animals:   Color(red: 0.63, green: 0.40, blue: 0.18)
+        case .alphabet:  Color(red: 0.35, green: 0.34, blue: 0.84)
+        case .weather:   Color(red: 0.10, green: 0.48, blue: 0.78)
+        case .bodyParts: Color(red: 0.80, green: 0.30, blue: 0.46)
+        case .food:      Color(red: 0.80, green: 0.42, blue: 0.08)
         }
     }
 
@@ -91,7 +93,7 @@ struct CategoryTile: View {
                     .shadow(color: category.color.opacity(0.4), radius: 8, y: 4)
             } else {
                 RoundedRectangle(cornerRadius: 32, style: .continuous)
-                    .fill(category.color.gradient)
+                    .fill(category.color)
                     .shadow(color: category.color.opacity(0.4), radius: 8, y: 4)
             }
 
@@ -105,6 +107,7 @@ struct CategoryTile: View {
                     .font(.system(size: 24, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
             }
+            .shadow(color: category.usesGradientBackground ? .black.opacity(0.6) : .clear, radius: 2)
         }
         .accessibilityLabel(category.label)
     }
@@ -112,73 +115,25 @@ struct CategoryTile: View {
 
 // MARK: - Content view
 
+/// Routes between first-launch setup, the profile picker, and home.
 struct ContentView: View {
-    @AppStorage("hasSeenVoiceTip") private var hasSeenVoiceTip = false
-
-    private let columns = [
-        GridItem(.flexible(), spacing: 24),
-        GridItem(.flexible(), spacing: 24)
-    ]
+    @Environment(ProfileSession.self) private var session
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 24) {
-                    ForEach(Category.allCases) { category in
-                        NavigationLink(value: category) {
-                            CategoryTile(category: category)
-                                .aspectRatio(1, contentMode: .fit)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(24)
-
-                Button {
-                    hasSeenVoiceTip = false
-                } label: {
-                    Label("Voice Quality Tips", systemImage: "speaker.wave.2.fill")
-                        .font(.system(size: 16, weight: .medium, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(16)
-                }
-                .buttonStyle(.plain)
-                .padding(.horizontal, 24)
-                .padding(.bottom, 24)
-            }
-            .navigationTitle("DayByDay")
-            .navigationDestination(for: Category.self) { category in
-                destinationView(for: category)
-                    .navigationTitle(category.label)
-            }
-            .overlay {
-                if !hasSeenVoiceTip {
-                    VoiceTipOverlay {
-                        withAnimation { hasSeenVoiceTip = true }
-                    }
-                }
+        Group {
+            switch session.screen {
+            case .setup:  ProfileSetupView()
+            case .picker: ProfilePickerView()
+            case .home:   HomeView()
             }
         }
-    }
-
-    @ViewBuilder
-    private func destinationView(for category: Category) -> some View {
-        switch category {
-        case .today:     TodayView()
-        case .days:      DaysOfWeekView()
-        case .months:    MonthsOfYearView()
-        case .seasons:   SeasonsView()
-        case .numbers:   NumbersView()
-        case .colors:    ColorsView()
-        case .shapes:    ShapesView()
-        case .animals:   AnimalsView()
-        case .alphabet:  AlphabetView()
-        case .weather:   WeatherView()
-        case .bodyParts: BodyPartsView()
-        case .food:      FoodView()
+        .onChange(of: scenePhase) { _, phase in
+            switch phase {
+            case .background: session.didEnterBackground(at: .now)
+            case .active:     session.willEnterForeground(at: .now)
+            default:          break
+            }
         }
     }
 }
@@ -224,5 +179,8 @@ struct VoiceTipOverlay: View {
 }
 
 #Preview {
+    let container = ProfileStore.makeContainer(inMemory: true)
     ContentView()
+        .environment(ProfileSession(store: ProfileStore(context: container.mainContext)))
+        .modelContainer(container)
 }

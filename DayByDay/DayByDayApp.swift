@@ -6,11 +6,17 @@
 //
 
 import AVFoundation
+import SwiftData
 import SwiftUI
 
 @main
 struct DayByDayApp: App {
+    private let container = ProfileStore.makeContainer(inMemory: false)
+    @State private var session: ProfileSession
+
     init() {
+        _session = State(initialValue: ProfileSession(store: ProfileStore(context: container.mainContext)))
+
         Task.detached(priority: .background) {
             // Activate the audio session early so the first real tap doesn't block.
             try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
@@ -29,6 +35,8 @@ struct DayByDayApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(session)
+                .modelContainer(container)
         }
     }
 }

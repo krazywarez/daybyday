@@ -24,7 +24,18 @@
 		8B57F7382F63BBBB001F6F5E /* AnimalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F7372F63BBBB001F6F5E /* AnimalsView.swift */; };
 		8B57F73A2F63BBBD001F6F5E /* LetterCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F7392F63BBBD001F6F5E /* LetterCard.swift */; };
 		8B57F73C2F63BBBD001F6F5E /* AlphabetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B57F73B2F63BBBD001F6F5E /* AlphabetView.swift */; };
+		D7D48193BA7AD2C64B212737 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA83A180D07BFACBA92AC03E /* Foundation.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1015CD2FFBC39F380BE3151E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8B7051AA2F5F908800491D58 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B7051B12F5F908800491D58;
+			remoteInfo = DayByDay;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		8B1B4FF82F659AD1005C246F /* WeatherCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCard.swift; sourceTree = "<group>"; };
@@ -45,6 +56,8 @@
 		8B57F7392F63BBBD001F6F5E /* LetterCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterCard.swift; sourceTree = "<group>"; };
 		8B57F73B2F63BBBD001F6F5E /* AlphabetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlphabetView.swift; sourceTree = "<group>"; };
 		8B7051B22F5F908800491D58 /* DayByDay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DayByDay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6E74F699AA6EB7ADABD5F88 /* DayByDayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DayByDayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA83A180D07BFACBA92AC03E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -58,6 +71,13 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		4FDEBF44C97D137EF31F348A /* DayByDayTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = DayByDayTests;
+			sourceTree = "<group>";
+		};
 		8B7051B42F5F908800491D58 /* DayByDay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -76,9 +96,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B884B3379F811EC0ED47EBAC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D7D48193BA7AD2C64B212737 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2D9AF70FED70833131ADAE0F /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				BA83A180D07BFACBA92AC03E /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		43AAA6C6355BFA1D8A629985 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2D9AF70FED70833131ADAE0F /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		8B7051A92F5F908800491D58 = {
 			isa = PBXGroup;
 			children = (
@@ -101,6 +145,8 @@
 				8B1B4FFE2F659AD2005C246F /* BodyPartsView.swift */,
 				8B1B50002F659AD3005C246F /* FoodCard.swift */,
 				8B1B50022F659AD4005C246F /* FoodView.swift */,
+				43AAA6C6355BFA1D8A629985 /* Frameworks */,
+				4FDEBF44C97D137EF31F348A /* DayByDayTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				8B7051B22F5F908800491D58 /* DayByDay.app */,
+				B6E74F699AA6EB7ADABD5F88 /* DayByDayTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -115,6 +162,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		62BDB36DEC1B9FC5E49D7819 /* DayByDayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F99EE566298541D2131D7F82 /* Build configuration list for PBXNativeTarget "DayByDayTests" */;
+			buildPhases = (
+				36E9E05F598E19E3FD6C9FC2 /* Sources */,
+				B884B3379F811EC0ED47EBAC /* Frameworks */,
+				91240F12F11E2ED4F3B375A9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				27E52B724540ED82493D45D6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4FDEBF44C97D137EF31F348A /* DayByDayTests */,
+			);
+			name = DayByDayTests;
+			productName = DayByDayTests;
+			productReference = B6E74F699AA6EB7ADABD5F88 /* DayByDayTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		8B7051B12F5F908800491D58 /* DayByDay */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8B7051BD2F5F908900491D58 /* Build configuration list for PBXNativeTarget "DayByDay" */;
@@ -131,8 +199,6 @@
 				8B7051B42F5F908800491D58 /* DayByDay */,
 			);
 			name = DayByDay;
-			packageProductDependencies = (
-			);
 			productName = DayByDay;
 			productReference = 8B7051B22F5F908800491D58 /* DayByDay.app */;
 			productType = "com.apple.product-type.application";
@@ -167,6 +233,7 @@
 			projectRoot = "";
 			targets = (
 				8B7051B12F5F908800491D58 /* DayByDay */,
+				62BDB36DEC1B9FC5E49D7819 /* DayByDayTests */,
 			);
 		};
 /* End PBXProject section */
@@ -179,9 +246,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		91240F12F11E2ED4F3B375A9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		36E9E05F598E19E3FD6C9FC2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8B7051AE2F5F908800491D58 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -208,7 +289,37 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		27E52B724540ED82493D45D6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = DayByDay;
+			target = 8B7051B12F5F908800491D58 /* DayByDay */;
+			targetProxy = 1015CD2FFBC39F380BE3151E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		76F72CE42B474B4C420CFF4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ZCNAX3VL9D;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				PRODUCT_BUNDLE_IDENTIFIER = net.cleberg.DayByDay.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DayByDay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DayByDay";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		8B7051BB2F5F908900491D58 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -400,6 +511,26 @@
 			};
 			name = Release;
 		};
+		8FA15E507003B7CC52053A3C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ZCNAX3VL9D;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				PRODUCT_BUNDLE_IDENTIFIER = net.cleberg.DayByDay.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DayByDay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DayByDay";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -417,6 +548,15 @@
 			buildConfigurations = (
 				8B7051BE2F5F908900491D58 /* Debug */,
 				8B7051BF2F5F908900491D58 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F99EE566298541D2131D7F82 /* Build configuration list for PBXNativeTarget "DayByDayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				76F72CE42B474B4C420CFF4F /* Release */,
+				8FA15E507003B7CC52053A3C /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
