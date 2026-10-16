@@ -9,12 +9,14 @@ nonisolated enum SoundEffect: Hashable, CaseIterable, Sendable {
     case success, gentleMiss, roundComplete
     case moo, quack, baa, oink, meow, woof, tweet
     case rain, wind, thunder
+    /// Two-tone train whistle, for a finished week train.
+    case whistle
     /// That many short beeps, for counting.
     case beeps(Int)
 
     static let allCases: [SoundEffect] =
         [.success, .gentleMiss, .roundComplete, .moo, .quack, .baa, .oink, .meow, .woof, .tweet,
-         .rain, .wind, .thunder] + (1...5).map(SoundEffect.beeps)
+         .rain, .wind, .thunder, .whistle] + (1...5).map(SoundEffect.beeps)
 }
 
 /// Renders sound effects to mono sample buffers. Every sound fades in and out
@@ -52,6 +54,8 @@ nonisolated enum SoundSynth {
                 Note(frequency: 783.99, start: 0.4, duration: 0.7),
                 Note(frequency: 1046.5, start: 0.4, duration: 0.7),
             ], peak: 0.6)
+        case .whistle:
+            whistle()
         case .beeps(let count):
             mix((0..<count).map {
                 Note(frequency: 660, start: 0.42 * Double($0), duration: 0.12, harmonics: [1, 0.2])
@@ -162,6 +166,19 @@ nonisolated enum SoundSynth {
         var attack = 0.03
         var release = 0.08
         var noise = 0.0
+    }
+
+    /// Two steady, nearly pure tones a major third apart with a little
+    /// vibrato and breath, like a toy train whistle.
+    private static func whistle() -> [Float] {
+        let tones = [600.0, 755.0].enumerated().map { i, f in
+            voiceSamples(Voice(duration: 0.9, pitch: [(0, f * 0.97), (0.15, f), (1, f)],
+                               rolloff: 2, maxHarmonics: 6, vibrato: (5.5, 0.006),
+                               attack: 0.08, release: 0.2, noise: 0.03),
+                         seed: UInt64(10 + i))
+        }
+        let count = min(tones[0].count, tones[1].count)
+        return normalized(padded((0..<count).map { tones[0][$0] + tones[1][$0] }), peak: 0.4)
     }
 
     private static func voice(_ v: Voice, peak: Float) -> [Float] {

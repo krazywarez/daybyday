@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit
 import Testing
 @testable import DayByDay
 
@@ -50,6 +51,53 @@ struct ReviewExport {
         }
         .padding(32)
         try png(drawn).write(to: dir.appendingPathComponent("animals-large.png"))
+    }
+
+    @Test func games() async throws {
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let container = ProfileStore.makeContainer(inMemory: true)
+        let session = ProfileSession(store: ProfileStore(context: container.mainContext))
+        var rng = SeededGenerator(seed: 1)
+        var train = SequencePuzzle.weekTrain(using: &rng)
+        for d in [DayOfWeek.sunday, .monday, .tuesday] { _ = train.place(DayByDay.Category.days.item(d)) }
+        var slots = SequencePuzzle.yesterdayTomorrow(today: .friday, using: &rng)
+        _ = slots.place(DayByDay.Category.days.item(DayOfWeek.thursday))
+        let screens: [(String, AnyView)] = [
+            ("train-start", AnyView(SequencePuzzleView(game: .weekTrain) { .weekTrain(using: &rng) })),
+            ("train", AnyView(SequencePuzzleView(game: .weekTrain) { train })),
+            ("slots", AnyView(SequencePuzzleView(game: .yesterdayTomorrow) { slots })),
+            ("wheel", AnyView(YearWheelView())),
+            ("counting", AnyView(CountingView())),
+            ("piles", AnyView(HStack(spacing: 20) {
+                ForEach([3, 7, 10], id: \.self) { n in
+                    PileTile(item: DayByDay.Category.numbers.item(LearnNumber(rawValue: n)!)).frame(width: 170, height: 160)
+                }
+            })),
+        ]
+        for (name, view) in screens {
+            for scheme in [ColorScheme.light, .dark] {
+                let page = view
+                    .background(Color(.systemBackground))
+                    .environment(session)
+                    .environment(\.colorScheme, scheme)
+                try await windowPNG(page).write(to: dir.appendingPathComponent("game-\(name)-\(scheme).png"))
+            }
+        }
+    }
+
+    /// Renders through a real window, which draws scroll views (ImageRenderer does not).
+    private func windowPNG(_ view: some View, size: CGSize = CGSize(width: 402, height: 874)) async throws -> Data {
+        let scene = try #require(UIApplication.shared.connectedScenes.first as? UIWindowScene)
+        let window = UIWindow(windowScene: scene)
+        window.frame = CGRect(origin: .zero, size: size)
+        window.rootViewController = UIHostingController(rootView: view)
+        window.makeKeyAndVisible()
+        try await Task.sleep(for: .milliseconds(600))
+        let image = UIGraphicsImageRenderer(size: size).image { _ in
+            window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+        }
+        window.isHidden = true
+        return try #require(image.pngData())
     }
 
     private func png(_ view: some View) throws -> Data {

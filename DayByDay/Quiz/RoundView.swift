@@ -83,27 +83,8 @@ struct RoundView<Choice: View>: View {
     }
 
     private var finished: some View {
-        VStack(spacing: 28) {
-            MascotView(mood: .cheering)
-                .frame(width: 180, height: 180)
-            Text("You did it!")
-                .font(.system(size: 48, weight: .heavy, design: .rounded))
-            Button {
-                round = Round(source: source, after: round.current.answer)
-            } label: {
-                Label("Play again", systemImage: "arrow.clockwise")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 40)
-                    .padding(.vertical, 20)
-                    .background(Capsule().fill(RoundStyle.playAgainFill))
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(32)
-        .onAppear {
-            SoundEngine.shared.play(.roundComplete)
-            say("You did it!", after: 0.4)
+        FinishedView {
+            round = Round(source: source, after: round.current.answer)
         }
     }
 

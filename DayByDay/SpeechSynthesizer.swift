@@ -9,15 +9,19 @@ import UIKit
 /// Wrapper around AVSpeechSynthesizer that selects the highest-quality
 /// en-US neural voice available on the device. Falls back gracefully if
 /// premium/enhanced voices haven't been downloaded yet.
-final class SpeechSynthesizer {
+final class SpeechSynthesizer: NSObject, AVSpeechSynthesizerDelegate {
     static let shared = SpeechSynthesizer()
 
     private let synthesizer = AVSpeechSynthesizer()
     private let voice: AVSpeechSynthesisVoice?
     private let haptics = UIImpactFeedbackGenerator(style: .rigid)
+    /// Run when the matching utterance finishes; dropped if it is cut off.
+    private var completions: [ObjectIdentifier: () -> Void] = [:]
 
-    private init() {
+    private override init() {
         self.voice = Self.bestAvailableVoice()
+        super.init()
+        synthesizer.delegate = self
     }
 
     /// Speaks a pre-configured utterance directly. Used for warmup at launch.
@@ -25,7 +29,7 @@ final class SpeechSynthesizer {
         synthesizer.speak(utterance)
     }
 
-    func speak(_ text: String) {
+    func speak(_ text: String, completion: (() -> Void)? = nil) {
         // Every speak() call is a card tap, so give a gentle tactile bump
         // alongside the audio. Prepared just before firing for lowest latency.
         haptics.prepare()
@@ -44,11 +48,22 @@ final class SpeechSynthesizer {
         utterance.rate = 0.4
         utterance.pitchMultiplier = 1.0
         utterance.preUtteranceDelay = 0
+        if let completion { completions[ObjectIdentifier(utterance)] = completion }
         synthesizer.speak(utterance)
     }
 
     func stop() {
         synthesizer.stopSpeaking(at: .immediate)
+    }
+
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        let id = ObjectIdentifier(utterance)
+        Task { @MainActor in completions.removeValue(forKey: id)?() }
+    }
+
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        let id = ObjectIdentifier(utterance)
+        Task { @MainActor in _ = completions.removeValue(forKey: id) }
     }
 
     /// Picks the best en-US voice on the device.

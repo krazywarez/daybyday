@@ -1,4 +1,5 @@
 import Testing
+import UIKit
 @testable import DayByDay
 
 struct GameTests {
@@ -10,11 +11,15 @@ struct GameTests {
         }
         #expect(Topic.gridCases.filter { $0.games.contains(.oddOneOut) } == [.shapes, .animals, .food])
         #expect(Topic.gridCases.filter { $0.games.contains(.listen) } == [.numbers, .animals, .alphabet, .weather])
+        #expect(Topic.days.games == [.findIt, .comesNext, .weekTrain, .yesterdayTomorrow])
+        #expect(Topic.months.games == [.findIt, .comesNext, .yearWheel])
+        #expect(Topic.seasons.games == [.findIt, .whichSeason])
+        #expect(Topic.numbers.games == [.findIt, .listen, .counting, .most])
     }
 
     @Test(arguments: Topic.gridCases) func everyGameMakesValidQuestions(_ c: Topic) {
         var rng = SeededGenerator(seed: 21)
-        for game in c.games {
+        for game in c.games where game.usesRound {
             let source = c.questionSource(for: game)
             var previous: QuizItem?
             for i in 0..<300 {
@@ -112,7 +117,9 @@ struct GameTests {
     }
 
     @Test func titles() {
-        #expect(Game.allCases.map(\.title) == ["Find it!", "Odd one out", "Listen"])
+        #expect(Game.allCases.map(\.title) == ["Find it!", "Odd one out", "Listen",
+                                                "What comes next?", "Week train", "Yesterday and tomorrow",
+                                                "Year wheel", "Which season?", "Count with me", "Which has the most?"])
     }
 
     /// The prompt names the rule, so only one choice fits it.
@@ -135,5 +142,11 @@ struct GameTests {
         for q in questions(.weather, .listen) where q.answer != stormy {
             #expect(!q.choices.contains(stormy))
         }
+    }
+}
+
+struct GameSymbolTests {
+    @Test(arguments: Game.allCases) func symbolExists(_ game: Game) {
+        #expect(UIImage(systemName: game.symbol) != nil)
     }
 }

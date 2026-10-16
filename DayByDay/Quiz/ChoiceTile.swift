@@ -109,16 +109,30 @@ struct ChoiceTile: View {
     }
 }
 
+/// A pile for "Which has the most?": dots only, so the child compares amounts.
+struct PileTile: View {
+    let item: QuizItem
+
+    var body: some View {
+        Dots(count: item.value(LearnNumber.self)!.numeral, size: 22)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(RoundedRectangle(cornerRadius: 32, style: .continuous).fill(Category.numbers.color))
+            .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+    }
+}
+
 /// Solid dots for a quantity, in rows of five.
-private struct Dots: View {
+struct Dots: View {
     let count: Int
+    var size: CGFloat = 16
 
     var body: some View {
         VStack(spacing: 6) {
             ForEach(Array(stride(from: 0, to: count, by: 5)), id: \.self) { start in
                 HStack(spacing: 6) {
                     ForEach(start..<min(start + 5, count), id: \.self) { _ in
-                        Circle().frame(width: 16, height: 16)
+                        Circle().frame(width: size, height: size)
                     }
                 }
             }

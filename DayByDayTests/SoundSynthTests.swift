@@ -62,6 +62,7 @@ struct SoundSynthTests {
         for n in 1...5 {
             #expect(abs(seconds(SoundSynth.render(.beeps(n))) - (0.42 * Double(n - 1) + 0.12)) < 0.02)
         }
+        #expect((0.6...1.2).contains(seconds(SoundSynth.render(.whistle))))
         #expect(SoundSynth.duration(.moo) == seconds(SoundSynth.render(.moo)))
     }
 

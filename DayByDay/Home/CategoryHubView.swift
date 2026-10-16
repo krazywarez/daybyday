@@ -18,10 +18,7 @@ struct CategoryHubView: View {
                 }
                 ForEach(category.games, id: \.self) { game in
                     activity(game.title, systemImage: game.symbol, color: category.color) {
-                        RoundView(source: category.questionSource(for: game), game: game) {
-                            ChoiceTile(item: $0)
-                        }
-                        .navigationTitle(game.title)
+                        GameDestination(category: category, game: game)
                     }
                 }
             }

@@ -35,6 +35,25 @@ struct ContrastTests {
         }
     }
 
+    @Test(arguments: Season.allCases) func wheelColorAgainstWhite(_ season: Season) {
+        for style in Self.styles {
+            #expect(contrast(season.wheelColor, .white, style) >= 3, "\(season)")
+        }
+    }
+
+    /// Uncounted objects sit on the page background in the numbers color.
+    @Test func countingObjectsAgainstBackground() {
+        let numbers = DayByDay.Category.numbers.color
+        #expect(contrast(numbers, .white, .light) >= 3)
+        #expect(contrast(numbers, .black, .dark) >= 3)
+    }
+
+    /// Train wheels sit on the page background in both modes.
+    @Test func trainTireAgainstBackgrounds() {
+        #expect(contrast(TrainStyle.tire, .white, .light) >= 3)
+        #expect(contrast(TrainStyle.tire, .black, .dark) >= 3)
+    }
+
     @Test func playAgainAgainstWhite() {
         #expect(contrast(RoundStyle.playAgainFill, .white, .light) >= 3)
     }

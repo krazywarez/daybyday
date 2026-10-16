@@ -5,12 +5,20 @@
 
 nonisolated enum Game: String, CaseIterable {
     case findIt, oddOneOut, listen
+    case comesNext, weekTrain, yesterdayTomorrow, yearWheel, whichSeason, counting, most
 
     var title: String {
         switch self {
         case .findIt:    "Find it!"
         case .oddOneOut: "Odd one out"
         case .listen:    "Listen"
+        case .comesNext: "What comes next?"
+        case .weekTrain: "Week train"
+        case .yesterdayTomorrow: "Yesterday and tomorrow"
+        case .yearWheel: "Year wheel"
+        case .whichSeason: "Which season?"
+        case .counting:  "Count with me"
+        case .most:      "Which has the most?"
         }
     }
 
@@ -19,6 +27,21 @@ nonisolated enum Game: String, CaseIterable {
         case .findIt:    "magnifyingglass"
         case .oddOneOut: "square.grid.2x2.fill"
         case .listen:    "ear.fill"
+        case .comesNext: "arrow.right.circle.fill"
+        case .weekTrain: "train.side.front.car"
+        case .yesterdayTomorrow: "calendar.day.timeline.left"
+        case .yearWheel: "circle.dashed"
+        case .whichSeason: "leaf.fill"
+        case .counting:  "hand.tap.fill"
+        case .most:      "chart.bar.fill"
+        }
+    }
+
+    /// Played as a `Round` of questions; the rest have their own screens.
+    var usesRound: Bool {
+        switch self {
+        case .findIt, .oddOneOut, .listen, .comesNext, .whichSeason, .most: true
+        case .weekTrain, .yesterdayTomorrow, .yearWheel, .counting: false
         }
     }
 }
@@ -55,6 +78,13 @@ nonisolated extension Category {
         var games: [Game] = [.findIt]
         if [.shapes, .animals, .food].contains(self) { games.append(.oddOneOut) }
         if [.numbers, .animals, .alphabet, .weather].contains(self) { games.append(.listen) }
+        switch self {
+        case .days:          games += [.comesNext, .weekTrain, .yesterdayTomorrow]
+        case .months:        games += [.comesNext, .yearWheel]
+        case .seasons:       games.append(.whichSeason)
+        case .numbers:       games += [.counting, .most]
+        default:             break
+        }
         return games
     }
 
@@ -63,6 +93,11 @@ nonisolated extension Category {
         case .findIt:    findIt
         case .oddOneOut: oddOneOut
         case .listen:    listen
+        case .comesNext: ComesNext(items: quizItems, noun: self == .days ? "day" : "month")
+        case .whichSeason: WhichSeason()
+        case .most:      Most()
+        case .weekTrain, .yesterdayTomorrow, .yearWheel, .counting:
+            preconditionFailure("\(game) is not a question round")
         }
     }
 
