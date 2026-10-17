@@ -26,5 +26,8 @@ commit count, so each upload needs a new commit. =DAYBYDAY_PUBLISH=0= exports th
 =.ipa= to =.build/ios-release= without uploading. Release notes are in
 =AppStore/whats-new.md=.
 
+=scripts/render-header.sh= renders the product page headers (21:9 and 16:9)
+from =AppStore/header.html= and the iPhone screenshots, with Chromium and ImageMagick.
+
 * license
 0bsd. see LICENSE.
