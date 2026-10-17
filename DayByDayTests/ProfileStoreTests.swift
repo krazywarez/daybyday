@@ -81,4 +81,32 @@ struct ProfileStoreTests {
         #expect(records.map(\.chosenID) == ["days.monday", nil])
         #expect(records.map(\.gameRaw) == ["findIt", nil])
     }
+
+    @Test func storeReviewWeights() throws {
+        let s = store
+        let a = try s.create(name: "A", avatar: .cat, color: .red, birthday: nil)
+        let b = try s.create(name: "B", avatar: .dog, color: .blue, birthday: nil)
+        let monday = Category.days.item(DayOfWeek.monday)
+        s.record(monday, correct: false, for: a)
+        #expect(s.reviewWeights(for: a, category: .days) == [monday: 3])
+        #expect(s.reviewWeights(for: b, category: .days).isEmpty)
+        #expect(s.progress(for: a, category: .days).status(monday.id) == .learning)
+    }
+
+    @Test func progressCountsOnlyRecognitionGames() throws {
+        let s = store
+        let a = try s.create(name: "A", avatar: .cat, color: .red, birthday: nil)
+        let b = Category.alphabet.item(LearnLetter.b)
+        s.record(b, game: .trace, correct: false, for: a)
+        let monday = Category.days.item(DayOfWeek.monday)
+        s.record(monday, game: .weekTrain, correct: true, for: a)
+        s.record(monday, game: .weekTrain, correct: true, for: a)
+        #expect(s.progress(for: a, category: .alphabet).status(b.id) == .new)
+        #expect(s.progress(for: a, category: .days).status(monday.id) == .new)
+        s.record(b, game: .findIt, correct: false, for: a)
+        #expect(s.progress(for: a, category: .alphabet).status(b.id) == .learning)
+        let june = Category.months.item(MonthOfYear.june)
+        s.record(june, correct: false, for: a)
+        #expect(s.progress(for: a, category: .months).status(june.id) == .learning)
+    }
 }

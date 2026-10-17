@@ -10,19 +10,28 @@ struct GameDestination: View {
     let category: Category
     let game: Game
 
+    @Environment(ProfileSession.self) private var session
+
     var body: some View {
         content.navigationTitle(game.title)
+    }
+
+    /// Weights as of this render: the open round keeps its first question,
+    /// and the next round uses the latest answers.
+    private var source: any QuestionSource {
+        let weights = session.current.map { session.store.reviewWeights(for: $0, category: category) } ?? [:]
+        return category.questionSource(for: game, weights: weights)
     }
 
     @ViewBuilder
     private var content: some View {
         switch game {
         case .most:
-            RoundView(source: category.questionSource(for: game), game: game) { PileTile(item: $0) }
+            RoundView(source: source, game: game) { PileTile(item: $0) }
         case .dressUp:
-            RoundView(source: category.questionSource(for: game), game: game) { ClothingTile(item: $0) }
+            RoundView(source: source, game: game) { ClothingTile(item: $0) }
         case .findIt, .oddOneOut, .listen, .comesNext, .whichSeason, .mixColors:
-            RoundView(source: category.questionSource(for: game), game: game) { ChoiceTile(item: $0) }
+            RoundView(source: source, game: game) { ChoiceTile(item: $0) }
         case .weekTrain:
             SequencePuzzleView(game: game) {
                 var rng = SystemRandomNumberGenerator()

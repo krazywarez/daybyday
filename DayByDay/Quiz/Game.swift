@@ -104,11 +104,13 @@ nonisolated extension Category {
         return games
     }
 
-    func questionSource(for game: Game) -> any QuestionSource {
+    /// `weights` favor answers the child has been missing; only the pick-one
+    /// games use them.
+    func questionSource(for game: Game, weights: [QuizItem: Double] = [:]) -> any QuestionSource {
         switch game {
-        case .findIt:    findIt
-        case .oddOneOut: oddOneOut
-        case .listen:    listen
+        case .findIt:    with(findIt, weights)
+        case .oddOneOut: with(oddOneOut, weights)
+        case .listen:    with(listen, weights)
         case .comesNext: ComesNext(items: quizItems, noun: self == .days ? "day" : "month")
         case .whichSeason: WhichSeason()
         case .most:      Most()
@@ -170,6 +172,18 @@ nonisolated extension Category {
         default:
             preconditionFailure("No listening game for \(self)")
         }
+    }
+
+    private func with(_ picker: QuestionPicker, _ weights: [QuizItem: Double]) -> QuestionPicker {
+        var picker = picker
+        picker.weights = weights
+        return picker
+    }
+
+    private func with(_ source: OddOneOut, _ weights: [QuizItem: Double]) -> OddOneOut {
+        var source = source
+        source.weights = weights
+        return source
     }
 
     private func items<T: CaseIterable>(_ values: [T]) -> [QuizItem] {

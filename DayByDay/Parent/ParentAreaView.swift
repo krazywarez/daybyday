@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Grown-up screen for adding, editing, and deleting profiles.
+/// Grown-up screen for adding, editing, and deleting profiles, and for
+/// each child's progress.
 struct ParentAreaView: View {
     let onDone: () -> Void
 
@@ -30,6 +31,17 @@ struct ParentAreaView: View {
                         ProfileEditorView(profile: nil)
                     } label: {
                         Label("Add a child", systemImage: "plus.circle.fill")
+                    }
+                }
+                if !session.profiles.isEmpty {
+                    Section("Progress") {
+                        ForEach(session.profiles) { profile in
+                            NavigationLink {
+                                ChildProgressView(profile: profile)
+                            } label: {
+                                ProfileRow(profile: profile)
+                            }
+                        }
                     }
                 }
             }

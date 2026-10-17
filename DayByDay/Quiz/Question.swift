@@ -31,6 +31,8 @@ nonisolated struct QuestionPicker: QuestionSource {
     let distractors: [QuizItem]
     let prompt: (QuizItem) -> String
     let sound: (QuizItem) -> SoundEffect?
+    /// Answer pick weights; unlisted items weigh 1. Empty picks evenly.
+    var weights: [QuizItem: Double] = [:]
 
     init(answers: [QuizItem], distractors: [QuizItem]? = nil,
          prompt: @escaping (QuizItem) -> String,
@@ -46,7 +48,7 @@ nonisolated struct QuestionPicker: QuestionSource {
     /// distinct distractors, shuffled.
     func next(correctCount: Int, excluding previous: QuizItem?, using rng: inout some RandomNumberGenerator) -> Question {
         let candidates = answers.count > 1 ? answers.filter { $0 != previous } : answers
-        let answer = candidates.randomElement(using: &rng)!
+        let answer = weights.isEmpty ? candidates.randomElement(using: &rng)! : candidates.weightedRandom(weights, using: &rng)
         let others = distractors.filter { $0 != answer }.shuffled(using: &rng)
         let count = min(Round.choiceCount(correctCount: correctCount), others.count + 1)
         let choices = ([answer] + others.prefix(count - 1)).shuffled(using: &rng)
@@ -65,6 +67,8 @@ nonisolated struct OddOneOut: QuestionSource {
     }
 
     let groups: (Group, Group)
+    /// Answer pick weights; unlisted items weigh 1. Empty picks evenly.
+    var weights: [QuizItem: Double] = [:]
 
     init(_ a: Group, _ b: Group) {
         groups = (a, b)
@@ -80,12 +84,26 @@ nonisolated struct OddOneOut: QuestionSource {
         }
         let (majority, odd) = fitting.randomElement(using: &rng)!
         let candidates = odd.members.count > 1 ? odd.members.filter { $0 != previous } : odd.members
-        let answer = candidates.randomElement(using: &rng)!
+        let answer = weights.isEmpty ? candidates.randomElement(using: &rng)! : candidates.weightedRandom(weights, using: &rng)
         let others = Array(majority.members.shuffled(using: &rng).prefix(count - 1))
         var facts = [answer: odd.fact(answer)]
         for item in others { facts[item] = majority.fact(item) }
         return Question(prompt: odd.question,
                         choices: (others + [answer]).shuffled(using: &rng),
                         answer: answer, facts: facts)
+    }
+}
+
+nonisolated extension Array where Element == QuizItem {
+    /// A non-empty array's element, chosen in proportion to its weight
+    /// (1 when unlisted).
+    func weightedRandom(_ weights: [QuizItem: Double], using rng: inout some RandomNumberGenerator) -> QuizItem {
+        let total = reduce(0) { $0 + weights[$1, default: 1] }
+        var target = Double.random(in: 0..<total, using: &rng)
+        for item in self {
+            target -= weights[item, default: 1]
+            if target < 0 { return item }
+        }
+        return last!
     }
 }

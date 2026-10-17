@@ -77,6 +77,27 @@ final class ProfileStore {
             .sorted { $0.timestamp < $1.timestamp }
     }
 
+    /// Games where an answer shows whether the child recognizes the item.
+    /// Tracing, sorting, ordering and comparing are left out. Answers with
+    /// no game were recorded before part 2 and are kept.
+    static let recognitionGames: Set<String> = Set([Game.findIt, .listen, .oddOneOut, .comesNext, .whichSeason].map(\.rawValue))
+
+    func progress(for profile: Profile, category: Category) -> ItemProgress {
+        ItemProgress(answers(for: profile, category: category)
+            .filter { $0.gameRaw.map(Self.recognitionGames.contains) ?? true }
+            .map { AnswerFact(itemID: $0.itemID, isCorrect: $0.isCorrect, timestamp: $0.timestamp) })
+    }
+
+    /// Pick weights for the topic's items the child is missing; the rest
+    /// weigh 1. Empty when nothing is being missed.
+    func reviewWeights(for profile: Profile, category: Category) -> [QuizItem: Double] {
+        let progress = progress(for: profile, category: category)
+        return Dictionary(uniqueKeysWithValues: category.quizItems.compactMap { item in
+            let weight = progress.weight(item.id)
+            return weight > 1 ? (item, weight) : nil
+        })
+    }
+
     /// Days per month in a leap year, so February 29 birthdays are allowed.
     static let daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 

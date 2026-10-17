@@ -187,4 +187,53 @@ struct RoundTests {
             #expect(round.current.answer != days[3])
         }
     }
+
+    @Test func weightedPickFavorsLearning() {
+        var weighted = picker
+        weighted.weights = [days[3]: 3]
+        var rng = SeededGenerator(seed: 70)
+        let hits = (0..<2000).filter { _ in weighted.next(correctCount: 0, excluding: nil, using: &rng).answer == days[3] }.count
+        // 3 of 9 shares, against 1 of 7 unweighted.
+        #expect((500...900).contains(hits))
+    }
+
+    @Test func allLearningStillVaries() {
+        var weighted = picker
+        weighted.weights = Dictionary(uniqueKeysWithValues: days.map { ($0, 3.0) })
+        var rng = SeededGenerator(seed: 71)
+        let answers = Set((0..<200).map { _ in weighted.next(correctCount: 0, excluding: nil, using: &rng).answer })
+        #expect(answers.count == days.count)
+    }
+
+    @Test func weightsKeepPreviousRule() {
+        var weighted = picker
+        weighted.weights = [days[0]: 3]
+        var rng = SeededGenerator(seed: 72)
+        for _ in 0..<200 {
+            #expect(weighted.next(correctCount: 0, excluding: days[0], using: &rng).answer != days[0])
+        }
+        var single = QuestionPicker(answers: [days[0]], distractors: days) { $0.name }
+        single.weights = [days[0]: 3]
+        #expect(single.next(correctCount: 0, excluding: days[0], using: &rng).answer == days[0])
+    }
+
+    @Test func emptyWeightsMatchOldPicks() {
+        var a = SeededGenerator(seed: 73), b = SeededGenerator(seed: 73)
+        var unweighted = picker
+        unweighted.weights = [:]
+        for _ in 0..<50 {
+            #expect(picker.next(correctCount: 2, excluding: nil, using: &a) == unweighted.next(correctCount: 2, excluding: nil, using: &b))
+        }
+    }
+
+    @Test func oddOneOutUsesWeights() {
+        guard var source = Category.animals.questionSource(for: .oddOneOut) as? OddOneOut else {
+            Issue.record("not odd one out"); return
+        }
+        let bird = Category.animals.item(LearnAnimal.bird)
+        source.weights = [bird: 50]
+        var rng = SeededGenerator(seed: 74)
+        let hits = (0..<400).filter { _ in source.next(correctCount: 0, excluding: nil, using: &rng).answer == bird }.count
+        #expect(hits > 120)
+    }
 }

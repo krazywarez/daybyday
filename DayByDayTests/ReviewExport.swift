@@ -88,6 +88,18 @@ struct ReviewExport {
             for (d, w) in [(1, LearnWeather.sunny), (2, .cloudy), (5, .rainy), (9, .windy), (12, .snowy), (15, .sunny)] {
                 session.store.addSticker(for: maya, on: DateComponents(year: 2026, month: 10, day: d), weather: w)
             }
+            let days = DayByDay.Category.days.quizItems, months = DayByDay.Category.months.quizItems
+            let t = Date(timeIntervalSince1970: 1_800_000_000)
+            for (i, day) in days.enumerated() {
+                session.store.record(day, correct: true, for: maya, at: t + Double(i) * 300)
+                session.store.record(day, correct: true, for: maya, at: t + 5000 + Double(i) * 300)
+            }
+            for (i, month) in months.enumerated() where i < 5 {
+                session.store.record(month, correct: true, for: maya, at: t + Double(i) * 300)
+                session.store.record(month, correct: true, for: maya, at: t + 5000 + Double(i) * 300)
+            }
+            for month in months[5...7] { session.store.record(month, correct: false, for: maya, at: t + 9000) }
+            session.store.record(DayByDay.Category.alphabet.quizItems[1], correct: false, for: maya, at: t)
             session.profilesChanged()
         }
         var rng = SeededGenerator(seed: 1)
@@ -113,6 +125,7 @@ struct ReviewExport {
             ("calendar", AnyView(StickerCalendarView(profile: session.current, now: DateComponents(calendar: .current, year: 2026, month: 10, day: 16).date!))),
             ("banner", AnyView(TodayBanner().padding())),
             ("picker", AnyView(ProfilePickerView())),
+            ("parent-progress", AnyView(NavigationStack { ChildProgressView(profile: session.profiles[0]) })),
             ("welcome", AnyView(ProfileSetupView())),
             ("finished", AnyView(FinishedView {})),
             ("find-days", AnyView(RoundView(source: DayByDay.Category.days.questionSource(for: .findIt), game: .findIt) { ChoiceTile(item: $0) })),
