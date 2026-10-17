@@ -6,10 +6,12 @@
 import SwiftUI
 
 /// A single large, colorful card representing one day of the week.
-/// Tapping the card plays a bounce animation and speaks the day name aloud.
+/// Tapping the card plays a bounce animation and speaks the day name aloud,
+/// plus the child's day picture when there is one ("It's swim day!").
 struct DayCard: View {
     let day: DayOfWeek
     var isHighlighted = false
+    var picture: DayPictureKind? = nil
     @State private var isTapped = false
 
     private var cardScale: CGFloat {
@@ -21,7 +23,7 @@ struct DayCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(day.color.gradient)
+                .fill(day.color)
                 .shadow(color: day.color.opacity(0.4), radius: 8, y: 4)
 
             VStack(spacing: 16) {
@@ -33,6 +35,17 @@ struct DayCard: View {
                 Text(day.name)
                     .font(.system(size: 32, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
+            }
+        }
+        .overlay(alignment: .topTrailing) {
+            if let picture {
+                Image(systemName: picture.symbol)
+                    .font(.system(size: 30, weight: .bold))
+                    .foregroundStyle(day.color)
+                    .frame(width: 60, height: 60)
+                    .background(Circle().fill(.white))
+                    .padding(14)
+                    .accessibilityHidden(true)
             }
         }
         .overlay {
@@ -48,12 +61,12 @@ struct DayCard: View {
         .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
         .onTapGesture {
             isTapped = true
-            SpeechSynthesizer.shared.speak(day.name)
+            CardVoice.shared.say(picture.map { "\(day.name). It's \($0.name)!" } ?? day.name, after: nil)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 isTapped = false
             }
         }
-        .accessibilityLabel(day.name)
+        .accessibilityLabel(picture.map { "\(day.name), \($0.name)" } ?? day.name)
         .accessibilityAddTraits(.isButton)
     }
 }
@@ -68,7 +81,7 @@ nonisolated enum DayOfWeek: Int, CaseIterable, Identifiable {
     /// The day of the week for today's date.
     static var current: DayOfWeek {
         // Calendar weekday: 1 = Sunday, 7 = Saturday
-        let weekday = Calendar.current.component(.weekday, from: Date())
+        let weekday = AppCalendar.current.component(.weekday, from: Date())
         return DayOfWeek(rawValue: weekday - 1)!
     }
 
@@ -98,16 +111,16 @@ nonisolated enum DayOfWeek: Int, CaseIterable, Identifiable {
         }
     }
 
-    /// Bright, child-friendly colour for each card.
+    /// A color per day, each at least 3:1 against the white icon and name.
     var color: Color {
         switch self {
-        case .sunday:    Color(red: 1.0, green: 0.6, blue: 0.2)   // orange
-        case .monday:    Color(red: 0.35, green: 0.5, blue: 0.9)  // blue
-        case .tuesday:   Color(red: 0.9, green: 0.3, blue: 0.4)   // red-pink
-        case .wednesday: Color(red: 0.3, green: 0.75, blue: 0.45) // green
-        case .thursday:  Color(red: 0.55, green: 0.4, blue: 0.9)  // purple
-        case .friday:    Color(red: 1.0, green: 0.8, blue: 0.2)   // yellow
-        case .saturday:  Color(red: 0.2, green: 0.8, blue: 0.8)   // teal
+        case .sunday:    Color(red: 0.80, green: 0.42, blue: 0.08)  // orange
+        case .monday:    Color(red: 0.25, green: 0.42, blue: 0.85)  // blue
+        case .tuesday:   Color(red: 0.84, green: 0.22, blue: 0.34)  // red-pink
+        case .wednesday: Color(red: 0.18, green: 0.56, blue: 0.28)  // green
+        case .thursday:  Color(red: 0.55, green: 0.4, blue: 0.85)   // purple
+        case .friday:    Color(red: 0.66, green: 0.50, blue: 0.0)   // mustard
+        case .saturday:  Color(red: 0.0, green: 0.53, blue: 0.56)   // teal
         }
     }
 }

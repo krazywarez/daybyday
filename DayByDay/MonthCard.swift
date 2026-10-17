@@ -69,7 +69,7 @@ nonisolated enum MonthOfYear: Int, CaseIterable, Identifiable {
     /// The month for today's date.
     static var current: MonthOfYear {
         // Calendar month: 1 = January, 12 = December
-        let month = Calendar.current.component(.month, from: Date())
+        let month = AppCalendar.current.component(.month, from: Date())
         return MonthOfYear(rawValue: month - 1)!
     }
 

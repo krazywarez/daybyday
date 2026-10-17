@@ -13,7 +13,7 @@ struct TodayView: View {
     private var todayText: String {
         let day = DayOfWeek.current.name
         let month = MonthOfYear.current.name
-        let date = Calendar.current.component(.day, from: Date())
+        let date = AppCalendar.current.component(.day, from: Date())
         let season = Season.current.name
         return "Today is \(day), \(month) \(date). It is \(season)."
     }
@@ -39,7 +39,7 @@ struct TodayView: View {
                             .foregroundStyle(.white)
 
                         // Date number
-                        let dayNumber = Calendar.current.component(.day, from: Date())
+                        let dayNumber = AppCalendar.current.component(.day, from: Date())
                         Text("\(dayNumber)")
                             .font(.system(size: 72, weight: .heavy, design: .rounded))
                             .foregroundStyle(.white.opacity(0.9))

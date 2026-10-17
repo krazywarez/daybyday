@@ -18,9 +18,13 @@ final class ProfileStore {
         self.context = context
     }
 
+    /// Stickers and day pictures were added after the first release as new
+    /// entities only, so earlier stores migrate without a versioned schema.
+    static let modelTypes: [any PersistentModel.Type] = [Profile.self, AnswerRecord.self, Sticker.self, DayPicture.self]
+
     static func makeContainer(inMemory: Bool) -> ModelContainer {
         let config = ModelConfiguration(isStoredInMemoryOnly: inMemory)
-        return try! ModelContainer(for: Profile.self, AnswerRecord.self, configurations: config)
+        return try! ModelContainer(for: Schema(modelTypes), configurations: config)
     }
 
     func all() -> [Profile] {
@@ -51,6 +55,9 @@ final class ProfileStore {
     }
 
     func delete(_ profile: Profile) {
+        let id = profile.id
+        try? context.delete(model: Sticker.self, where: #Predicate { $0.profileID == id })
+        try? context.delete(model: DayPicture.self, where: #Predicate { $0.profileID == id })
         context.delete(profile)
         try? context.save()
     }
@@ -84,5 +91,50 @@ final class ProfileStore {
         guard (1...12).contains(birthday.month),
               (1...daysInMonth[birthday.month - 1]).contains(birthday.day)
         else { throw ProfileError.invalidBirthday }
+    }
+
+    // MARK: - Stickers
+
+    /// Adds the day's sticker, or changes its weather if there is one.
+    func addSticker(for profile: Profile, on date: DateComponents, weather: LearnWeather) {
+        if let existing = sticker(for: profile, on: date) {
+            existing.weatherRaw = weather.rawValue
+        } else {
+            context.insert(Sticker(profileID: profile.id, year: date.year!, month: date.month!,
+                                   day: date.day!, weather: weather))
+        }
+        try? context.save()
+    }
+
+    func sticker(for profile: Profile, on date: DateComponents) -> Sticker? {
+        let id = profile.id, y = date.year!, m = date.month!, d = date.day!
+        let descriptor = FetchDescriptor<Sticker>(predicate: #Predicate {
+            $0.profileID == id && $0.year == y && $0.month == m && $0.day == d
+        })
+        return try? context.fetch(descriptor).first
+    }
+
+    func stickers(for profile: Profile, year: Int, month: Int) -> [Sticker] {
+        let id = profile.id
+        let descriptor = FetchDescriptor<Sticker>(predicate: #Predicate {
+            $0.profileID == id && $0.year == year && $0.month == month
+        }, sortBy: [SortDescriptor(\.day)])
+        return (try? context.fetch(descriptor)) ?? []
+    }
+
+    // MARK: - Day pictures
+
+    /// Sets or, with nil, removes the child's picture for a weekday.
+    func setPicture(_ kind: DayPictureKind?, on weekday: DayOfWeek, for profile: Profile) {
+        let id = profile.id, w = weekday.rawValue
+        try? context.delete(model: DayPicture.self, where: #Predicate { $0.profileID == id && $0.weekdayRaw == w })
+        if let kind { context.insert(DayPicture(profileID: id, weekday: weekday, kind: kind)) }
+        try? context.save()
+    }
+
+    func picture(on weekday: DayOfWeek, for profile: Profile) -> DayPictureKind? {
+        let id = profile.id, w = weekday.rawValue
+        let descriptor = FetchDescriptor<DayPicture>(predicate: #Predicate { $0.profileID == id && $0.weekdayRaw == w })
+        return (try? context.fetch(descriptor).first)?.kind
     }
 }

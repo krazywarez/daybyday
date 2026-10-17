@@ -57,6 +57,14 @@ struct ReviewExport {
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         let container = ProfileStore.makeContainer(inMemory: true)
         let session = ProfileSession(store: ProfileStore(context: container.mainContext))
+        if let maya = try? session.store.create(name: "Maya", avatar: .cat, color: .pink, birthday: (month: 10, day: 30)) {
+            session.store.setPicture(.swim, on: .friday, for: maya)
+            session.store.setPicture(.school, on: .monday, for: maya)
+            for (d, w) in [(1, LearnWeather.sunny), (2, .cloudy), (5, .rainy), (9, .windy), (12, .snowy), (15, .sunny)] {
+                session.store.addSticker(for: maya, on: DateComponents(year: 2026, month: 10, day: d), weather: w)
+            }
+            session.profilesChanged()
+        }
         var rng = SeededGenerator(seed: 1)
         var train = SequencePuzzle.weekTrain(using: &rng)
         for d in [DayOfWeek.sunday, .monday, .tuesday] { _ = train.place(DayByDay.Category.days.item(d)) }
@@ -75,6 +83,10 @@ struct ReviewExport {
             ("moves", AnyView(MovesView())),
             ("weather", AnyView(WeatherView())),
             ("rain", AnyView(RainOverlay(isActive: true).background(Color(.systemBackground)))),
+            ("days", AnyView(DaysOfWeekView())),
+            ("routine", AnyView(TodayRoutineView())),
+            ("calendar", AnyView(StickerCalendarView(profile: session.current, now: DateComponents(calendar: .current, year: 2026, month: 10, day: 16).date!))),
+            ("banner", AnyView(TodayBanner().padding())),
             ("animals", AnyView(AnimalsView())),
             ("alphabet", AnyView(AlphabetView())),
             ("counting", AnyView(CountingView())),

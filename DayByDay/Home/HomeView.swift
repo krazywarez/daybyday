@@ -21,7 +21,7 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     NavigationLink {
-                        TodayView().navigationTitle(Category.today.label)
+                        TodayRoutineView().navigationTitle(Category.today.label)
                     } label: {
                         TodayBanner()
                     }

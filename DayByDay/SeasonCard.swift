@@ -69,7 +69,7 @@ nonisolated enum Season: Int, CaseIterable, Identifiable {
     /// Spring: March–May, Summer: June–August,
     /// Fall: September–November, Winter: December–February.
     static var current: Season {
-        let month = Calendar.current.component(.month, from: Date())
+        let month = AppCalendar.current.component(.month, from: Date())
         switch month {
         case 3...5:  return .spring
         case 6...8:  return .summer

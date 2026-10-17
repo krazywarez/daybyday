@@ -68,6 +68,14 @@ struct ContrastTests {
         #expect(contrast(SortStyle.binFill, .black, .dark) >= 3)
     }
 
+    @Test(arguments: DayOfWeek.allCases) func dayColorAgainstWhite(_ day: DayOfWeek) {
+        #expect(contrast(day.color, .white, .light) >= 3, "\(day)")
+    }
+
+    @Test func stickerFillAgainstWhite() {
+        #expect(contrast(StickerStyle.fill, .white, .light) >= 3)
+    }
+
     @Test func playAgainAgainstWhite() {
         #expect(contrast(RoundStyle.playAgainFill, .white, .light) >= 3)
     }

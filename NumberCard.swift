@@ -70,7 +70,7 @@ nonisolated enum LearnNumber: Int, CaseIterable, Identifiable {
 
     /// Highlight the number matching today's day-of-month if it falls in 1–10.
     static var current: LearnNumber? {
-        let day = Calendar.current.component(.day, from: Date())
+        let day = AppCalendar.current.component(.day, from: Date())
         return LearnNumber(rawValue: day)
     }
 

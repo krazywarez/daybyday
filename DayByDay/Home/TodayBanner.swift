@@ -7,6 +7,10 @@ import SwiftUI
 
 /// The mascot and today's day and date, at the top of home.
 struct TodayBanner: View {
+    @Environment(ProfileSession.self) private var session
+    /// Today's sticker, read when home appears.
+    @State private var sticker: LearnWeather?
+
     static let gradientColors: [Color] = [Color(red: 0.84, green: 0.40, blue: 0.05), Color(red: 0.80, green: 0.45, blue: 0.0)]
 
     var body: some View {
@@ -19,6 +23,12 @@ struct TodayBanner: View {
                 Text(Date.now.formatted(.dateTime.month(.wide).day()))
                     .font(.system(size: 22, weight: .semibold, design: .rounded))
                     .opacity(0.9)
+                if let sticker {
+                    StickerBadge(weather: sticker).frame(width: 56, height: 56)
+                } else {
+                    Text("Tap for your sticker!")
+                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                }
             }
             .foregroundStyle(.white)
             Spacer(minLength: 0)
@@ -32,5 +42,9 @@ struct TodayBanner: View {
         )
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
+        .onAppear {
+            let today = AppCalendar.current.dateComponents([.year, .month, .day], from: .now)
+            sticker = session.current.flatMap { session.store.sticker(for: $0, on: today)?.weather }
+        }
     }
 }

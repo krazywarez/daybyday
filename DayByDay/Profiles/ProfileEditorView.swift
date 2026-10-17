@@ -18,6 +18,7 @@ struct ProfileEditorView: View {
     @State private var month = 1
     @State private var day = 1
     @State private var error: ProfileError?
+    @State private var pictures: [DayOfWeek: DayPictureKind] = [:]
 
     private let avatarColumns = [GridItem(.adaptive(minimum: 64), spacing: 12)]
 
@@ -75,12 +76,30 @@ struct ProfileEditorView: View {
                 .padding(.vertical, 6)
             }
 
+            Section {
+                ForEach(DayOfWeek.allCases) { day in
+                    Picker(day.name, selection: Binding(
+                        get: { pictures[day] },
+                        set: { pictures[day] = $0 }
+                    )) {
+                        Text("None").tag(DayPictureKind?.none)
+                        ForEach(DayPictureKind.allCases) { kind in
+                            Label(kind.name.capitalized, systemImage: kind.symbol).tag(DayPictureKind?.some(kind))
+                        }
+                    }
+                }
+            } header: {
+                Text("Day pictures")
+            } footer: {
+                Text("Shown on that day's card and said in the Today routine, e.g. \"Today is swim day!\"")
+            }
+
             Section("Birthday") {
                 Toggle("Add birthday", isOn: $hasBirthday)
                 if hasBirthday {
                     Picker("Month", selection: $month) {
                         ForEach(1...12, id: \.self) { m in
-                            Text(Calendar.current.monthSymbols[m - 1]).tag(m)
+                            Text(AppCalendar.current.monthSymbols[m - 1]).tag(m)
                         }
                     }
                     Picker("Day", selection: $day) {
@@ -97,6 +116,12 @@ struct ProfileEditorView: View {
                 Button("Save", action: save)
             }
         }
+        .onAppear {
+            guard let profile, pictures.isEmpty else { return }
+            for day in DayOfWeek.allCases {
+                pictures[day] = session.store.picture(on: day, for: profile)
+            }
+        }
         .onChange(of: month) {
             day = min(day, ProfileStore.daysInMonth[month - 1])
         }
@@ -105,10 +130,15 @@ struct ProfileEditorView: View {
     private func save() {
         let birthday = hasBirthday ? (month: month, day: day) : nil
         do {
+            let saved: Profile
             if let profile {
                 try session.store.update(profile, name: name, avatar: avatar, color: color, birthday: birthday)
+                saved = profile
             } else {
-                try session.store.create(name: name, avatar: avatar, color: color, birthday: birthday)
+                saved = try session.store.create(name: name, avatar: avatar, color: color, birthday: birthday)
+            }
+            for day in DayOfWeek.allCases {
+                session.store.setPicture(pictures[day], on: day, for: saved)
             }
             session.profilesChanged()
             dismiss()
