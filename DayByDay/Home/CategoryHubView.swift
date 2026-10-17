@@ -53,7 +53,7 @@ extension Category {
     @ViewBuilder
     var lookAndListenView: some View {
         switch self {
-        case .today:     TodayView()
+        case .today:     TodayRoutineView()
         case .days:      DaysOfWeekView()
         case .months:    MonthsOfYearView()
         case .seasons:   SeasonsView()

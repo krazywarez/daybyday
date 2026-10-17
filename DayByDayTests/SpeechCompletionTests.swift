@@ -117,6 +117,17 @@ struct SpeechCompletionTests {
         speech.library = ClipLibrary.bundled
     }
 
+    /// A line the bundled clips lack would play in the system voice.
+    @Test func uncatalogedLineIsFlagged() {
+        speech.library = ClipLibrary.bundled
+        #expect(speech.missingClipWarning(for: "Super!") == nil)
+        #expect(speech.missingClipWarning(for: "Super! Not in the catalog.")?.contains("Not in the catalog.") == true)
+        #expect(speech.missingClipWarning(for: "") == nil)
+        speech.library = Self.library
+        #expect(speech.missingClipWarning(for: "Gamma.") == nil)
+        speech.library = ClipLibrary.bundled
+    }
+
     @Test func stopDropsClipCompletion() async throws {
         speech.library = Self.library
         var fired = false

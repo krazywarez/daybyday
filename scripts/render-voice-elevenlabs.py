@@ -129,6 +129,9 @@ def main() -> None:
     args = parser.parse_args()
 
     lines = [l for l in args.lines.read_text().splitlines() if l.strip()]
+    unknown = [t for t in args.redo if t not in lines]
+    if unknown:
+        parser.error(f"--redo text not in {args.lines}: {unknown}")
     if args.dry_run:
         for text in lines:
             print(spoken(text))

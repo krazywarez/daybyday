@@ -130,6 +130,9 @@ def main() -> None:
     args = parser.parse_args()
 
     lines = [l for l in args.lines.read_text().splitlines() if l.strip()]
+    unknown = [t for t in args.redo if t not in lines]
+    if unknown:
+        parser.error(f"--redo text not in {args.lines}: {unknown}")
     args.out.mkdir(parents=True, exist_ok=True)
     manifest_path = args.out / "voice-manifest.json"
     old = {e["text"]: e for e in json.loads(manifest_path.read_text())} if manifest_path.exists() else {}

@@ -64,8 +64,8 @@ final class SpeechSynthesizer: NSObject, AVSpeechSynthesizerDelegate, AVAudioPla
     }
 
     func speak(_ text: String, completion: (() -> Void)? = nil) {
-        // Every speak() call is a card tap, so give a gentle tactile bump
-        // alongside the audio. Prepared just before firing for lowest latency.
+        // A gentle tactile bump with every spoken line. Prepared just before
+        // firing for lowest latency.
         haptics.prepare()
         haptics.impactOccurred()
 
@@ -75,6 +75,9 @@ final class SpeechSynthesizer: NSObject, AVSpeechSynthesizerDelegate, AVAudioPla
 
         stop()
 
+        #if DEBUG
+        if let warning = missingClipWarning(for: text) { assertionFailure(warning) }
+        #endif
         if let clips = library?.clips(for: text) {
             queue = clips
             clipCompletion = completion
@@ -89,6 +92,15 @@ final class SpeechSynthesizer: NSObject, AVSpeechSynthesizerDelegate, AVAudioPla
         utterance.preUtteranceDelay = 0
         if let completion { completions[ObjectIdentifier(utterance)] = completion }
         synthesizer.speak(utterance)
+    }
+
+    /// Names the sentences the bundled clips lack. Every spoken line belongs
+    /// in `SpokenLines`; one that is missing plays in the system voice.
+    func missingClipWarning(for text: String) -> String? {
+        guard let library, library === ClipLibrary.bundled else { return nil }
+        let missing = SpokenText.sentences(text).filter { library.clip(for: $0) == nil }
+        guard !missing.isEmpty else { return nil }
+        return "No voice clip for \(missing). Add the line to SpokenLines and render it."
     }
 
     /// Stops clips and speech; neither calls its completion.
