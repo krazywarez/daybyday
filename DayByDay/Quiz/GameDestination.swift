@@ -19,7 +19,9 @@ struct GameDestination: View {
         switch game {
         case .most:
             RoundView(source: category.questionSource(for: game), game: game) { PileTile(item: $0) }
-        case .findIt, .oddOneOut, .listen, .comesNext, .whichSeason:
+        case .dressUp:
+            RoundView(source: category.questionSource(for: game), game: game) { ClothingTile(item: $0) }
+        case .findIt, .oddOneOut, .listen, .comesNext, .whichSeason, .mixColors:
             RoundView(source: category.questionSource(for: game), game: game) { ChoiceTile(item: $0) }
         case .weekTrain:
             SequencePuzzleView(game: game) {
@@ -35,6 +37,12 @@ struct GameDestination: View {
             YearWheelView()
         case .counting:
             CountingView()
+        case .trace:
+            TraceView(category: category)
+        case .sortFood:
+            SortView()
+        case .moves:
+            MovesView()
         }
     }
 }

@@ -14,7 +14,7 @@ struct AnimalCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(animal.color.gradient)
+                .fill(animal.color)
                 .shadow(color: animal.color.opacity(0.4), radius: 8, y: 4)
 
             VStack(spacing: 16) {
@@ -34,7 +34,7 @@ struct AnimalCard: View {
         .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
         .onTapGesture {
             isTapped = true
-            SpeechSynthesizer.shared.speak(animal.name)
+            CardVoice.shared.say(animal.cardLine, after: animal.sound)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 isTapped = false
             }
@@ -81,21 +81,41 @@ nonisolated enum LearnAnimal: Int, CaseIterable, Identifiable {
         }
     }
 
+    /// At least 3:1 against the white icon and name.
     var color: Color {
         switch self {
-        case .cat:       Color(red: 0.9, green: 0.55, blue: 0.2)   // orange
-        case .dog:       Color(red: 0.6, green: 0.45, blue: 0.3)   // brown
-        case .bird:      Color(red: 0.3, green: 0.65, blue: 0.9)   // sky blue
-        case .fish:      Color(red: 0.2, green: 0.75, blue: 0.8)   // teal
-        case .rabbit:    Color(red: 0.75, green: 0.6, blue: 0.8)   // lavender
-        case .turtle:    Color(red: 0.35, green: 0.7, blue: 0.4)   // green
-        case .ladybug:   Color(red: 0.9, green: 0.25, blue: 0.25)  // red
-        case .cow:       Color(red: 0.35, green: 0.38, blue: 0.45) // slate
-        case .duck:      Color(red: 0.95, green: 0.75, blue: 0.2)  // yellow
-        case .sheep:     Color(red: 0.55, green: 0.6, blue: 0.7)   // blue gray
-        case .pig:       Color(red: 0.95, green: 0.5, blue: 0.65)  // pink
+        case .cat:       Color(red: 0.80, green: 0.42, blue: 0.08)  // orange
+        case .dog:       Color(red: 0.55, green: 0.38, blue: 0.22)  // brown
+        case .bird:      Color(red: 0.10, green: 0.48, blue: 0.78)  // sky blue
+        case .fish:      Color(red: 0.0, green: 0.53, blue: 0.56)   // teal
+        case .rabbit:    Color(red: 0.55, green: 0.40, blue: 0.70)  // lavender
+        case .turtle:    Color(red: 0.18, green: 0.56, blue: 0.28)  // green
+        case .ladybug:   Color(red: 0.86, green: 0.20, blue: 0.22)  // red
+        case .cow:       Color(red: 0.35, green: 0.38, blue: 0.45)  // slate
+        case .duck:      Color(red: 0.66, green: 0.50, blue: 0.0)   // mustard
+        case .sheep:     Color(red: 0.40, green: 0.45, blue: 0.55)  // blue gray
+        case .pig:       Color(red: 0.82, green: 0.25, blue: 0.52)  // pink
         }
     }
+
+    var fact: String {
+        switch self {
+        case .cat:     "Cats say meow."
+        case .dog:     "Dogs say woof."
+        case .bird:    "Birds can fly."
+        case .fish:    "Fish swim in water."
+        case .rabbit:  "Rabbits hop."
+        case .turtle:  "Turtles carry their shell."
+        case .ladybug: "Ladybugs have spots."
+        case .cow:     "Cows say moo."
+        case .duck:    "Ducks say quack."
+        case .sheep:   "Sheep say baa."
+        case .pig:     "Pigs say oink."
+        }
+    }
+
+    /// Said when the card is tapped, after the animal's sound.
+    var cardLine: String { "\(name)! \(fact)" }
 
     var canFly: Bool {
         switch self {

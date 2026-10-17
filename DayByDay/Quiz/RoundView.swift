@@ -65,6 +65,10 @@ struct RoundView<Choice: View>: View {
 
                 ProgressDots(filled: round.correctCount, total: Round.length)
 
+                if !round.current.shown.isEmpty {
+                    ShownItems(items: round.current.shown)
+                }
+
                 LazyVGrid(columns: columns, spacing: 24) {
                     ForEach(round.current.choices) { item in
                         Button { tap(item) } label: {
@@ -137,6 +141,30 @@ struct RoundView<Choice: View>: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             if token == speechToken { SpeechSynthesizer.shared.speak(text) }
         }
+    }
+}
+
+/// The items a question is about, above the choices: "red + yellow = ?".
+private struct ShownItems: View {
+    let items: [QuizItem]
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ForEach(Array(items.enumerated()), id: \.offset) { i, item in
+                if i > 0 { sign("+") }
+                ChoiceTile(item: item).frame(width: 90, height: 90)
+            }
+            if items.count > 1 { sign("= ?") }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(items.map(\.name).joined(separator: " and "))
+    }
+
+    private func sign(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 36, weight: .heavy, design: .rounded))
+            .lineLimit(1)
+            .fixedSize()
     }
 }
 

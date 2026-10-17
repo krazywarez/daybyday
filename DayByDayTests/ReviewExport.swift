@@ -67,6 +67,16 @@ struct ReviewExport {
             ("train", AnyView(SequencePuzzleView(game: .weekTrain) { train })),
             ("slots", AnyView(SequencePuzzleView(game: .yesterdayTomorrow) { slots })),
             ("wheel", AnyView(YearWheelView())),
+            ("mix", AnyView(RoundView(source: MixColors(), game: .mixColors) { ChoiceTile(item: $0) })),
+            ("trace-shape", AnyView(TraceView(category: .shapes))),
+            ("trace-letter", AnyView(TraceView(category: .alphabet))),
+            ("dress", AnyView(RoundView(source: DressUp(), game: .dressUp) { ClothingTile(item: $0) })),
+            ("sort", AnyView(SortView())),
+            ("moves", AnyView(MovesView())),
+            ("weather", AnyView(WeatherView())),
+            ("rain", AnyView(RainOverlay(isActive: true).background(Color(.systemBackground)))),
+            ("animals", AnyView(AnimalsView())),
+            ("alphabet", AnyView(AlphabetView())),
             ("counting", AnyView(CountingView())),
             ("piles", AnyView(HStack(spacing: 20) {
                 ForEach([3, 7, 10], id: \.self) { n in

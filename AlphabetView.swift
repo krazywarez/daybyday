@@ -22,6 +22,7 @@ struct AlphabetView: View {
             }
             .padding(32)
         }
+        .onDisappear { CardVoice.shared.cancel() }
     }
 }
 

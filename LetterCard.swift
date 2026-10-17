@@ -14,7 +14,7 @@ struct LetterCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(letter.color.gradient)
+                .fill(letter.color)
                 .shadow(color: letter.color.opacity(0.4), radius: 8, y: 4)
 
             Text(letter.character)
@@ -27,7 +27,7 @@ struct LetterCard: View {
         .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
         .onTapGesture {
             isTapped = true
-            SpeechSynthesizer.shared.speak(letter.spokenName)
+            CardVoice.shared.say(letter.cardLine, after: nil)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 isTapped = false
             }
@@ -63,17 +63,20 @@ nonisolated enum LearnLetter: Int, CaseIterable, Identifiable {
          "sun", "tiger", "umbrella", "van", "web", "fox", "yo-yo", "zebra"][rawValue]
     }
 
-    /// Cycle through 8 bright colors to give variety without unique-per-letter mapping.
+    /// Said when the card is tapped.
+    var cardLine: String { "\(spokenName). \(spokenName) is for \(exampleWord)." }
+
+    /// Cycle through 8 colors, each at least 3:1 against the white letter.
     var color: Color {
         let palette: [Color] = [
-            Color(red: 0.9, green: 0.3, blue: 0.3),   // red
-            Color(red: 1.0, green: 0.55, blue: 0.2),   // orange
-            Color(red: 1.0, green: 0.8, blue: 0.2),    // yellow
-            Color(red: 0.35, green: 0.75, blue: 0.4),   // green
-            Color(red: 0.2, green: 0.65, blue: 0.9),    // blue
+            Color(red: 0.86, green: 0.20, blue: 0.22),  // red
+            Color(red: 0.80, green: 0.42, blue: 0.08),  // orange
+            Color(red: 0.66, green: 0.50, blue: 0.0),   // mustard
+            Color(red: 0.18, green: 0.56, blue: 0.28),  // green
+            Color(red: 0.0, green: 0.42, blue: 0.85),   // blue
             Color(red: 0.55, green: 0.4, blue: 0.85),   // purple
-            Color(red: 0.85, green: 0.4, blue: 0.6),    // pink
-            Color(red: 0.2, green: 0.75, blue: 0.75),   // teal
+            Color(red: 0.82, green: 0.25, blue: 0.52),  // pink
+            Color(red: 0.0, green: 0.53, blue: 0.56),   // teal
         ]
         return palette[rawValue % palette.count]
     }

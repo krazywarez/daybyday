@@ -54,6 +54,20 @@ struct ContrastTests {
         #expect(contrast(TrainStyle.tire, .black, .dark) >= 3)
     }
 
+    @Test(arguments: LearnAnimal.allCases) func animalColorAgainstWhite(_ animal: LearnAnimal) {
+        #expect(contrast(animal.color, .white, .light) >= 3, "\(animal)")
+    }
+
+    @Test(arguments: LearnLetter.allCases) func letterColorAgainstWhite(_ letter: LearnLetter) {
+        #expect(contrast(letter.color, .white, .light) >= 3, "\(letter)")
+    }
+
+    /// Sort bins carry white labels and must stand out on a black page.
+    @Test func sortBinFill() {
+        #expect(contrast(SortStyle.binFill, .white, .light) >= 3)
+        #expect(contrast(SortStyle.binFill, .black, .dark) >= 3)
+    }
+
     @Test func playAgainAgainstWhite() {
         #expect(contrast(RoundStyle.playAgainFill, .white, .light) >= 3)
     }

@@ -14,6 +14,12 @@ struct GameTests {
         #expect(Topic.days.games == [.findIt, .comesNext, .weekTrain, .yesterdayTomorrow])
         #expect(Topic.months.games == [.findIt, .comesNext, .yearWheel])
         #expect(Topic.seasons.games == [.findIt, .whichSeason])
+        #expect(Topic.colors.games == [.findIt, .mixColors])
+        #expect(Topic.shapes.games == [.findIt, .oddOneOut, .trace])
+        #expect(Topic.alphabet.games == [.findIt, .listen, .trace])
+        #expect(Topic.weather.games == [.findIt, .listen, .dressUp])
+        #expect(Topic.food.games == [.findIt, .oddOneOut, .sortFood])
+        #expect(Topic.bodyParts.games == [.findIt, .moves])
         #expect(Topic.numbers.games == [.findIt, .listen, .counting, .most])
     }
 
@@ -28,7 +34,7 @@ struct GameTests {
                 #expect(Set(q.choices).count == q.choices.count, "\(c) \(game)")
                 #expect((3...4).contains(q.choices.count), "\(c) \(game)")
                 #expect(q.answer != previous, "\(c) \(game)")
-                #expect(q.choices.allSatisfy { $0.category == c })
+                #expect(q.choices.allSatisfy { $0.category == c }, "\(c) \(game)")
                 #expect(!q.prompt.isEmpty)
                 previous = q.answer
             }
@@ -119,7 +125,8 @@ struct GameTests {
     @Test func titles() {
         #expect(Game.allCases.map(\.title) == ["Find it!", "Odd one out", "Listen",
                                                 "What comes next?", "Week train", "Yesterday and tomorrow",
-                                                "Year wheel", "Which season?", "Count with me", "Which has the most?"])
+                                                "Year wheel", "Which season?", "Count with me", "Which has the most?",
+                                                "Mix colors", "Trace it", "Dress for the weather", "Fruit or vegetable?", "Move your body"])
     }
 
     /// The prompt names the rule, so only one choice fits it.

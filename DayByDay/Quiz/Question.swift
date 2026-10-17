@@ -11,6 +11,8 @@ nonisolated struct Question: Equatable {
     var sound: SoundEffect? = nil
     /// What to say about a choice when it is tapped by mistake.
     var facts: [QuizItem: String] = [:]
+    /// Items drawn above the choices, e.g. the two paints being mixed.
+    var shown: [QuizItem] = []
 
     func correction(for tapped: QuizItem) -> String {
         if let fact = facts[tapped] { return "\(fact) Try again!" }
