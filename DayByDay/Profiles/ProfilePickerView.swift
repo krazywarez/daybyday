@@ -14,6 +14,9 @@ struct ProfilePickerView: View {
 
     var body: some View {
         ScrollView {
+            MascotView(mood: .waving)
+                .frame(width: 120, height: 120)
+                .padding(.top, 16)
             LazyVGrid(columns: columns, spacing: 28) {
                 ForEach(session.profiles) { profile in
                     Button {
@@ -61,7 +64,7 @@ struct ProfileSetupView: View {
             }
         } else {
             VStack(spacing: 24) {
-                MascotView(mood: .idle)
+                MascotView(mood: .waving)
                     .frame(width: 160, height: 160)
                 Text("Welcome to Day By Day")
                     .font(.system(size: 32, weight: .bold, design: .rounded))

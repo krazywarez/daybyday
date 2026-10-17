@@ -97,4 +97,17 @@ struct ContrastTests {
             #expect(contrast(ChoiceStyle.foodFill, .white, style) >= 3)
         }
     }
+
+    /// Body on the page in both modes; each feature on what it sits on.
+    @Test func mascotContrast() {
+        #expect(contrast(MascotStyle.body, .white, .light) >= 3)
+        #expect(contrast(MascotStyle.body, .black, .dark) >= 3)
+        for style in Self.styles {
+            for feature in [MascotStyle.eyeWhite, MascotStyle.belly, MascotStyle.beak, MascotStyle.ink] {
+                #expect(contrast(feature, MascotStyle.body, style) >= 3, "\(feature) \(style.rawValue)")
+            }
+            #expect(contrast(MascotStyle.ink, MascotStyle.eyeWhite, style) >= 3)
+            #expect(contrast(MascotStyle.ink, MascotStyle.belly, style) >= 3)
+        }
+    }
 }

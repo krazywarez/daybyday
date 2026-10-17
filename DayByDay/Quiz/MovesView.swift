@@ -13,6 +13,7 @@ struct MovesView: View {
     @State private var round: MovesRound
     @State private var praise = PraisePhrases()
     @State private var celebrating = false
+    @State private var mascot = MascotState()
     /// Bumped by each new move and when the screen goes away.
     @State private var generation = 0
 
@@ -25,14 +26,17 @@ struct MovesView: View {
         ZStack {
             if let part = round.current {
                 VStack(spacing: 32) {
-                    Button { start() } label: {
-                        Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
-                            .padding(.horizontal, 28)
-                            .padding(.vertical, 16)
-                            .background(Capsule().fill(Color(.systemGray6)))
+                    HStack(spacing: 12) {
+                        GameMascot(state: $mascot)
+                        Button { start() } label: {
+                            Label("Hear it again", systemImage: "speaker.wave.2.fill")
+                                .font(.system(size: 24, weight: .bold, design: .rounded))
+                                .padding(.horizontal, 28)
+                                .padding(.vertical, 16)
+                                .background(Capsule().fill(Color(.systemGray6)))
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                     Image(systemName: part.symbol)
                         .font(.system(size: 140))
                         .foregroundStyle(.white)
@@ -66,10 +70,12 @@ struct MovesView: View {
         generation += 1
         let gen = generation
         celebrating = false
+        mascot.handle(.prompt(part.command))
         SpeechSynthesizer.shared.speak(part.command) {
             DispatchQueue.main.asyncAfter(deadline: .now() + Self.wait) {
                 guard gen == generation else { return }
                 SoundEngine.shared.play(.success)
+                mascot.handle(.correct)
                 celebrating = true
                 var rng = SystemRandomNumberGenerator()
                 DispatchQueue.main.asyncAfter(deadline: .now() + RoundStyle.speechDelay) {

@@ -53,6 +53,31 @@ struct ReviewExport {
         try png(drawn).write(to: dir.appendingPathComponent("animals-large.png"))
     }
 
+    /// Every mood's still pose at two sizes, then frames from its motion.
+    @Test func mascotPoses() throws {
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let frames: [(MascotMood, Double)] = [(.idle, 3.75), (.asking, 0.11), (.cheering, 0.2), (.waving, 0.175), (.waving, 0.525)]
+        for scheme in [ColorScheme.light, .dark] {
+            let sheet = VStack(alignment: .leading, spacing: 24) {
+                HStack(spacing: 16) {
+                    ForEach(MascotMood.allCases, id: \.self) { OwlCanvas(mood: $0, pose: MascotMotion.still($0)).frame(width: 180, height: 180) }
+                }
+                HStack(spacing: 16) {
+                    ForEach(MascotMood.allCases, id: \.self) { OwlCanvas(mood: $0, pose: MascotMotion.still($0)).frame(width: 64, height: 64) }
+                }
+                HStack(spacing: 16) {
+                    ForEach(Array(frames.enumerated()), id: \.offset) { _, f in
+                        OwlCanvas(mood: f.0, pose: MascotMotion.pose(f.0, at: f.1)).frame(width: 180, height: 180)
+                    }
+                }
+            }
+            .padding(32)
+            .background(Color(.systemBackground))
+            .environment(\.colorScheme, scheme)
+            try png(sheet).write(to: dir.appendingPathComponent("mascot-\(scheme).png"))
+        }
+    }
+
     @Test func games() async throws {
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         let container = ProfileStore.makeContainer(inMemory: true)
@@ -87,6 +112,10 @@ struct ReviewExport {
             ("routine", AnyView(TodayRoutineView())),
             ("calendar", AnyView(StickerCalendarView(profile: session.current, now: DateComponents(calendar: .current, year: 2026, month: 10, day: 16).date!))),
             ("banner", AnyView(TodayBanner().padding())),
+            ("picker", AnyView(ProfilePickerView())),
+            ("welcome", AnyView(ProfileSetupView())),
+            ("finished", AnyView(FinishedView {})),
+            ("find-days", AnyView(RoundView(source: DayByDay.Category.days.questionSource(for: .findIt), game: .findIt) { ChoiceTile(item: $0) })),
             ("animals", AnyView(AnimalsView())),
             ("alphabet", AnyView(AlphabetView())),
             ("counting", AnyView(CountingView())),

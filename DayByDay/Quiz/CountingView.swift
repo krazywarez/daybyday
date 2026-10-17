@@ -10,6 +10,7 @@ struct CountingView: View {
     @State private var round: CountingRound
     @State private var showTotal = false
     @State private var celebrating = false
+    @State private var mascot = MascotState()
     @State private var speechToken = 0
     /// Bumped when the screen goes away, so pending work says nothing.
     @State private var generation = 0
@@ -28,13 +29,13 @@ struct CountingView: View {
                 FinishedView {
                     var rng = SystemRandomNumberGenerator()
                     round = CountingRound(using: &rng)
-                    say(prompt, after: 0.3)
+                    ask(after: 0.3)
                 }
             } else {
                 board
             }
         }
-        .onAppear { say(prompt, after: 0) }
+        .onAppear { ask(after: 0) }
         .onDisappear {
             generation += 1
             speechToken += 1
@@ -47,14 +48,17 @@ struct CountingView: View {
     private var board: some View {
         ScrollView {
             VStack(spacing: 28) {
-                Button { say(prompt, after: 0) } label: {
-                    Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .padding(.horizontal, 28)
-                        .padding(.vertical, 16)
-                        .background(Capsule().fill(Color(.systemGray6)))
+                HStack(spacing: 12) {
+                    GameMascot(state: $mascot)
+                    Button { ask(after: 0) } label: {
+                        Label("Hear it again", systemImage: "speaker.wave.2.fill")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .padding(.horizontal, 28)
+                            .padding(.vertical, 16)
+                            .background(Capsule().fill(Color(.systemGray6)))
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 Text(showTotal ? "\(round.target)" : " ")
                     .font(.system(size: 96, weight: .heavy, design: .rounded))
@@ -106,6 +110,7 @@ struct CountingView: View {
         }
         let summary = round.summary()
         SoundEngine.shared.play(.success)
+        mascot.handle(.correct)
         showTotal = true
         celebrating = true
         say(summary, after: RoundStyle.speechDelay)
@@ -117,8 +122,14 @@ struct CountingView: View {
             showTotal = false
             var rng = SystemRandomNumberGenerator()
             round.nextSet(using: &rng)
-            if !round.isComplete { say(prompt, after: 0) }
+            if !round.isComplete { ask(after: 0) }
         }
+    }
+
+    /// Says the prompt, with the mascot asking.
+    private func ask(after delay: TimeInterval) {
+        mascot.handle(.prompt(prompt, after: delay))
+        say(prompt, after: delay)
     }
 
     private func say(_ text: String, after delay: TimeInterval) {

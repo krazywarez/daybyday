@@ -17,6 +17,7 @@ struct SortView: View {
     @State private var praise = PraisePhrases()
     @State private var celebrating = false
     @State private var shaking = false
+    @State private var mascot = MascotState()
     @State private var speechToken = 0
     /// Bumped when the screen goes away, so pending work does nothing.
     @State private var generation = 0
@@ -36,13 +37,13 @@ struct SortView: View {
                     var rng = SystemRandomNumberGenerator()
                     round = SortRound(using: &rng)
                     finished = false
-                    say(round.prompt, after: 0.3)
+                    ask(after: 0.3)
                 }
             } else {
                 board
             }
         }
-        .onAppear { say(round.prompt, after: 0) }
+        .onAppear { ask(after: 0) }
         .onDisappear {
             generation += 1
             speechToken += 1
@@ -53,14 +54,17 @@ struct SortView: View {
     private var board: some View {
         ScrollView {
             VStack(spacing: 28) {
-                Button { say(round.prompt, after: 0) } label: {
-                    Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .padding(.horizontal, 28)
-                        .padding(.vertical, 16)
-                        .background(Capsule().fill(Color(.systemGray6)))
+                HStack(spacing: 12) {
+                    GameMascot(state: $mascot)
+                    Button { ask(after: 0) } label: {
+                        Label("Hear it again", systemImage: "speaker.wave.2.fill")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .padding(.horizontal, 28)
+                            .padding(.vertical, 16)
+                            .background(Capsule().fill(Color(.systemGray6)))
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 if let food = round.current {
                     let item = Category.food.item(food)
@@ -117,6 +121,7 @@ struct SortView: View {
         switch outcome {
         case .correct:
             SoundEngine.shared.play(.success)
+            mascot.handle(.correct)
             celebrating = true
             var rng = SystemRandomNumberGenerator()
             let text = "\(praise.next(using: &rng)) \(SortRound.fact(for: food)) \(round.prompt ?? "")"
@@ -125,6 +130,7 @@ struct SortView: View {
             }
             guard round.isDone else {
                 say(text, after: RoundStyle.speechDelay)
+                askAfterCheer()
                 break
             }
             // Finish once the last food's line has been said.
@@ -136,6 +142,7 @@ struct SortView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: finish)
         case .incorrect:
             SoundEngine.shared.play(.gentleMiss)
+            mascot.handle(.wrong)
             withAnimation(.default.repeatCount(3)) { shaking = true }
             // Taps stay ignored until the correction has been said.
             let resume = {
@@ -148,6 +155,21 @@ struct SortView: View {
         case .ignored:
             break
         }
+    }
+
+    /// Praise and the next prompt are one line; the owl asks once the cheer is over.
+    private func askAfterCheer() {
+        let ticket = mascot.ticket, gen = generation
+        DispatchQueue.main.asyncAfter(deadline: .now() + mascot.hold) {
+            guard gen == generation, ticket == mascot.ticket, let prompt = round.prompt else { return }
+            mascot.handle(.prompt(prompt))
+        }
+    }
+
+    /// Says the prompt, with the mascot asking.
+    private func ask(after delay: TimeInterval) {
+        mascot.handle(.prompt(round.prompt ?? "", after: delay))
+        say(round.prompt, after: delay)
     }
 
     private func say(_ text: String?, after delay: TimeInterval, then completion: (() -> Void)? = nil) {

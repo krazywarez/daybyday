@@ -16,6 +16,7 @@ struct TraceView: View {
     @State private var index = 0
     @State private var strokes: [[CGPoint]] = []
     @State private var celebrating = false
+    @State private var mascot = MascotState()
     @State private var busy = false
     @State private var speechToken = 0
     /// Bumped when the screen goes away, so pending work does nothing.
@@ -61,6 +62,8 @@ struct TraceView: View {
 
     private func board(_ item: QuizItem) -> some View {
         VStack(spacing: 20) {
+            // Own row: beside both pills it would squeeze their labels on a phone.
+            GameMascot(state: $mascot)
             HStack(spacing: 16) {
                 pill("Hear it again", "speaker.wave.2.fill", action: prompt)
                 pill("Start over", "eraser.fill") { strokes = [] }
@@ -120,6 +123,7 @@ struct TraceView: View {
             busy = true
             celebrating = true
             SoundEngine.shared.play(.success)
+            mascot.handle(.correct)
             passes += 1
             let gen = generation, pass = passes
             let advance = {
@@ -135,6 +139,7 @@ struct TraceView: View {
         } else if score.accuracy < 0.5 && score.coverage > 0.4 {
             record(item, correct: false)
             SoundEngine.shared.play(.gentleMiss)
+            mascot.handle(.wrong)
             strokes = []
             say("Stay on \(label(item)). Let's try again.", after: RoundStyle.speechDelay)
         }
@@ -148,8 +153,10 @@ struct TraceView: View {
 
     private func prompt() {
         guard let item else { return }
-        say(category == .alphabet ? "Trace the letter \(item.name) with your finger."
-                                  : "Trace the \(item.name.lowercased()) with your finger.", after: 0)
+        let text = category == .alphabet ? "Trace the letter \(item.name) with your finger."
+                                         : "Trace the \(item.name.lowercased()) with your finger."
+        mascot.handle(.prompt(text))
+        say(text, after: 0)
     }
 
     private func say(_ text: String, after delay: TimeInterval, then completion: (() -> Void)? = nil) {

@@ -15,6 +15,7 @@ struct SequencePuzzleView: View {
     @State private var puzzle: SequencePuzzle
     @State private var praise = PraisePhrases()
     @State private var dimmed: QuizItem?
+    @State private var mascot = MascotState()
     @State private var celebrating = false
     @State private var finished = false
     @State private var speechToken = 0
@@ -37,13 +38,13 @@ struct SequencePuzzleView: View {
                 FinishedView {
                     puzzle = make()
                     finished = false
-                    say(puzzle.current?.prompt ?? "", after: 0.3)
+                    ask(after: 0.3)
                 }
             } else {
                 board
             }
         }
-        .onAppear { say(puzzle.current?.prompt ?? "", after: 0) }
+        .onAppear { ask(after: 0) }
         .onDisappear {
             generation += 1
             speechToken += 1
@@ -54,14 +55,17 @@ struct SequencePuzzleView: View {
     private var board: some View {
         ScrollView {
             VStack(spacing: 28) {
-                Button { say(puzzle.current?.prompt ?? "", after: 0) } label: {
-                    Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .padding(.horizontal, 28)
-                        .padding(.vertical, 16)
-                        .background(Capsule().fill(Color(.systemGray6)))
+                HStack(spacing: 12) {
+                    GameMascot(state: $mascot)
+                    Button { ask(after: 0) } label: {
+                        Label("Hear it again", systemImage: "speaker.wave.2.fill")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .padding(.horizontal, 28)
+                            .padding(.vertical, 16)
+                            .background(Capsule().fill(Color(.systemGray6)))
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 slots
                     .dropDestination(for: String.self) { ids, _ in
@@ -163,6 +167,7 @@ struct SequencePuzzleView: View {
         case .correct where puzzle.isSolved:
             let sound: SoundEffect = game == .weekTrain ? .whistle : .success
             SoundEngine.shared.play(sound)
+            mascot.handle(.correct)
             celebrating = true
             speechToken += 1
             solves += 1
@@ -181,11 +186,14 @@ struct SequencePuzzleView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: finish)
         case .correct:
             SoundEngine.shared.play(.success)
+            mascot.handle(.correct)
             var rng = SystemRandomNumberGenerator()
             // One utterance: a second speak() would cut the praise off.
             say("\(praise.next(using: &rng)) \(puzzle.current?.prompt ?? "")", after: RoundStyle.speechDelay)
+            askAfterCheer()
         case .incorrect:
             SoundEngine.shared.play(.gentleMiss)
+            mascot.handle(.wrong)
             say(puzzle.correction(), after: RoundStyle.speechDelay)
             withAnimation(.easeOut(duration: 0.2)) { dimmed = item }
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
@@ -195,6 +203,22 @@ struct SequencePuzzleView: View {
         case .ignored:
             break
         }
+    }
+
+    /// Praise and the next prompt are one line; the owl asks once the cheer is over.
+    private func askAfterCheer() {
+        let ticket = mascot.ticket, gen = generation
+        DispatchQueue.main.asyncAfter(deadline: .now() + mascot.hold) {
+            guard gen == generation, ticket == mascot.ticket, let prompt = puzzle.current?.prompt else { return }
+            mascot.handle(.prompt(prompt))
+        }
+    }
+
+    /// Says the current step's prompt, with the mascot asking.
+    private func ask(after delay: TimeInterval) {
+        let prompt = puzzle.current?.prompt ?? ""
+        mascot.handle(.prompt(prompt, after: delay))
+        say(prompt, after: delay)
     }
 
     /// Speaks after `delay` unless something newer was said first.

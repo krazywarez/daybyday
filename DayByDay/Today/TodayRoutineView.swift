@@ -17,6 +17,7 @@ struct TodayRoutineView: View {
     @State private var phase = Phase.line(0)
     @State private var lines: [RoutineScript.Line] = []
     @State private var celebrating = false
+    @State private var mascot = MascotState()
     @State private var speechToken = 0
     /// Bumped when the screen goes away, so pending work does nothing.
     @State private var generation = 0
@@ -35,6 +36,7 @@ struct TodayRoutineView: View {
             case .done:
                 ScrollView {
                     VStack(spacing: 20) {
+                        GameMascot(state: $mascot)
                         StickerCalendarView(profile: session.current)
                             .frame(maxWidth: 560)
                             .padding(.top, 8)
@@ -121,14 +123,17 @@ struct TodayRoutineView: View {
     }
 
     private var hearAgain: some View {
-        Button(action: speakCurrent) {
-            Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
-                .padding(.horizontal, 24)
-                .padding(.vertical, 14)
-                .background(Capsule().fill(Color(.systemGray6)))
+        HStack(spacing: 12) {
+            GameMascot(state: $mascot)
+            Button(action: speakCurrent) {
+                Label("Hear it again", systemImage: "speaker.wave.2.fill")
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 14)
+                    .background(Capsule().fill(Color(.systemGray6)))
+            }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
     }
 
     private func next() {
@@ -139,8 +144,11 @@ struct TodayRoutineView: View {
 
     private func speakCurrent() {
         switch phase {
-        case .line(let i) where i < lines.count: say(lines[i].text)
-        case .weather: say("What's the weather like today?")
+        case .line(0) where !lines.isEmpty:
+            mascot.handle(.greet)
+            say(lines[0].text)
+        case .line(let i) where i < lines.count: ask(lines[i].text)
+        case .weather: ask("What's the weather like today?")
         default: break
         }
     }
@@ -152,6 +160,7 @@ struct TodayRoutineView: View {
             session.store.addSticker(for: profile, on: today, weather: weather)
         }
         SoundEngine.shared.play(.success)
+        mascot.handle(.correct)
         celebrating = true
         phase = .done
         say("It's \(weather.name.lowercased()) today! Here's your sticker!", after: RoundStyle.speechDelay)
@@ -159,6 +168,11 @@ struct TodayRoutineView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             if gen == generation { celebrating = false }
         }
+    }
+
+    private func ask(_ text: String) {
+        mascot.handle(.prompt(text))
+        say(text)
     }
 
     private func say(_ text: String, after delay: TimeInterval = 0) {

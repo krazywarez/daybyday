@@ -22,6 +22,7 @@ struct RoundView<Choice: View>: View {
     @State private var praise = PraisePhrases()
     @State private var celebrating = false
     @State private var dimmed: QuizItem?
+    @State private var mascot = MascotState()
     /// Bumped whenever something new is said, so a delayed prompt that has
     /// been overtaken stays quiet.
     @State private var speechToken = 0
@@ -54,14 +55,19 @@ struct RoundView<Choice: View>: View {
     private var question: some View {
         ScrollView {
             VStack(spacing: 28) {
-                Button(action: speakPrompt) {
-                    Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .padding(.horizontal, 28)
-                        .padding(.vertical, 16)
-                        .background(Capsule().fill(Color(.systemGray6)))
+                HStack(spacing: 12) {
+                    GameMascot(state: $mascot)
+                    Button(action: speakPrompt) {
+                        Label("Hear it again", systemImage: "speaker.wave.2.fill")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .padding(.horizontal, 28)
+                            .padding(.vertical, 16)
+                            .background(Capsule().fill(Color(.systemGray6)))
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 ProgressDots(filled: round.correctCount, total: Round.length)
 
@@ -102,6 +108,7 @@ struct RoundView<Choice: View>: View {
         switch outcome {
         case .correct:
             SoundEngine.shared.play(.success)
+            mascot.handle(.correct)
             var rng = SystemRandomNumberGenerator()
             say(praise.next(using: &rng), after: RoundStyle.speechDelay)
             celebrating = true
@@ -111,6 +118,7 @@ struct RoundView<Choice: View>: View {
             }
         case .incorrect:
             SoundEngine.shared.play(.gentleMiss)
+            mascot.handle(.wrong)
             say(round.current.correction(for: item), after: RoundStyle.speechDelay)
             withAnimation(.easeOut(duration: 0.2)) { dimmed = item }
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
@@ -129,8 +137,11 @@ struct RoundView<Choice: View>: View {
             speechToken += 1
             SpeechSynthesizer.shared.stop()
             SoundEngine.shared.play(sound)
-            say(round.current.prompt, after: SoundEngine.shared.remaining(sound) + 0.2)
+            let delay = SoundEngine.shared.remaining(sound) + 0.2
+            mascot.handle(.prompt(round.current.prompt, after: delay))
+            say(round.current.prompt, after: delay)
         } else {
+            mascot.handle(.prompt(round.current.prompt))
             say(round.current.prompt, after: 0)
         }
     }

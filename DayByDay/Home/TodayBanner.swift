@@ -15,8 +15,11 @@ struct TodayBanner: View {
 
     var body: some View {
         HStack(spacing: 20) {
+            // On white: the orange is too close to the owl's purple.
             MascotView(mood: .idle)
+                .padding(8)
                 .frame(width: 96, height: 96)
+                .background(Circle().fill(.white))
             VStack(alignment: .leading, spacing: 6) {
                 Text("Today is \(DayOfWeek.current.name)!")
                     .font(.system(size: 30, weight: .heavy, design: .rounded))
