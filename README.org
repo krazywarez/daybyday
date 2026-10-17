@@ -15,5 +15,16 @@ as large cards. tap a card to hear it read aloud.
 ios 26 or later. for better audio, download an enhanced voice under
 Settings > Accessibility > Read & Speak > Voices.
 
+* release
+=scripts/take-screenshots.sh= retakes =AppStore/screenshots= on the iPhone 18 Pro Max
+and iPad Pro 13-inch (M5) simulators; the 6.3" set is resized from the 6.9" one.
+
+=scripts/release-ios.sh= archives the app and uploads it to App Store Connect for
+TestFlight, from a clean =main=, signed through the Apple ID in Xcode (Xcode >
+Settings > Accounts). The version is =MARKETING_VERSION=; the build number is the
+commit count, so each upload needs a new commit. =DAYBYDAY_PUBLISH=0= exports the
+=.ipa= to =.build/ios-release= without uploading. Release notes are in
+=AppStore/whats-new.md=.
+
 * license
 0bsd. see LICENSE.

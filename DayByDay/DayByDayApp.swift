@@ -11,11 +11,23 @@ import SwiftUI
 
 @main
 struct DayByDayApp: App {
-    private let container = ProfileStore.makeContainer(inMemory: false)
+    #if DEBUG
+    private let screenshot = ScreenshotScene.requested
+    #endif
+    private let container: ModelContainer
     @State private var session: ProfileSession
 
     init() {
-        _session = State(initialValue: ProfileSession(store: ProfileStore(context: container.mainContext)))
+        #if DEBUG
+        container = ProfileStore.makeContainer(inMemory: screenshot != nil)
+        #else
+        container = ProfileStore.makeContainer(inMemory: false)
+        #endif
+        let session = ProfileSession(store: ProfileStore(context: container.mainContext))
+        #if DEBUG
+        if screenshot != nil { ScreenshotScene.seed(session) }
+        #endif
+        _session = State(initialValue: session)
 
         Task.detached(priority: .background) {
             // Activate the audio session early so the first real tap doesn't block.
@@ -34,9 +46,22 @@ struct DayByDayApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            root
                 .environment(session)
                 .modelContainer(container)
         }
+    }
+
+    @ViewBuilder @MainActor
+    private var root: some View {
+        #if DEBUG
+        if let screenshot {
+            screenshot.view(session)
+        } else {
+            ContentView()
+        }
+        #else
+        ContentView()
+        #endif
     }
 }
