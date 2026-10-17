@@ -61,7 +61,7 @@ struct DayCard: View {
         .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
         .onTapGesture {
             isTapped = true
-            CardVoice.shared.say(picture.map { "\(day.name). It's \($0.name)!" } ?? day.name, after: nil)
+            CardVoice.shared.say(Lines.dayCard(day, picture: picture), after: nil)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 isTapped = false
             }

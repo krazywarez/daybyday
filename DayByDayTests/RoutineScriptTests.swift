@@ -25,6 +25,15 @@ struct RoutineScriptTests {
             "It's October.", "It's Fall.",
         ])
         #expect(script(2026, 10, 16, name: nil).first == "Hi!")
+        let greeting = RoutineScript(date: date(2026, 10, 16), calendar: Self.calendar, name: "Maya",
+                                     birthday: nil, picture: nil).lines[0]
+        #expect(greeting.spoken == "Hi there!")
+        let named = RoutineScript(date: date(2026, 10, 16), calendar: Self.calendar, name: "izzy",
+                                  birthday: nil, picture: nil).lines[0]
+        #expect(named.text == "Hi, izzy!")
+        #expect(named.spoken == "Hi, Izzy!")
+        #expect(RoutineScript(date: date(2026, 10, 16), calendar: Self.calendar, name: "Maya",
+                              birthday: nil, picture: nil).lines[1].spoken == "Today is Friday.")
         let lines = RoutineScript(date: date(2026, 10, 16), calendar: Self.calendar, name: nil,
                                   birthday: nil, picture: nil).lines
         #expect(lines[1].symbol == DayOfWeek.friday.symbol)

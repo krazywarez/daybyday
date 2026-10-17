@@ -12,7 +12,7 @@ struct CategoryHubView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                activity("Look and listen", systemImage: "eye.fill", color: category.color) {
+                activity(Lines.lookAndListen, systemImage: "eye.fill", color: category.color) {
                     category.lookAndListenView
                         .navigationTitle(category.label)
                 }

@@ -128,14 +128,17 @@ nonisolated extension Category {
         case .animals, .food, .shapes, .bodyParts: "the "
         default: ""
         }
-        return QuestionPicker(answers: quizItems) { "Can you find \(article)\($0.name)?" }
+        // Common nouns after an article are lower case ("the cow"); names stay as they are.
+        return QuestionPicker(answers: quizItems) {
+            "Can you find \(article)\(article.isEmpty ? $0.name : $0.name.lowercased())?"
+        }
     }
 
     private var oddOneOut: OddOneOut {
         switch self {
         case .food:
-            OddOneOut(group(LearnFood.allCases.filter(\.isFruit), "Which one is a fruit?") { "\($0.name) is a fruit." },
-                      group(LearnFood.allCases.filter { !$0.isFruit }, "Which one is a vegetable?") { "\($0.name) is a vegetable." })
+            OddOneOut(group(LearnFood.allCases.filter(\.isFruit), "Which one is a fruit?") { SortRound.fact(for: $0.value(LearnFood.self)!) },
+                      group(LearnFood.allCases.filter { !$0.isFruit }, "Which one is a vegetable?") { SortRound.fact(for: $0.value(LearnFood.self)!) })
         case .animals:
             OddOneOut(group(LearnAnimal.allCases.filter(\.canFly), "Which one can fly?") { "\($0.name) can fly." },
                       group(LearnAnimal.allCases.filter { !$0.canFly }, "Which one can't fly?") { "\($0.name) can't fly." })

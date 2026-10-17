@@ -8,8 +8,17 @@ import Foundation
 /// What the Today routine says, line by line, before the weather pick.
 nonisolated struct RoutineScript {
     struct Line: Equatable {
+        /// Shown on the card.
         let text: String
         let symbol: String
+        /// Said aloud; differs from `text` only where the text holds the child's name.
+        let spoken: String
+
+        init(text: String, symbol: String, spoken: String? = nil) {
+            self.text = text
+            self.symbol = symbol
+            self.spoken = spoken ?? text
+        }
     }
 
     let lines: [Line]
@@ -23,7 +32,8 @@ nonisolated struct RoutineScript {
         let month = MonthOfYear(rawValue: parts.month! - 1)!
         let today = weekday(0), yesterday = weekday(-1), tomorrow = weekday(1)
 
-        var lines = [Line(text: name.map { "Hi, \($0)!" } ?? "Hi!", symbol: "sun.max.fill")]
+        var lines = [Line(text: name.map { "Hi, \($0)!" } ?? "Hi!", symbol: "sun.max.fill",
+                          spoken: Lines.greeting(for: name))]
         if let birthday {
             if birthday.month == parts.month, birthday.day == parts.day {
                 lines.append(Line(text: "Today is your birthday! Happy birthday!", symbol: "birthday.cake.fill"))

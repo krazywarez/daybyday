@@ -51,7 +51,7 @@ struct YearWheelView: View {
             .disabled(spinning)
         }
         .padding(24)
-        .onAppear { say("Spin the wheel! Or tap a month.") }
+        .onAppear { say(Lines.spinPrompt) }
         .onDisappear {
             generation += 1
             speechToken += 1

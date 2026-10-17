@@ -110,8 +110,7 @@ struct StickerCalendarView: View {
         }
         .contentShape(Rectangle())
         .onTapGesture {
-            let line = sticker.map { "On \(monthName) \(day), it was \($0.weather.name.lowercased())." }
-                ?? "\(monthName) \(day)."
+            let line = Lines.calendarDay(MonthOfYear(rawValue: grid.month - 1)!, day, weather: sticker?.weather)
             CardVoice.shared.say(line, after: nil)
         }
         .accessibilityLabel(sticker.map { "\(monthName) \(day), \($0.weather.name)" } ?? "\(monthName) \(day)")

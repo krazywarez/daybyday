@@ -33,7 +33,7 @@ struct FinishedView: View {
             speechToken += 1
             let token = speechToken
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                if token == speechToken { SpeechSynthesizer.shared.speak("You did it!") }
+                if token == speechToken { SpeechSynthesizer.shared.speak(Lines.youDidIt) }
             }
         }
         .onDisappear { speechToken += 1 }

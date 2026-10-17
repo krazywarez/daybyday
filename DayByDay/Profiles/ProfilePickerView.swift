@@ -20,7 +20,7 @@ struct ProfilePickerView: View {
             LazyVGrid(columns: columns, spacing: 28) {
                 ForEach(session.profiles) { profile in
                     Button {
-                        SpeechSynthesizer.shared.speak("Hi, \(profile.name)!")
+                        SpeechSynthesizer.shared.speak(Lines.greeting(for: profile.name))
                         session.select(profile)
                     } label: {
                         VStack(spacing: 12) {
@@ -42,7 +42,7 @@ struct ProfilePickerView: View {
                 .foregroundStyle(.secondary)
                 .padding(.bottom, 12)
         }
-        .onAppear { SpeechSynthesizer.shared.speak("Who's playing?") }
+        .onAppear { SpeechSynthesizer.shared.speak(Lines.whoIsPlaying) }
         .sheet(isPresented: $showingParentArea) {
             GatedView(onCancel: { showingParentArea = false }) {
                 ParentAreaView(onDone: { showingParentArea = false })

@@ -53,7 +53,9 @@ These would make the work a failure even if it functions:
 - Large tap targets; works in portrait and landscape on iPhone and iPad.
 - All art and sound is made in code: SwiftUI shapes and SF Symbols for visuals,
   sounds synthesized at runtime (e.g. AVAudioEngine tone/noise generation). No
-  bundled image or audio files beyond the existing app icon.
+  bundled image or audio files beyond the existing app icon, except generated
+  speech clips (`DayByDay/Voice/`, rendered with ElevenLabs under a commercial
+  license; see 2026-10-16-better-voice.md).
 - Every MR that adds or changes art or sound gets a review by a separate
   reviewer agent focused on art and sound quality, before the MR is opened.
 - Repo is on gitbay. One MR per part below, branched from `main`, never pushed

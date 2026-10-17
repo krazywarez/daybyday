@@ -12,6 +12,13 @@ import Testing
 struct ReviewExport {
     let dir = URL(fileURLWithPath: ProcessInfo.processInfo.environment["EXPORT_DIR"] ?? NSTemporaryDirectory())
 
+    /// Every spoken sentence, one per line, for scripts/render-voice.py.
+    @Test func lines() throws {
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        try (SpokenLines.all.sorted().joined(separator: "\n") + "\n")
+            .write(to: dir.appendingPathComponent("lines.txt"), atomically: true, encoding: .utf8)
+    }
+
     @Test func sounds() throws {
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         for effect in SoundEffect.allCases {

@@ -8,7 +8,7 @@ import SwiftUI
 /// The morning routine: a few spoken lines about today, the child picks
 /// today's weather, and a sticker goes on the calendar.
 struct TodayRoutineView: View {
-    static let weathers: [LearnWeather] = [.sunny, .cloudy, .rainy, .snowy, .windy]
+    static let weathers = Lines.stickerWeathers
 
     private enum Phase: Equatable { case line(Int), weather, done }
 
@@ -146,9 +146,9 @@ struct TodayRoutineView: View {
         switch phase {
         case .line(0) where !lines.isEmpty:
             mascot.handle(.greet)
-            say(lines[0].text)
-        case .line(let i) where i < lines.count: ask(lines[i].text)
-        case .weather: ask("What's the weather like today?")
+            say(lines[0].spoken)
+        case .line(let i) where i < lines.count: ask(lines[i].spoken)
+        case .weather: ask(Lines.weatherQuestion)
         default: break
         }
     }
@@ -163,7 +163,7 @@ struct TodayRoutineView: View {
         mascot.handle(.correct)
         celebrating = true
         phase = .done
-        say("It's \(weather.name.lowercased()) today! Here's your sticker!", after: RoundStyle.speechDelay)
+        say(Lines.sticker(weather), after: RoundStyle.speechDelay)
         let gen = generation
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             if gen == generation { celebrating = false }

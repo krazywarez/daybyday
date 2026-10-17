@@ -71,8 +71,7 @@ struct GameTests {
         var rng = SeededGenerator(seed: 24)
         let q = Topic.food.questionSource(for: .oddOneOut).next(correctCount: 0, excluding: nil, using: &rng)
         for item in q.choices {
-            let kind = item.value(LearnFood.self)!.isFruit ? "fruit" : "vegetable"
-            #expect(q.facts[item] == "\(item.name) is a \(kind).")
+            #expect(q.facts[item] == SortRound.fact(for: item.value(LearnFood.self)!))
         }
     }
 
@@ -116,8 +115,9 @@ struct GameTests {
             }
         }
         #expect(prompt(.alphabet, LearnLetter.b) == "Can you find the letter b?")
-        #expect(prompt(.numbers, LearnNumber.three) == "Can you find the number Three?")
-        #expect(prompt(.animals, LearnAnimal.cow) == "Can you find the Cow?")
+        #expect(prompt(.numbers, LearnNumber.three) == "Can you find the number three?")
+        #expect(prompt(.animals, LearnAnimal.cow) == "Can you find the cow?")
+        #expect(prompt(.bodyParts, LearnBodyPart.arms) == "Can you find the arms?")
         #expect(prompt(.days, DayOfWeek.tuesday) == "Can you find Tuesday?")
         #expect(prompt(.colors, LearnColor.red) == "Can you find Red?")
     }
@@ -155,5 +155,21 @@ struct GameTests {
 struct GameSymbolTests {
     @Test(arguments: Game.allCases) func symbolExists(_ game: Game) {
         #expect(UIImage(systemName: game.symbol) != nil)
+    }
+}
+
+struct OddOneOutFoodFactTests {
+    /// Food facts use the same grammar as the sorting game ("Grapes are a fruit.").
+    @Test func foodFactsAreGrammatical() {
+        var rng = SeededGenerator(seed: 77)
+        let grapes = DayByDay.Category.food.item(LearnFood.grapes)
+        var seen = false
+        for i in 0..<500 {
+            let q = DayByDay.Category.food.questionSource(for: .oddOneOut).next(correctCount: i % 5, excluding: nil, using: &rng)
+            guard q.choices.contains(grapes), q.answer != grapes else { continue }
+            #expect(q.correction(for: grapes) == "Grapes are a fruit. Try again!")
+            seen = true
+        }
+        #expect(seen)
     }
 }

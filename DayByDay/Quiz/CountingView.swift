@@ -43,7 +43,7 @@ struct CountingView: View {
         }
     }
 
-    private var prompt: String { "Tap each \(round.thing.singular) to count." }
+    private var prompt: String { Lines.countPrompt(round.thing) }
 
     private var board: some View {
         ScrollView {

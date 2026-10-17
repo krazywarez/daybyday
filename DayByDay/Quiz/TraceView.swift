@@ -35,10 +35,6 @@ struct TraceView: View {
 
     private var item: QuizItem? { index < items.count ? items[index] : nil }
 
-    private func label(_ item: QuizItem) -> String {
-        category == .alphabet ? "the letter \(item.name)" : "the \(item.name.lowercased())"
-    }
-
     var body: some View {
         ZStack {
             if let item {
@@ -92,7 +88,7 @@ struct TraceView: View {
                         .onEnded { _ in check(item, size: size) }
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .accessibilityLabel("Trace \(label(item))")
+                .accessibilityLabel("Trace \(Lines.traceLabel(item))")
             }
             .frame(maxWidth: 520)
         }
@@ -134,14 +130,14 @@ struct TraceView: View {
                 index += 1
                 if self.item != nil { prompt() }
             }
-            say("You traced \(label(item))!", after: RoundStyle.speechDelay, then: advance)
+            say(Lines.traceSuccess(item), after: RoundStyle.speechDelay, then: advance)
             DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: advance)
         } else if score.accuracy < 0.5 && score.coverage > 0.4 {
             record(item, correct: false)
             SoundEngine.shared.play(.gentleMiss)
             mascot.handle(.wrong)
             strokes = []
-            say("Stay on \(label(item)). Let's try again.", after: RoundStyle.speechDelay)
+            say(Lines.traceMiss(item), after: RoundStyle.speechDelay)
         }
     }
 
@@ -153,8 +149,7 @@ struct TraceView: View {
 
     private func prompt() {
         guard let item else { return }
-        let text = category == .alphabet ? "Trace the letter \(item.name) with your finger."
-                                         : "Trace the \(item.name.lowercased()) with your finger."
+        let text = Lines.tracePrompt(item)
         mascot.handle(.prompt(text))
         say(text, after: 0)
     }

@@ -49,7 +49,7 @@ struct WeatherView: View {
         guard !raining else { return }
         raining = true
         SoundEngine.shared.play(.rain)
-        CardVoice.shared.say("It's raining!", after: nil)
+        CardVoice.shared.say(Lines.itsRaining, after: nil)
         let gen = generation
         DispatchQueue.main.asyncAfter(deadline: .now() + RainOverlay.duration) {
             if gen == generation { raining = false }
