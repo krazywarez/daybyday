@@ -16,10 +16,10 @@ struct FinishedView: View {
             MascotView(mood: .cheering)
                 .frame(width: 180, height: 180)
             Text("You did it!")
-                .font(.system(size: 48, weight: .heavy, design: .rounded))
+                .font(.heading(48, weight: .heavy))
             Button(action: onPlayAgain) {
                 Label("Play again", systemImage: "arrow.clockwise")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .font(.heading(28))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 40)
                     .padding(.vertical, 20)

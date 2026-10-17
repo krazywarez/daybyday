@@ -55,7 +55,8 @@ These would make the work a failure even if it functions:
   sounds synthesized at runtime (e.g. AVAudioEngine tone/noise generation). No
   bundled image or audio files beyond the existing app icon, except generated
   speech clips (`DayByDay/Voice/`, rendered with ElevenLabs under a commercial
-  license; see 2026-10-16-better-voice.md).
+  license; see 2026-10-16-better-voice.md) and the Baloo 2 heading font
+  (`DayByDay/Fonts/`, SIL Open Font License).
 - Every MR that adds or changes art or sound gets a review by a separate
   reviewer agent focused on art and sound quality, before the MR is opened.
 - Repo is on gitbay. One MR per part below, branched from `main`, never pushed

@@ -59,7 +59,7 @@ struct RoundView<Choice: View>: View {
                     GameMascot(state: $mascot)
                     Button(action: speakPrompt) {
                         Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .font(.heading(24))
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                             .padding(.horizontal, 28)
@@ -173,7 +173,7 @@ private struct ShownItems: View {
 
     private func sign(_ text: String) -> some View {
         Text(text)
-            .font(.system(size: 36, weight: .heavy, design: .rounded))
+            .font(.heading(36, weight: .heavy))
             .lineLimit(1)
             .fixedSize()
     }

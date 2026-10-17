@@ -24,7 +24,7 @@ struct BodyPartCard: View {
                     .symbolRenderingMode(.hierarchical)
 
                 Text(bodyPart.name)
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.heading(32))
                     .foregroundStyle(.white)
             }
         }

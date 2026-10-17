@@ -24,7 +24,7 @@ struct AnimalCard: View {
                     .foregroundStyle(.white)
 
                 Text(animal.name)
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.heading(32))
                     .foregroundStyle(.white)
             }
         }

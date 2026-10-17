@@ -52,7 +52,7 @@ struct CountingView: View {
                     GameMascot(state: $mascot)
                     Button { ask(after: 0) } label: {
                         Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .font(.heading(24))
                             .padding(.horizontal, 28)
                             .padding(.vertical, 16)
                             .background(Capsule().fill(Color(.systemGray6)))
@@ -61,7 +61,7 @@ struct CountingView: View {
                 }
 
                 Text(showTotal ? "\(round.target)" : " ")
-                    .font(.system(size: 96, weight: .heavy, design: .rounded))
+                    .font(.heading(96, weight: .heavy))
                     .foregroundStyle(color)
                     .frame(height: 110)
                     .accessibilityHidden(!showTotal)
@@ -89,7 +89,7 @@ struct CountingView: View {
             if let order {
                 VStack(spacing: 2) {
                     Image(systemName: round.thing.symbol).font(.system(size: 30))
-                    Text("\(order)").font(.system(size: 34, weight: .heavy, design: .rounded))
+                    Text("\(order)").font(.heading(34, weight: .heavy))
                 }
                 .foregroundStyle(.white)
             } else {

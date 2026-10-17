@@ -26,7 +26,7 @@ struct ProfilePickerView: View {
                         VStack(spacing: 12) {
                             AvatarBadge(avatar: profile.avatar, color: profile.color)
                             Text(profile.name)
-                                .font(.system(size: 26, weight: .bold, design: .rounded))
+                                .font(.heading(26))
                                 .foregroundStyle(.primary)
                         }
                     }
@@ -67,7 +67,7 @@ struct ProfileSetupView: View {
                 MascotView(mood: .waving)
                     .frame(width: 160, height: 160)
                 Text("Welcome to Day By Day")
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.heading(32))
                 Text("Set up a profile for your child.")
                     .font(.system(size: 20, design: .rounded))
                     .foregroundStyle(.secondary)

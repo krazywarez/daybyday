@@ -35,7 +35,7 @@ struct CategoryHubView: View {
                 Image(systemName: systemImage)
                     .font(.system(size: 44))
                 Text(title)
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.heading(32))
                 Spacer(minLength: 0)
             }
             .foregroundStyle(.white)

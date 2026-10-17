@@ -18,6 +18,7 @@ struct DayByDayApp: App {
     @State private var session: ProfileSession
 
     init() {
+        HeadingFont.register()
         #if DEBUG
         container = ProfileStore.makeContainer(inMemory: screenshot != nil)
         #else

@@ -26,11 +26,11 @@ struct NumberCard: View {
 
             VStack(spacing: 10) {
                 Text("\(number.numeral)")
-                    .font(.system(size: 60, weight: .heavy, design: .rounded))
+                    .font(.heading(60, weight: .heavy))
                     .foregroundStyle(.white)
 
                 Text(number.name)
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .font(.heading(28))
                     .foregroundStyle(.white)
 
                 // Dot pattern showing the quantity

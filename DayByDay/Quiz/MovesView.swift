@@ -30,7 +30,7 @@ struct MovesView: View {
                         GameMascot(state: $mascot)
                         Button { start() } label: {
                             Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                                .font(.system(size: 24, weight: .bold, design: .rounded))
+                                .font(.heading(24))
                                 .padding(.horizontal, 28)
                                 .padding(.vertical, 16)
                                 .background(Capsule().fill(Color(.systemGray6)))
@@ -44,7 +44,7 @@ struct MovesView: View {
                         .background(RoundedRectangle(cornerRadius: 40, style: .continuous).fill(Category.bodyParts.color))
                         .accessibilityLabel(part.name)
                     Text(part.command)
-                        .font(.system(size: 30, weight: .heavy, design: .rounded))
+                        .font(.heading(30, weight: .heavy))
                         .multilineTextAlignment(.center)
                 }
                 .padding(24)

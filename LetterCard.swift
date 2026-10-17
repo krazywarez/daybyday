@@ -18,7 +18,7 @@ struct LetterCard: View {
                 .shadow(color: letter.color.opacity(0.4), radius: 8, y: 4)
 
             Text(letter.character)
-                .font(.system(size: 64, weight: .heavy, design: .rounded))
+                .font(.heading(64, weight: .heavy))
                 .foregroundStyle(.white)
         }
         .scaleEffect(isTapped ? 1.12 : 1.0)

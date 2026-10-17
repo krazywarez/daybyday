@@ -16,7 +16,7 @@ struct ClothingTile: View {
                 .font(.system(size: 56))
                 .frame(height: 64)
             Text(item.name)
-                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .font(.heading(24))
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
         }

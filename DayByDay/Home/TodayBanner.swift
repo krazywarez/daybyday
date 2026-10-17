@@ -22,7 +22,7 @@ struct TodayBanner: View {
                 .background(Circle().fill(.white))
             VStack(alignment: .leading, spacing: 6) {
                 Text("Today is \(DayOfWeek.current.name)!")
-                    .font(.system(size: 30, weight: .heavy, design: .rounded))
+                    .font(.heading(30, weight: .heavy))
                 Text(Date.now.formatted(.dateTime.month(.wide).day()))
                     .font(.system(size: 22, weight: .semibold, design: .rounded))
                     .opacity(0.9)
@@ -30,7 +30,7 @@ struct TodayBanner: View {
                     StickerBadge(weather: sticker).frame(width: 56, height: 56)
                 } else {
                     Text("Tap for your sticker!")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                        .font(.heading(18))
                 }
             }
             .foregroundStyle(.white)

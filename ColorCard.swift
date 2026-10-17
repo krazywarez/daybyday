@@ -17,7 +17,7 @@ struct ColorCard: View {
                 .shadow(color: learnColor.color.opacity(0.4), radius: 8, y: 4)
 
             Text(learnColor.name)
-                .font(.system(size: 36, weight: .bold, design: .rounded))
+                .font(.heading(36))
                 .foregroundStyle(.white)
                 .shadow(color: .black.opacity(0.3), radius: 4, y: 2)
         }

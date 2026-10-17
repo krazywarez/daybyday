@@ -99,7 +99,7 @@ struct TraceView: View {
     private func pill(_ title: String, _ symbol: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Label(title, systemImage: symbol)
-                .font(.system(size: 19, weight: .bold, design: .rounded))
+                .font(.heading(19))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .padding(.horizontal, 20)

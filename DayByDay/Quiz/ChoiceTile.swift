@@ -68,13 +68,13 @@ struct ChoiceTile: View {
                 .scaleEffect([.star, .heart].contains(shape) ? 1.15 : 1)
         case .alphabet:
             Text(item.value(LearnLetter.self)!.character)
-                .font(.system(size: 80, weight: .heavy, design: .rounded))
+                .font(.heading(80, weight: .heavy))
                 .foregroundStyle(.white)
         case .numbers:
             let number = item.value(LearnNumber.self)!
             VStack(spacing: 8) {
                 Text("\(number.numeral)")
-                    .font(.system(size: 56, weight: .heavy, design: .rounded))
+                    .font(.heading(56, weight: .heavy))
                 Dots(count: number.numeral)
             }
             .foregroundStyle(.white)
@@ -101,7 +101,7 @@ struct ChoiceTile: View {
                 .font(.system(size: 52))
                 .frame(height: 60)
             Text(item.name)
-                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .font(.heading(26))
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
         }

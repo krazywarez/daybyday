@@ -58,7 +58,7 @@ struct SortView: View {
                     GameMascot(state: $mascot)
                     Button { ask(after: 0) } label: {
                         Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .font(.heading(24))
                             .padding(.horizontal, 28)
                             .padding(.vertical, 16)
                             .background(Capsule().fill(Color(.systemGray6)))
@@ -91,7 +91,7 @@ struct SortView: View {
             VStack(spacing: 8) {
                 Text(isFruit ? "🍎🍌" : "🥕🥦").font(.system(size: 44))
                 Text(isFruit ? "Fruit" : "Vegetables")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .font(.heading(22))
                     .foregroundStyle(.white)
                 Text(contents.map(\.emoji).joined())
                     .font(.system(size: 30))

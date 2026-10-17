@@ -104,7 +104,7 @@ struct CategoryTile: View {
                     .symbolRenderingMode(.hierarchical)
 
                 Text(category.label)
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .font(.heading(24))
                     .foregroundStyle(.white)
             }
             .shadow(color: category.usesGradientBackground ? .black.opacity(0.6) : .clear, radius: 2)

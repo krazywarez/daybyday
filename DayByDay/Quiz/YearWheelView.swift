@@ -41,7 +41,7 @@ struct YearWheelView: View {
                 .frame(maxWidth: 520)
             Button(action: spin) {
                 Label("Spin!", systemImage: "arrow.clockwise.circle.fill")
-                    .font(.system(size: 32, weight: .heavy, design: .rounded))
+                    .font(.heading(32, weight: .heavy))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 48)
                     .padding(.vertical, 22)
@@ -76,7 +76,7 @@ struct YearWheelView: View {
                         .accessibilityLabel(month.name)
                         .accessibilityAddTraits(.isButton)
                     Text(month.name.prefix(3))
-                        .font(.system(size: size * 0.06, weight: .heavy, design: .rounded))
+                        .font(.heading(size * 0.06, weight: .heavy))
                         .foregroundStyle(.white)
                         .offset(y: -size * 0.38)
                         .rotationEffect(.degrees(center))

@@ -59,7 +59,7 @@ struct SequencePuzzleView: View {
                     GameMascot(state: $mascot)
                     Button { ask(after: 0) } label: {
                         Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .font(.heading(24))
                             .padding(.horizontal, 28)
                             .padding(.vertical, 16)
                             .background(Capsule().fill(Color(.systemGray6)))
@@ -105,7 +105,7 @@ struct SequencePuzzleView: View {
                 ForEach(Array(labels.enumerated()), id: \.offset) { i, label in
                     VStack(spacing: 8) {
                         Text(label)
-                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .font(.heading(20))
                             .lineLimit(1)
                             .minimumScaleFactor(0.6)
                         slot(i).frame(height: 130)

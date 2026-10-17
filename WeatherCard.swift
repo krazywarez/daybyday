@@ -24,7 +24,7 @@ struct WeatherCard: View {
                     .symbolRenderingMode(.hierarchical)
 
                 Text(weather.name)
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.heading(32))
                     .foregroundStyle(.white)
             }
         }

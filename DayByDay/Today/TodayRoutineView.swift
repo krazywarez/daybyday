@@ -42,7 +42,7 @@ struct TodayRoutineView: View {
                             .padding(.top, 8)
                         Button { dismiss() } label: {
                             Label("Done", systemImage: "checkmark")
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
+                                .font(.heading(28))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 44)
                                 .padding(.vertical, 20)
@@ -81,7 +81,7 @@ struct TodayRoutineView: View {
                     .font(.system(size: 110))
                     .frame(height: 130)
                 Text(line.text)
-                    .font(.system(size: 32, weight: .heavy, design: .rounded))
+                    .font(.heading(32, weight: .heavy))
                     .multilineTextAlignment(.center)
                     .minimumScaleFactor(0.6)
             }
@@ -127,7 +127,7 @@ struct TodayRoutineView: View {
             GameMascot(state: $mascot)
             Button(action: speakCurrent) {
                 Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .font(.heading(22))
                     .padding(.horizontal, 24)
                     .padding(.vertical, 14)
                     .background(Capsule().fill(Color(.systemGray6)))

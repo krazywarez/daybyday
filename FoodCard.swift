@@ -23,7 +23,7 @@ struct FoodCard: View {
                     .font(.system(size: 72))
 
                 Text(food.name)
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .font(.heading(28))
                     .foregroundStyle(.white)
             }
         }

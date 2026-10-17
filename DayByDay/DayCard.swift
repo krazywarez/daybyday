@@ -33,7 +33,7 @@ struct DayCard: View {
                     .symbolRenderingMode(.hierarchical)
 
                 Text(day.name)
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.heading(32))
                     .foregroundStyle(.white)
             }
         }

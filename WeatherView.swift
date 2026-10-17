@@ -20,7 +20,7 @@ struct WeatherView: View {
         ScrollView {
             Button(action: rain) {
                 Label("Shake for rain!", systemImage: "cloud.rain.fill")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .font(.heading(22))
                     .padding(.horizontal, 24)
                     .padding(.vertical, 14)
                     .background(Capsule().fill(Color(.systemGray6)))

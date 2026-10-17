@@ -62,7 +62,7 @@ struct StickerCalendarView: View {
                 arrow("chevron.left", label: "Earlier month") { grid = grid.shifted(by: -1) }
                 Spacer()
                 Text(verbatim: "\(monthName) \(grid.year)")
-                    .font(.system(size: 28, weight: .heavy, design: .rounded))
+                    .font(.heading(28, weight: .heavy))
                 Spacer()
                 arrow("chevron.right", label: "Later month") { grid = grid.shifted(by: 1) }
                     .disabled(!canGoLater)
@@ -70,7 +70,7 @@ struct StickerCalendarView: View {
             }
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 7), spacing: 6) {
                 ForEach(Array(["S", "M", "T", "W", "T", "F", "S"].enumerated()), id: \.offset) { _, d in
-                    Text(d).font(.system(size: 16, weight: .bold, design: .rounded)).foregroundStyle(.primary)
+                    Text(d).font(.heading(16)).foregroundStyle(.primary)
                 }
                 ForEach(Array(grid.cells.enumerated()), id: \.offset) { _, day in
                     if let day {
@@ -93,7 +93,7 @@ struct StickerCalendarView: View {
                     .overlay(alignment: .bottomTrailing) {
                         // Keep the date readable on a stickered day.
                         Text("\(day)")
-                            .font(.system(size: 11, weight: .bold, design: .rounded))
+                            .font(.heading(11))
                             .padding(3)
                             .background(Circle().fill(Color(.systemBackground)))
                     }
