@@ -101,9 +101,7 @@ struct ChoiceTile: View {
                 .font(.system(size: 52))
                 .frame(height: 60)
             Text(item.name)
-                .font(.heading(26))
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
+                .font(.heading(22))
         }
         .foregroundStyle(.white)
     }

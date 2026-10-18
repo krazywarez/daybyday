@@ -13,13 +13,12 @@ struct ColorCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(learnColor.color.gradient)
+                .fill(learnColor.color)
                 .shadow(color: learnColor.color.opacity(0.4), radius: 8, y: 4)
 
             Text(learnColor.name)
                 .font(.heading(36))
-                .foregroundStyle(.white)
-                .shadow(color: .black.opacity(0.3), radius: 4, y: 2)
+                .foregroundStyle(learnColor.labelColor)
         }
         .scaleEffect(isTapped ? 1.12 : 1.0)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
@@ -32,6 +31,7 @@ struct ColorCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(learnColor.name)
         .accessibilityAddTraits(.isButton)
     }
@@ -71,6 +71,14 @@ nonisolated enum LearnColor: Int, CaseIterable, Identifiable {
         case .brown:  Color(red: 0.55, green: 0.35, blue: 0.2)
         case .black:  Color(red: 0.15, green: 0.15, blue: 0.15)
         case .white:  Color(red: 0.92, green: 0.92, blue: 0.92)
+        }
+    }
+
+    /// White or black, whichever is at least 3:1 on the color.
+    var labelColor: Color {
+        switch self {
+        case .orange, .yellow, .green, .pink, .white: .black
+        default: .white
         }
     }
 }

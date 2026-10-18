@@ -21,8 +21,10 @@ struct SeasonCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(season.color.gradient)
+                .fill(season.color)
                 .shadow(color: season.color.opacity(0.4), radius: 8, y: 4)
+                // Glow on the card only: on the label it would lower the contrast.
+                .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
 
             VStack(spacing: 16) {
                 Image(systemName: season.symbol)
@@ -34,6 +36,7 @@ struct SeasonCard: View {
                     .font(.heading(32))
                     .foregroundStyle(.white)
             }
+            .padding(16)
         }
         .overlay {
             if isHighlighted {
@@ -41,7 +44,6 @@ struct SeasonCard: View {
                     .strokeBorder(.white, lineWidth: 5)
             }
         }
-        .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
         .scaleEffect(cardScale)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
         .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
@@ -53,6 +55,7 @@ struct SeasonCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(season.name)
         .accessibilityAddTraits(.isButton)
     }
@@ -98,10 +101,10 @@ nonisolated enum Season: Int, CaseIterable, Identifiable {
 
     var color: Color {
         switch self {
-        case .spring: Color(red: 0.45, green: 0.8, blue: 0.5)   // fresh green
-        case .summer: Color(red: 1.0, green: 0.6, blue: 0.15)   // sunny orange
-        case .fall:   Color(red: 0.85, green: 0.45, blue: 0.2)  // autumn orange
-        case .winter: Color(red: 0.4, green: 0.65, blue: 0.95)  // cool blue
+        case .spring: Color(red: 0.35, green: 0.61, blue: 0.38)   // fresh green
+        case .summer: Color(red: 0.79, green: 0.47, blue: 0.12)   // sunny orange
+        case .fall:   Color(red: 0.84, green: 0.45, blue: 0.2)  // autumn orange
+        case .winter: Color(red: 0.35, green: 0.56, blue: 0.82)  // cool blue
         }
     }
 }

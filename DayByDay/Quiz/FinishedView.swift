@@ -12,22 +12,24 @@ struct FinishedView: View {
     @State private var speechToken = 0
 
     var body: some View {
-        VStack(spacing: 28) {
-            MascotView(mood: .cheering)
-                .frame(width: 180, height: 180)
-            Text("You did it!")
-                .font(.heading(48, weight: .heavy))
-            Button(action: onPlayAgain) {
-                Label("Play again", systemImage: "arrow.clockwise")
-                    .font(.heading(28))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 40)
-                    .padding(.vertical, 20)
-                    .background(Capsule().fill(RoundStyle.playAgainFill))
+        CenteredScrollView {
+            VStack(spacing: 28) {
+                MascotView(mood: .cheering)
+                    .frame(width: 180, height: 180)
+                Text("You did it!")
+                    .font(.heading(48, weight: .heavy))
+                Button(action: onPlayAgain) {
+                    Label("Play again", systemImage: "arrow.clockwise")
+                        .font(.heading(28))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 40)
+                        .padding(.vertical, 20)
+                        .background(Capsule().fill(RoundStyle.playAgainFill))
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
+            .padding(32)
         }
-        .padding(32)
         .onAppear {
             SoundEngine.shared.play(.roundComplete)
             speechToken += 1

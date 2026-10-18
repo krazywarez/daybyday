@@ -14,7 +14,7 @@ struct ShapeCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(shape.color.gradient)
+                .fill(shape.color)
                 .shadow(color: shape.color.opacity(0.4), radius: 8, y: 4)
 
             VStack(spacing: 16) {
@@ -26,6 +26,7 @@ struct ShapeCard: View {
                     .font(.heading(32))
                     .foregroundStyle(.white)
             }
+            .padding(16)
         }
         .scaleEffect(isTapped ? 1.12 : 1.0)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
@@ -38,6 +39,7 @@ struct ShapeCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(shape.name)
         .accessibilityAddTraits(.isButton)
     }
@@ -106,12 +108,12 @@ nonisolated enum LearnShape: Int, CaseIterable, Identifiable {
         switch self {
         case .circle:    Color(red: 0.9, green: 0.3, blue: 0.3)   // red
         case .square:    Color(red: 0.3, green: 0.5, blue: 0.9)   // blue
-        case .triangle:  Color(red: 0.35, green: 0.75, blue: 0.45) // green
-        case .star:      Color(red: 1.0, green: 0.75, blue: 0.15)  // gold
+        case .triangle:  Color(red: 0.29, green: 0.62, blue: 0.38) // green
+        case .star:      Color(red: 0.7, green: 0.52, blue: 0.11)  // gold
         case .heart:     Color(red: 0.9, green: 0.35, blue: 0.5)   // pink
         case .oval:      Color(red: 0.55, green: 0.4, blue: 0.85)  // purple
-        case .diamond:   Color(red: 0.2, green: 0.75, blue: 0.8)   // teal
-        case .rectangle: Color(red: 1.0, green: 0.55, blue: 0.2)   // orange
+        case .diamond:   Color(red: 0.16, green: 0.6, blue: 0.64)   // teal
+        case .rectangle: Color(red: 0.83, green: 0.45, blue: 0.16)   // orange
         }
     }
 }

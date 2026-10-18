@@ -27,6 +27,7 @@ struct AnimalCard: View {
                     .font(.heading(32))
                     .foregroundStyle(.white)
             }
+            .padding(16)
         }
         .scaleEffect(isTapped ? 1.12 : 1.0)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
@@ -39,6 +40,7 @@ struct AnimalCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(animal.name)
         .accessibilityAddTraits(.isButton)
     }

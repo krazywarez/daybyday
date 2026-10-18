@@ -32,6 +32,7 @@ struct LetterCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(letter.spokenName)
         .accessibilityAddTraits(.isButton)
     }

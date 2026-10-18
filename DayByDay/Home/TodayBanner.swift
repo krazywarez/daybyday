@@ -8,13 +8,17 @@ import SwiftUI
 /// The mascot and today's day and date, at the top of home.
 struct TodayBanner: View {
     @Environment(ProfileSession.self) private var session
+    @Environment(\.dynamicTypeSize) private var typeSize
     /// Today's sticker, read when home appears.
     @State private var sticker: LearnWeather?
 
     static let gradientColors: [Color] = [Color(red: 0.84, green: 0.40, blue: 0.05), Color(red: 0.80, green: 0.45, blue: 0.0)]
 
     var body: some View {
-        HStack(spacing: 20) {
+        // The mascot goes above the words at the accessibility text sizes.
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 16)) : AnyLayout(HStackLayout(spacing: 20))
+        return layout {
             // On white: the orange is too close to the owl's purple.
             MascotView(mood: .idle)
                 .padding(8)
@@ -24,13 +28,12 @@ struct TodayBanner: View {
                 Text("Today is \(DayOfWeek.current.name)!")
                     .font(.heading(30, weight: .heavy))
                 Text(Date.now.formatted(.dateTime.month(.wide).day()))
-                    .font(.system(size: 22, weight: .semibold, design: .rounded))
-                    .opacity(0.9)
+                    .font(.system(.title2, design: .rounded, weight: .bold))
                 if let sticker {
                     StickerBadge(weather: sticker).frame(width: 56, height: 56)
                 } else {
                     Text("Tap for your sticker!")
-                        .font(.heading(18))
+                        .font(.heading(20))
                 }
             }
             .foregroundStyle(.white)

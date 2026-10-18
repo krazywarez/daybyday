@@ -16,7 +16,7 @@ struct FoodView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(LearnFood.allCases) { food in
                     FoodCard(food: food)
-                        .frame(height: 200)
+                        .frame(minHeight: 200)
                 }
             }
             .padding(32)

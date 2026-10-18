@@ -75,12 +75,14 @@ struct YearWheelView: View {
                         }
                         .accessibilityLabel(month.name)
                         .accessibilityAddTraits(.isButton)
+                    // Part of the picture: sized to the wedge, not the text size.
                     Text(month.name.prefix(3))
-                        .font(.heading(size * 0.06, weight: .heavy))
+                        .font(.custom(HeadingFont.extraBold, fixedSize: size * 0.06))
                         .foregroundStyle(.white)
                         .offset(y: -size * 0.38)
                         .rotationEffect(.degrees(center))
                         .allowsHitTesting(false)
+                        .accessibilityHidden(true)
                 }
                 Circle()
                     .fill(Color(.systemBackground))

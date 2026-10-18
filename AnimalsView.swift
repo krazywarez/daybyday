@@ -17,7 +17,7 @@ struct AnimalsView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(LearnAnimal.allCases) { animal in
                     AnimalCard(animal: animal)
-                        .frame(height: 200)
+                        .frame(minHeight: 200)
                 }
             }
             .padding(32)

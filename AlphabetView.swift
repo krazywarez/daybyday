@@ -17,7 +17,7 @@ struct AlphabetView: View {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(LearnLetter.allCases) { letter in
                     LetterCard(letter: letter)
-                        .frame(height: 160)
+                        .frame(minHeight: 160)
                 }
             }
             .padding(32)

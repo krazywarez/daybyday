@@ -30,7 +30,11 @@ struct ParentAreaView: View {
                     NavigationLink {
                         ProfileEditorView(profile: nil)
                     } label: {
-                        Label("Add a child", systemImage: "plus.circle.fill")
+                        HStack(spacing: 14) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundStyle(Color.accentColor)
+                            Text("Add a child")
+                        }
                     }
                 }
                 if !session.profiles.isEmpty {
@@ -78,7 +82,7 @@ private struct ProfileRow: View {
             AvatarBadge(avatar: profile.avatar, color: profile.color)
                 .frame(width: 44, height: 44)
             Text(profile.name)
-                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                .font(.system(.title3, design: .rounded, weight: .semibold))
         }
     }
 }

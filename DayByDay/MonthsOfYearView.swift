@@ -17,7 +17,7 @@ struct MonthsOfYearView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(MonthOfYear.allCases) { month in
                     MonthCard(month: month, isHighlighted: month == .current)
-                        .frame(height: 200)
+                        .frame(minHeight: 200)
                 }
             }
             .padding(32)

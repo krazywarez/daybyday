@@ -17,7 +17,7 @@ struct ColorsView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(LearnColor.allCases) { color in
                     ColorCard(learnColor: color)
-                        .frame(height: 200)
+                        .frame(minHeight: 200)
                 }
             }
             .padding(32)

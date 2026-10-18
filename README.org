@@ -18,6 +18,12 @@ Settings > Accessibility > Read & Speak > Voices.
 * release
 =scripts/take-screenshots.sh= retakes =AppStore/screenshots= on the iPhone 18 Pro Max
 and iPad Pro 13-inch (M5) simulators; the 6.3" set is resized from the 6.9" one.
+=TEXT_SIZE=accessibility-extra-extra-extra-large scripts/take-screenshots.sh= takes
+the same set at the largest text size, into
+=AppStore/screenshots-accessibility-extra-extra-extra-large=.
+
+The =DayByDayUITests= target opens every screen by its VoiceOver labels and runs
+Xcode's accessibility audit on it, at the default and the largest text size.
 
 =scripts/release-ios.sh= archives the app and uploads it to App Store Connect for
 TestFlight, from a clean =main=, signed through the Apple ID in Xcode (Xcode >

@@ -14,6 +14,8 @@ struct CountingView: View {
     @State private var speechToken = 0
     /// Bumped when the screen goes away, so pending work says nothing.
     @State private var generation = 0
+    @ScaledMetric(relativeTo: .largeTitle) private var totalHeight = 110
+    @ScaledMetric(relativeTo: .largeTitle) private var objectHeight = 104
 
     private let columns = [GridItem(.adaptive(minimum: 96, maximum: 140), spacing: 16)]
     private let color = Category.numbers.color
@@ -48,22 +50,12 @@ struct CountingView: View {
     private var board: some View {
         ScrollView {
             VStack(spacing: 28) {
-                HStack(spacing: 12) {
-                    GameMascot(state: $mascot)
-                    Button { ask(after: 0) } label: {
-                        Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                            .font(.heading(24))
-                            .padding(.horizontal, 28)
-                            .padding(.vertical, 16)
-                            .background(Capsule().fill(Color(.systemGray6)))
-                    }
-                    .buttonStyle(.plain)
-                }
+                PromptBar(mascot: $mascot, prompt: prompt) { ask(after: 0) }
 
                 Text(showTotal ? "\(round.target)" : " ")
                     .font(.heading(96, weight: .heavy))
                     .foregroundStyle(color)
-                    .frame(height: 110)
+                    .frame(height: totalHeight)
                     .accessibilityHidden(!showTotal)
 
                 LazyVGrid(columns: columns, spacing: 16) {
@@ -71,6 +63,7 @@ struct CountingView: View {
                         Button { tap(i) } label: { object(i) }
                             .buttonStyle(.plain)
                             .accessibilityLabel(round.thing.singular)
+                            .accessibilityValue(round.counted.firstIndex(of: i).map { "\($0 + 1)" } ?? "")
                     }
                 }
             }
@@ -98,7 +91,7 @@ struct CountingView: View {
                     .foregroundStyle(color)
             }
         }
-        .frame(height: 104)
+        .frame(height: objectHeight)
         .contentShape(shape)
     }
 

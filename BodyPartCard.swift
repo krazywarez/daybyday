@@ -14,7 +14,7 @@ struct BodyPartCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(bodyPart.color.gradient)
+                .fill(bodyPart.color)
                 .shadow(color: bodyPart.color.opacity(0.4), radius: 8, y: 4)
 
             VStack(spacing: 16) {
@@ -27,6 +27,7 @@ struct BodyPartCard: View {
                     .font(.heading(32))
                     .foregroundStyle(.white)
             }
+            .padding(16)
         }
         .scaleEffect(isTapped ? 1.12 : 1.0)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
@@ -39,6 +40,7 @@ struct BodyPartCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(bodyPart.name)
         .accessibilityAddTraits(.isButton)
     }
@@ -87,18 +89,18 @@ nonisolated enum LearnBodyPart: Int, CaseIterable, Identifiable {
 
     var color: Color {
         switch self {
-        case .head:    Color(red: 0.9, green: 0.5, blue: 0.3)    // warm orange
-        case .eyes:    Color(red: 0.3, green: 0.65, blue: 0.9)   // blue
+        case .head:    Color(red: 0.82, green: 0.46, blue: 0.27)    // warm orange
+        case .eyes:    Color(red: 0.26, green: 0.58, blue: 0.8)   // blue
         case .ears:    Color(red: 0.6, green: 0.45, blue: 0.85)  // purple
-        case .nose:    Color(red: 0.9, green: 0.4, blue: 0.5)    // rose
+        case .nose:    Color(red: 0.88, green: 0.39, blue: 0.49)    // rose
         case .mouth:   Color(red: 0.9, green: 0.3, blue: 0.35)   // red
-        case .hands:   Color(red: 0.95, green: 0.7, blue: 0.3)   // golden
-        case .fingers: Color(red: 0.35, green: 0.75, blue: 0.5)  // green
-        case .arms:    Color(red: 0.25, green: 0.7, blue: 0.7)   // teal
+        case .hands:   Color(red: 0.71, green: 0.52, blue: 0.22)   // golden
+        case .fingers: Color(red: 0.28, green: 0.61, blue: 0.41)  // green
+        case .arms:    Color(red: 0.21, green: 0.61, blue: 0.61)   // teal
         case .legs:    Color(red: 0.5, green: 0.4, blue: 0.8)    // indigo
         case .feet:    Color(red: 0.7, green: 0.5, blue: 0.3)    // brown
         case .heart:   Color(red: 0.85, green: 0.3, blue: 0.45)  // deep pink
-        case .belly:   Color(red: 1.0, green: 0.6, blue: 0.4)    // peach
+        case .belly:   Color(red: 0.79, green: 0.47, blue: 0.32)    // peach
         }
     }
 }

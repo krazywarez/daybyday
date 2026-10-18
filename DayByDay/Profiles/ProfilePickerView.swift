@@ -37,10 +37,15 @@ struct ProfilePickerView: View {
             .padding(32)
         }
         .safeAreaInset(edge: .bottom) {
-            Button("Grown-Ups") { showingParentArea = true }
-                .font(.system(size: 16, weight: .medium, design: .rounded))
-                .foregroundStyle(.secondary)
-                .padding(.bottom, 12)
+            Button { showingParentArea = true } label: {
+                Text("Grown-Ups")
+                    .padding(.horizontal, 20)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
+            }
+            .font(.system(.callout, design: .rounded, weight: .medium))
+            .foregroundStyle(.primary)
+            .padding(.bottom, 4)
         }
         .onAppear { SpeechSynthesizer.shared.speak(Lines.whoIsPlaying) }
         .sheet(isPresented: $showingParentArea) {
@@ -63,20 +68,21 @@ struct ProfileSetupView: View {
                 }
             }
         } else {
-            VStack(spacing: 24) {
-                MascotView(mood: .waving)
-                    .frame(width: 160, height: 160)
-                Text("Welcome to Day By Day")
-                    .font(.heading(32))
-                Text("Set up a profile for your child.")
-                    .font(.system(size: 20, design: .rounded))
-                    .foregroundStyle(.secondary)
-                Button("Get Started") { started = true }
-                    .buttonStyle(.borderedProminent)
-                    .font(.system(size: 22, weight: .semibold, design: .rounded))
+            CenteredScrollView {
+                VStack(spacing: 24) {
+                    MascotView(mood: .waving)
+                        .frame(width: 160, height: 160)
+                    Text("Welcome to Day By Day")
+                        .font(.heading(32))
+                    Text("Set up a profile for your child.")
+                        .font(.system(.title3, design: .rounded))
+                    Button("Get Started") { started = true }
+                        .buttonStyle(.borderedProminent)
+                        .font(.system(.title2, design: .rounded, weight: .semibold))
+                }
+                .padding(40)
+                .multilineTextAlignment(.center)
             }
-            .padding(40)
-            .multilineTextAlignment(.center)
         }
     }
 }

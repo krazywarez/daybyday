@@ -22,22 +22,25 @@ struct ParentGateView: View {
     }
 
     var body: some View {
-        VStack(spacing: 32) {
-            Text("For Grown-Ups")
-                .font(.system(size: 32, weight: .bold, design: .rounded))
+        CenteredScrollView {
+            VStack(spacing: 32) {
+                Text("For Grown-Ups")
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
 
-            if held {
-                sumStep
-            } else {
-                holdStep
+                if held {
+                    sumStep
+                } else {
+                    holdStep
+                }
+
+                Button("Cancel", action: onCancel)
+                    .font(.system(.body, design: .rounded, weight: .medium))
+                    .foregroundStyle(.primary)
             }
-
-            Button("Cancel", action: onCancel)
-                .font(.system(size: 18, weight: .medium, design: .rounded))
-                .foregroundStyle(.secondary)
+            .padding(40)
+            .frame(maxWidth: 520)
+            .multilineTextAlignment(.center)
         }
-        .padding(40)
-        .frame(maxWidth: 520)
     }
 
     private var holdStep: some View {
@@ -67,28 +70,33 @@ struct ParentGateView: View {
             }
             .accessibilityLabel("Hold for grown-ups")
             .accessibilityAddTraits(.isButton)
+            // Assistive technologies skip the hold; the sum still keeps children out.
+            .accessibilityAction {
+                held = true
+                fieldFocused = true
+            }
 
             Text("Press and hold")
-                .font(.system(size: 18, design: .rounded))
-                .foregroundStyle(.secondary)
+                .font(.system(.body, design: .rounded))
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
     private var sumStep: some View {
         VStack(spacing: 20) {
             Text("What is \(challenge.a) + \(challenge.b)?")
-                .font(.system(size: 26, weight: .semibold, design: .rounded))
+                .font(.system(.title, design: .rounded, weight: .semibold))
             TextField("Answer", text: $input)
                 .keyboardType(.numberPad)
                 .focused($fieldFocused)
                 .multilineTextAlignment(.center)
-                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .font(.system(.title, design: .rounded, weight: .bold))
                 .padding(12)
                 .frame(width: 160)
                 .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 12))
             Button("Continue", action: submit)
                 .buttonStyle(.borderedProminent)
-                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                .font(.system(.title3, design: .rounded, weight: .semibold))
         }
     }
 

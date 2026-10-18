@@ -31,7 +31,7 @@ struct WeatherView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(LearnWeather.allCases) { weather in
                     WeatherCard(weather: weather)
-                        .frame(height: 200)
+                        .frame(minHeight: 200)
                 }
             }
             .padding(32)

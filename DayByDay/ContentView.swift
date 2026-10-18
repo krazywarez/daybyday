@@ -107,8 +107,10 @@ struct CategoryTile: View {
                     .font(.heading(24))
                     .foregroundStyle(.white)
             }
+            .padding(12)
             .shadow(color: category.usesGradientBackground ? .black.opacity(0.6) : .clear, radius: 2)
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(category.label)
     }
 }
@@ -148,33 +150,36 @@ struct VoiceTipOverlay: View {
             Color.black.opacity(0.4)
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                Image(systemName: "speaker.wave.3.fill")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.blue)
+            CenteredScrollView {
+                VStack(spacing: 20) {
+                    Image(systemName: "speaker.wave.3.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.blue)
 
-                Text("Better Voices Available")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    Text("Better Voices Available")
+                        .font(.system(.title, design: .rounded, weight: .bold))
 
-                Text("For the best experience, download an enhanced voice on your device.\n\nSettings → Accessibility → Read & Speak → Voices → English → tap a voice marked Enhanced or Premium to download it.")
-                    .font(.system(size: 18, design: .rounded))
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
+                    Text("For the best experience, download an enhanced voice on your device.\n\nSettings → Accessibility → Read & Speak → Voices → English → tap a voice marked Enhanced or Premium to download it.")
+                        .font(.system(.body, design: .rounded))
+                        .multilineTextAlignment(.center)
 
-                Text("Tap anywhere to dismiss")
-                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                    .foregroundStyle(.tertiary)
-                    .padding(.top, 8)
+                    Text("Tap anywhere to dismiss")
+                        .font(.system(.callout, design: .rounded, weight: .medium))
+                        .padding(.top, 8)
+                }
+                .padding(40)
+                .frame(maxWidth: 520)
+                .background(
+                    RoundedRectangle(cornerRadius: 32, style: .continuous)
+                        .fill(.regularMaterial)
+                )
+                .padding(24)
             }
-            .padding(40)
-            .frame(maxWidth: 520)
-            .background(
-                RoundedRectangle(cornerRadius: 32, style: .continuous)
-                    .fill(.regularMaterial)
-            )
         }
         .contentShape(Rectangle())
         .onTapGesture(perform: onDismiss)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
     }
 }
 

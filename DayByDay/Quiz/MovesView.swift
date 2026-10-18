@@ -25,29 +25,21 @@ struct MovesView: View {
     var body: some View {
         ZStack {
             if let part = round.current {
-                VStack(spacing: 32) {
-                    HStack(spacing: 12) {
-                        GameMascot(state: $mascot)
-                        Button { start() } label: {
-                            Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                                .font(.heading(24))
-                                .padding(.horizontal, 28)
-                                .padding(.vertical, 16)
-                                .background(Capsule().fill(Color(.systemGray6)))
-                        }
-                        .buttonStyle(.plain)
+                CenteredScrollView {
+                    VStack(spacing: 32) {
+                        PromptBar(mascot: $mascot) { start() }
+                        Image(systemName: part.symbol)
+                            .font(.system(size: 140))
+                            .foregroundStyle(.white)
+                            .frame(width: 240, height: 240)
+                            .background(RoundedRectangle(cornerRadius: 40, style: .continuous).fill(Category.bodyParts.color))
+                            .accessibilityLabel(part.name)
+                        Text(part.command)
+                            .font(.heading(30, weight: .heavy))
+                            .multilineTextAlignment(.center)
                     }
-                    Image(systemName: part.symbol)
-                        .font(.system(size: 140))
-                        .foregroundStyle(.white)
-                        .frame(width: 240, height: 240)
-                        .background(RoundedRectangle(cornerRadius: 40, style: .continuous).fill(Category.bodyParts.color))
-                        .accessibilityLabel(part.name)
-                    Text(part.command)
-                        .font(.heading(30, weight: .heavy))
-                        .multilineTextAlignment(.center)
+                    .padding(24)
                 }
-                .padding(24)
                 .overlay { CelebrationOverlay(isActive: celebrating) }
             } else {
                 FinishedView {

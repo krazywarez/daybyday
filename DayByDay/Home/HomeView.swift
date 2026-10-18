@@ -8,13 +8,14 @@ import SwiftUI
 /// Today banner on top, then the topic grid.
 struct HomeView: View {
     @Environment(ProfileSession.self) private var session
+    @Environment(\.dynamicTypeSize) private var typeSize
     @AppStorage("hasSeenVoiceTip") private var hasSeenVoiceTip = false
     @State private var showingParentArea = false
 
-    private let columns = [
-        GridItem(.flexible(), spacing: 24),
-        GridItem(.flexible(), spacing: 24)
-    ]
+    /// Two square tiles a row; one wide tile at the accessibility text sizes.
+    private var columns: [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: 24), count: typeSize.isAccessibilitySize ? 1 : 2)
+    }
 
     var body: some View {
         NavigationStack {
@@ -31,7 +32,7 @@ struct HomeView: View {
                         ForEach(Category.gridCases) { category in
                             NavigationLink(value: category) {
                                 CategoryTile(category: category)
-                                    .aspectRatio(1, contentMode: .fit)
+                                    .aspectRatio(typeSize.isAccessibilitySize ? 2 : 1, contentMode: .fit)
                             }
                             .buttonStyle(.plain)
                         }
@@ -82,8 +83,8 @@ struct HomeView: View {
     private func footerButton(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Label(title, systemImage: systemImage)
-                .font(.system(size: 16, weight: .medium, design: .rounded))
-                .foregroundStyle(.secondary)
+                .font(.system(.callout, design: .rounded, weight: .medium))
+                .foregroundStyle(.primary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 14)
                 .background(Color(.systemGray6))

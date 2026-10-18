@@ -4,12 +4,15 @@
 # build's -screenshot launch argument (DayByDay/Screenshots/ScreenshotScene.swift) on a demo
 # child. The 6.3" set is resized from the 6.9" one; every PNG is flattened to RGB.
 # Usage: scripts/take-screenshots.sh [scene ...]   (default: every scene, in App Store order)
+# TEXT_SIZE=accessibility-extra-extra-extra-large (any simctl content_size) shoots at that text
+# size into AppStore/screenshots-<size> instead.
 set -eu
 
 cd "$(dirname "$0")/.."
 all="home routine animals train trace counting calendar progress"
 scenes="${*:-$all}"
-out=AppStore/screenshots
+size="${TEXT_SIZE:-}"
+out=AppStore/screenshots${size:+-$size}
 derived=.build/screenshots
 app="$derived/Build/Products/Debug-iphonesimulator/DayByDay.app"
 bundle=net.cleberg.DayByDay
@@ -34,14 +37,16 @@ shoot() { # device name, output folder
     xcrun simctl boot "$device" 2>/dev/null || true
     xcrun simctl bootstatus "$device" -b >/dev/null
     xcrun simctl ui "$device" appearance light
-    xcrun simctl status_bar "$device" override --time 9:41 --dataNetwork wifi --wifiMode active \
-        --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
+    xcrun simctl ui "$device" content_size "${size:-large}"
     xcrun simctl install "$device" "$app"
     mkdir -p "$out/$2"
     for scene in $scenes; do
         n="$(printf '%s\n' $all | grep -nx "$scene" | cut -d: -f1)"
         [ -n "$n" ] || { echo "Unknown scene $scene; one of: $all" >&2; exit 1; }
         xcrun simctl terminate "$device" "$bundle" 2>/dev/null || true
+        # Set per launch: changing content_size restarts the status bar and drops the override.
+        xcrun simctl status_bar "$device" override --time 9:41 --dataNetwork wifi --wifiMode active \
+            --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
         xcrun simctl launch "$device" "$bundle" -screenshot "$scene" -hasSeenVoiceTip YES >/dev/null
         file="$out/$2/$(printf %02d "$n")-$scene.png"
         # A screen that has not drawn yet is blank white, which compresses to a few KB.
@@ -58,6 +63,7 @@ shoot() { # device name, output folder
     done
     xcrun simctl terminate "$device" "$bundle" 2>/dev/null || true
     xcrun simctl status_bar "$device" clear
+    xcrun simctl ui "$device" content_size large
 }
 
 shoot "iPhone 18 Pro Max" iphone-6.9

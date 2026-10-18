@@ -16,7 +16,7 @@ struct BodyPartsView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(LearnBodyPart.allCases) { part in
                     BodyPartCard(bodyPart: part)
-                        .frame(height: 200)
+                        .frame(minHeight: 200)
                 }
             }
             .padding(32)

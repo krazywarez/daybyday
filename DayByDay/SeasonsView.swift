@@ -17,7 +17,7 @@ struct SeasonsView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(Season.allCases) { season in
                     SeasonCard(season: season, isHighlighted: season == .current)
-                        .frame(height: 200)
+                        .frame(minHeight: 200)
                 }
             }
             .padding(32)

@@ -12,6 +12,8 @@ struct SequencePuzzleView: View {
     let make: () -> SequencePuzzle
 
     @Environment(ProfileSession.self) private var session
+    /// Cards and train cars grow with the text on the labeled cards.
+    @ScaledMetric(relativeTo: .title2) private var card: CGFloat = 140
     @State private var puzzle: SequencePuzzle
     @State private var praise = PraisePhrases()
     @State private var dimmed: QuizItem?
@@ -24,7 +26,7 @@ struct SequencePuzzleView: View {
     /// Counts finished games, so a timer from an earlier game is ignored.
     @State private var solves = 0
 
-    private let columns = [GridItem(.adaptive(minimum: 130, maximum: 220), spacing: 16)]
+    private var columns: [GridItem] { [GridItem(.adaptive(minimum: card, maximum: max(card, 220)), spacing: 16)] }
 
     init(game: Game, make: @escaping () -> SequencePuzzle) {
         self.game = game
@@ -55,17 +57,7 @@ struct SequencePuzzleView: View {
     private var board: some View {
         ScrollView {
             VStack(spacing: 28) {
-                HStack(spacing: 12) {
-                    GameMascot(state: $mascot)
-                    Button { ask(after: 0) } label: {
-                        Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                            .font(.heading(24))
-                            .padding(.horizontal, 28)
-                            .padding(.vertical, 16)
-                            .background(Capsule().fill(Color(.systemGray6)))
-                    }
-                    .buttonStyle(.plain)
-                }
+                PromptBar(mascot: $mascot, prompt: puzzle.current?.prompt) { ask(after: 0) }
 
                 slots
                     .dropDestination(for: String.self) { ids, _ in
@@ -80,14 +72,14 @@ struct SequencePuzzleView: View {
                         let isPlaced = puzzle.placed.contains(item)
                         Button { place(item) } label: {
                             ChoiceTile(item: item)
-                                .frame(height: 130)
+                                .frame(height: card)
                                 .opacity(isPlaced ? 0 : dimmed == item ? 0.4 : 1)
                         }
                         .buttonStyle(.plain)
                         .disabled(isPlaced)
                         .accessibilityHidden(isPlaced)
                         .draggable(item.id) {
-                            ChoiceTile(item: item).frame(width: 130, height: 130)
+                            ChoiceTile(item: item).frame(width: card, height: card)
                         }
                         .accessibilityLabel(item.name)
                     }
@@ -101,27 +93,20 @@ struct SequencePuzzleView: View {
     @ViewBuilder
     private var slots: some View {
         if let labels = puzzle.slotLabels {
-            HStack(alignment: .top, spacing: 12) {
-                ForEach(Array(labels.enumerated()), id: \.offset) { i, label in
-                    VStack(spacing: 8) {
-                        Text(label)
-                            .font(.heading(20))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.6)
-                        slot(i).frame(height: 130)
-                    }
-                    .frame(maxWidth: .infinity)
-                }
+            // Stacked when the labels no longer fit side by side.
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .top, spacing: 12) { labeledSlots(labels) }
+                VStack(spacing: 16) { labeledSlots(labels) }
             }
         } else {
             ScrollViewReader { proxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(alignment: .bottom, spacing: 6) {
                         TrainEngine()
-                            .frame(width: 130, height: 150)
+                            .frame(width: card, height: card * 15 / 14)
                         ForEach(puzzle.steps.indices, id: \.self) { i in
                             TrainCar { slot(i) }
-                                .frame(width: 130, height: 150)
+                                .frame(width: card, height: card * 15 / 14)
                                 .id(i)
                         }
                     }
@@ -138,22 +123,36 @@ struct SequencePuzzleView: View {
         }
     }
 
+    private func labeledSlots(_ labels: [String]) -> some View {
+        ForEach(Array(labels.enumerated()), id: \.offset) { i, label in
+            VStack(spacing: 8) {
+                Text(label)
+                    .font(.heading(20))
+                slot(i).frame(height: card)
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
+
     private var nextCar: Int { min(puzzle.placed.count, puzzle.steps.count - 1) }
 
     /// A placed card, the outlined next slot, or a faint empty slot.
-    @ViewBuilder
     private func slot(_ i: Int) -> some View {
         let shape = RoundedRectangle(cornerRadius: 24, style: .continuous)
-        if i < puzzle.placed.count {
-            ChoiceTile(item: puzzle.placed[i])
-        } else {
-            shape
-                .fill(Color(.systemGray6))
-                .overlay {
-                    shape.strokeBorder(i == puzzle.placed.count ? Category.days.color : Color(.systemGray3),
-                                       style: StrokeStyle(lineWidth: i == puzzle.placed.count ? 5 : 2, dash: [10, 8]))
-                }
+        return Group {
+            if i < puzzle.placed.count {
+                ChoiceTile(item: puzzle.placed[i])
+            } else {
+                shape
+                    .fill(Color(.systemGray6))
+                    .overlay {
+                        shape.strokeBorder(i == puzzle.placed.count ? Category.days.color : Color(.systemGray3),
+                                           style: StrokeStyle(lineWidth: i == puzzle.placed.count ? 5 : 2, dash: [10, 8]))
+                    }
+            }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(i < puzzle.placed.count ? puzzle.placed[i].name : "Empty")
     }
 
     private func place(_ item: QuizItem) {

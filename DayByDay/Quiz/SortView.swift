@@ -13,6 +13,7 @@ enum SortStyle {
 /// "Fruit or vegetable?": tap a bin, or drag the food into it.
 struct SortView: View {
     @Environment(ProfileSession.self) private var session
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var round: SortRound
     @State private var praise = PraisePhrases()
     @State private var celebrating = false
@@ -54,17 +55,7 @@ struct SortView: View {
     private var board: some View {
         ScrollView {
             VStack(spacing: 28) {
-                HStack(spacing: 12) {
-                    GameMascot(state: $mascot)
-                    Button { ask(after: 0) } label: {
-                        Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                            .font(.heading(24))
-                            .padding(.horizontal, 28)
-                            .padding(.vertical, 16)
-                            .background(Capsule().fill(Color(.systemGray6)))
-                    }
-                    .buttonStyle(.plain)
-                }
+                PromptBar(mascot: $mascot, prompt: round.prompt) { ask(after: 0) }
 
                 if let food = round.current {
                     let item = Category.food.item(food)
@@ -75,7 +66,9 @@ struct SortView: View {
                         .accessibilityLabel(food.name)
                 }
 
-                HStack(spacing: 20) {
+                // Stacked at the accessibility text sizes, so "Vegetables" fits.
+                let bins = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 20)) : AnyLayout(HStackLayout(spacing: 20))
+                bins {
                     bin(isFruit: true)
                     bin(isFruit: false)
                 }
@@ -107,6 +100,7 @@ struct SortView: View {
             return true
         }
         .accessibilityLabel(isFruit ? "Fruit" : "Vegetables")
+        .accessibilityValue(contents.map(\.name).joined(separator: ", "))
     }
 
     private func place(isFruit: Bool) {

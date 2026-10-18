@@ -14,7 +14,7 @@ struct WeatherCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(weather.color.gradient)
+                .fill(weather.color)
                 .shadow(color: weather.color.opacity(0.4), radius: 8, y: 4)
 
             VStack(spacing: 16) {
@@ -27,6 +27,7 @@ struct WeatherCard: View {
                     .font(.heading(32))
                     .foregroundStyle(.white)
             }
+            .padding(16)
         }
         .scaleEffect(isTapped ? 1.12 : 1.0)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
@@ -39,6 +40,7 @@ struct WeatherCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(weather.name)
         .accessibilityAddTraits(.isButton)
     }
@@ -79,14 +81,14 @@ nonisolated enum LearnWeather: Int, CaseIterable, Identifiable {
 
     var color: Color {
         switch self {
-        case .sunny:   Color(red: 1.0, green: 0.7, blue: 0.2)    // orange
-        case .cloudy:  Color(red: 0.6, green: 0.6, blue: 0.65)   // gray
-        case .rainy:   Color(red: 0.3, green: 0.6, blue: 0.9)    // blue
-        case .snowy:   Color(red: 0.55, green: 0.8, blue: 0.95)  // light blue
-        case .windy:   Color(red: 0.25, green: 0.7, blue: 0.7)   // teal
+        case .sunny:   Color(red: 0.73, green: 0.51, blue: 0.15)    // orange
+        case .cloudy:  Color(red: 0.55, green: 0.55, blue: 0.6)   // gray
+        case .rainy:   Color(red: 0.28, green: 0.57, blue: 0.85)    // blue
+        case .snowy:   Color(red: 0.4, green: 0.57, blue: 0.68)  // light blue
+        case .windy:   Color(red: 0.21, green: 0.61, blue: 0.61)   // teal
         case .stormy:  Color(red: 0.2, green: 0.3, blue: 0.6)    // dark blue
         case .foggy:   Color(red: 0.6, green: 0.5, blue: 0.7)    // muted purple
-        case .rainbow: Color(red: 0.9, green: 0.45, blue: 0.6)   // pink
+        case .rainbow: Color(red: 0.83, green: 0.42, blue: 0.56)   // pink
         }
     }
 }

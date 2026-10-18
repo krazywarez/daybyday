@@ -60,9 +60,10 @@ struct TraceView: View {
         VStack(spacing: 20) {
             // Own row: beside both pills it would squeeze their labels on a phone.
             GameMascot(state: $mascot)
-            HStack(spacing: 16) {
-                pill("Hear it again", "speaker.wave.2.fill", action: prompt)
-                pill("Start over", "eraser.fill") { strokes = [] }
+            // Stacked when side by side would cut the labels off.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 16) { pills }
+                VStack(spacing: 12) { pills }
             }
             GeometryReader { geo in
                 let size = min(geo.size.width, geo.size.height)
@@ -88,7 +89,11 @@ struct TraceView: View {
                         .onEnded { _ in check(item, size: size) }
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                // VoiceOver, Voice Control and Switch Control users trace by activating the guide.
+                .accessibilityElement()
                 .accessibilityLabel("Trace \(Lines.traceLabel(item))")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityAction { succeed(item) }
             }
             .frame(maxWidth: 520)
         }
@@ -96,15 +101,20 @@ struct TraceView: View {
         .overlay { CelebrationOverlay(isActive: celebrating) }
     }
 
+    @ViewBuilder
+    private var pills: some View {
+        pill("Hear it again", "speaker.wave.2.fill", action: prompt)
+        pill("Start over", "eraser.fill") { strokes = [] }
+    }
+
     private func pill(_ title: String, _ symbol: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Label(title, systemImage: symbol)
                 .font(.heading(19))
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 14)
-                .background(Capsule().fill(Color(.systemGray6)))
+                .background(RoundedRectangle(cornerRadius: 26, style: .continuous).fill(Color(.systemGray6)))
         }
         .buttonStyle(.plain)
     }
@@ -115,23 +125,7 @@ struct TraceView: View {
         let drawn = strokes.flatMap { $0 }
         let score = checker.score(drawn)
         if checker.passes(drawn) {
-            record(item, correct: true)
-            busy = true
-            celebrating = true
-            SoundEngine.shared.play(.success)
-            mascot.handle(.correct)
-            passes += 1
-            let gen = generation, pass = passes
-            let advance = {
-                guard gen == generation, pass == passes, busy else { return }
-                busy = false
-                celebrating = false
-                strokes = []
-                index += 1
-                if self.item != nil { prompt() }
-            }
-            say(Lines.traceSuccess(item), after: RoundStyle.speechDelay, then: advance)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: advance)
+            succeed(item)
         } else if score.accuracy < 0.5 && score.coverage > 0.4 {
             record(item, correct: false)
             SoundEngine.shared.play(.gentleMiss)
@@ -139,6 +133,27 @@ struct TraceView: View {
             strokes = []
             say(Lines.traceMiss(item), after: RoundStyle.speechDelay)
         }
+    }
+
+    private func succeed(_ item: QuizItem) {
+        guard !busy else { return }
+        record(item, correct: true)
+        busy = true
+        celebrating = true
+        SoundEngine.shared.play(.success)
+        mascot.handle(.correct)
+        passes += 1
+        let gen = generation, pass = passes
+        let advance = {
+            guard gen == generation, pass == passes, busy else { return }
+            busy = false
+            celebrating = false
+            strokes = []
+            index += 1
+            if self.item != nil { prompt() }
+        }
+        say(Lines.traceSuccess(item), after: RoundStyle.speechDelay, then: advance)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: advance)
     }
 
     private func record(_ item: QuizItem, correct: Bool) {

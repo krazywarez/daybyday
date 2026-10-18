@@ -1,5 +1,13 @@
 # What's New
 
+## 2.0.1
+
+Accessibility improvements throughout.
+
+- Works with VoiceOver and Voice Control: every button, card and game is labeled, and tracing and the parent gate can be completed without dragging or holding.
+- Text grows with the Larger Text setting, and screens rearrange to fit at the largest sizes.
+- Higher-contrast cards and labels.
+
 ## 2.0
 
 DayByDay now turns every topic into games.

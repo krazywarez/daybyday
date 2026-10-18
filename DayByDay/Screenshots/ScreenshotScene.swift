@@ -8,9 +8,11 @@ import SwiftUI
 
 /// App Store screens, opened by `scripts/take-screenshots.sh` with
 /// `-screenshot <name>`. The app then runs on an in-memory store seeded with
-/// one demo child.
+/// one demo child. `setup` (no children) and `picker` (two children, none
+/// picked) are for the UI tests.
 enum ScreenshotScene: String, CaseIterable {
     case home, routine, animals, train, trace, counting, calendar, progress
+    case setup, picker
 
     static var requested: ScreenshotScene? {
         let args = ProcessInfo.processInfo.arguments
@@ -21,7 +23,7 @@ enum ScreenshotScene: String, CaseIterable {
     @ViewBuilder @MainActor
     func view(_ session: ProfileSession) -> some View {
         switch self {
-        case .home:
+        case .home, .setup, .picker:
             ContentView()
         case .routine:
             NavigationStack { TodayRoutineView().navigationTitle(Category.today.label) }
@@ -57,6 +59,17 @@ enum ScreenshotScene: String, CaseIterable {
     /// earlier days this month, and answers that leave a few months to practice.
     @MainActor
     static func seed(_ session: ProfileSession, calendar: Calendar = AppCalendar.current, now: Date = .now) {
+        switch requested {
+        case .setup:
+            return
+        case .picker:
+            _ = try? session.store.create(name: "Olive", avatar: .hare, color: .teal, birthday: nil)
+            _ = try? session.store.create(name: "Max", avatar: .dog, color: .blue, birthday: nil)
+            session.profilesChanged()
+            return
+        default:
+            break
+        }
         let today = calendar.dateComponents([.year, .month, .day], from: now)
         guard let olive = try? session.store.create(name: "Olive", avatar: .hare, color: .teal,
                                                     birthday: (month: today.month!, day: today.day! == 28 ? 27 : 28)) else { return }

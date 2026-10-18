@@ -21,8 +21,10 @@ struct NumberCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(number.color.gradient)
+                .fill(number.color)
                 .shadow(color: number.color.opacity(0.4), radius: 8, y: 4)
+                // Glow on the card only: on the label it would lower the contrast.
+                .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
 
             VStack(spacing: 10) {
                 Text("\(number.numeral)")
@@ -37,6 +39,7 @@ struct NumberCard: View {
                 DotPattern(count: number.numeral)
                     .padding(.top, 4)
             }
+            .padding(16)
         }
         .overlay {
             if isHighlighted {
@@ -44,7 +47,6 @@ struct NumberCard: View {
                     .strokeBorder(.white, lineWidth: 5)
             }
         }
-        .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
         .scaleEffect(cardScale)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
         .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
@@ -56,6 +58,7 @@ struct NumberCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(number.name)
         .accessibilityAddTraits(.isButton)
     }
@@ -94,15 +97,15 @@ nonisolated enum LearnNumber: Int, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .one:   Color(red: 0.9, green: 0.3, blue: 0.3)   // red
-        case .two:   Color(red: 1.0, green: 0.55, blue: 0.2)  // orange
-        case .three: Color(red: 1.0, green: 0.8, blue: 0.2)   // yellow
-        case .four:  Color(red: 0.35, green: 0.75, blue: 0.4)  // green
-        case .five:  Color(red: 0.2, green: 0.7, blue: 0.85)   // sky blue
+        case .two:   Color(red: 0.83, green: 0.45, blue: 0.16)  // orange
+        case .three: Color(red: 0.67, green: 0.53, blue: 0.14)   // yellow
+        case .four:  Color(red: 0.29, green: 0.62, blue: 0.33)  // green
+        case .five:  Color(red: 0.17, green: 0.6, blue: 0.72)   // sky blue
         case .six:   Color(red: 0.4, green: 0.45, blue: 0.9)   // blue
         case .seven: Color(red: 0.6, green: 0.4, blue: 0.85)   // purple
         case .eight: Color(red: 0.85, green: 0.35, blue: 0.6)  // pink
-        case .nine:  Color(red: 0.5, green: 0.75, blue: 0.45)  // lime
-        case .ten:   Color(red: 0.25, green: 0.8, blue: 0.75)  // teal
+        case .nine:  Color(red: 0.4, green: 0.6, blue: 0.36)  // lime
+        case .ten:   Color(red: 0.19, green: 0.61, blue: 0.57)  // teal
         }
     }
 }

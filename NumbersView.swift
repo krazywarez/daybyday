@@ -20,7 +20,7 @@ struct NumbersView: View {
                         number: number,
                         isHighlighted: number == .current
                     )
-                    .frame(height: 200)
+                    .frame(minHeight: 200)
                 }
             }
             .padding(32)

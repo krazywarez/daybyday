@@ -34,6 +34,20 @@
                ReferencedContainer = "container:DayByDay.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "403A770161DC84E4D6A3B44D"
+               BuildableName = "DayByDayUITests.xctest"
+               BlueprintName = "DayByDayUITests"
+               ReferencedContainer = "container:DayByDay.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -50,6 +64,16 @@
                BlueprintIdentifier = "62BDB36DEC1B9FC5E49D7819"
                BuildableName = "DayByDayTests.xctest"
                BlueprintName = "DayByDayTests"
+               ReferencedContainer = "container:DayByDay.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "403A770161DC84E4D6A3B44D"
+               BuildableName = "DayByDayUITests.xctest"
+               BlueprintName = "DayByDayUITests"
                ReferencedContainer = "container:DayByDay.xcodeproj">
             </BuildableReference>
          </TestableReference>

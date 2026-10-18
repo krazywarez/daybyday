@@ -20,7 +20,7 @@ struct DaysOfWeekView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(DayOfWeek.allCases) { day in
                     DayCard(day: day, isHighlighted: day == .current, picture: picture(on: day))
-                        .frame(height: 200)
+                        .frame(minHeight: 200)
                 }
             }
             .padding(32)

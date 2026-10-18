@@ -9,6 +9,8 @@ import SwiftUI
 struct CategoryHubView: View {
     let category: Category
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
@@ -22,7 +24,7 @@ struct CategoryHubView: View {
                     }
                 }
             }
-            .padding(32)
+            .padding(typeSize.isAccessibilitySize ? 16 : 32)
             .frame(maxWidth: 640)
             .frame(maxWidth: .infinity)
         }
@@ -31,7 +33,10 @@ struct CategoryHubView: View {
     private func activity(_ title: String, systemImage: String, color: Color,
                           @ViewBuilder destination: @escaping () -> some View) -> some View {
         NavigationLink(destination: destination) {
-            HStack(spacing: 20) {
+            // The symbol goes above the title at the accessibility text sizes.
+            let layout = typeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8)) : AnyLayout(HStackLayout(spacing: 20))
+            layout {
                 Image(systemName: systemImage)
                     .font(.system(size: 44))
                 Text(title)
@@ -39,11 +44,13 @@ struct CategoryHubView: View {
                 Spacer(minLength: 0)
             }
             .foregroundStyle(.white)
-            .padding(.horizontal, 32)
-            .frame(height: 120)
+            .padding(.horizontal, typeSize.isAccessibilitySize ? 20 : 32)
+            .padding(.vertical, 16)
+            .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
             .background(RoundedRectangle(cornerRadius: 32, style: .continuous).fill(color))
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("activity:\(title)")
         .simultaneousGesture(TapGesture().onEnded { SpeechSynthesizer.shared.speak(title) })
     }
 }

@@ -98,7 +98,7 @@ private struct OwlDrawing {
         beakShape(&context)
 
         if mood == .puzzled {
-            let mark = context.resolve(Text("?").font(.heading(24, weight: .heavy))
+            let mark = context.resolve(Text("?").font(.custom(HeadingFont.extraBold, fixedSize: 24))
                 .foregroundStyle(MascotStyle.body))
             context.draw(mark, at: CGPoint(x: 89, y: 22))
         }

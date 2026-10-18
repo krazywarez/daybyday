@@ -68,6 +68,38 @@ struct ContrastTests {
         #expect(contrast(SortStyle.binFill, .black, .dark) >= 3)
     }
 
+    @Test(arguments: LearnWeather.allCases) func weatherCardAgainstWhite(_ weather: LearnWeather) {
+        #expect(contrast(weather.color, .white, .light) >= 3, "\(weather)")
+    }
+
+    @Test(arguments: LearnShape.allCases) func shapeCardAgainstWhite(_ shape: LearnShape) {
+        #expect(contrast(shape.color, .white, .light) >= 3, "\(shape)")
+    }
+
+    @Test(arguments: Season.allCases) func seasonCardAgainstWhite(_ season: Season) {
+        #expect(contrast(season.color, .white, .light) >= 3, "\(season)")
+    }
+
+    @Test(arguments: MonthOfYear.allCases) func monthCardAgainstWhite(_ month: MonthOfYear) {
+        #expect(contrast(month.color, .white, .light) >= 3, "\(month)")
+    }
+
+    @Test(arguments: LearnFood.allCases) func foodCardAgainstWhite(_ food: LearnFood) {
+        #expect(contrast(food.color, .white, .light) >= 3, "\(food)")
+    }
+
+    @Test(arguments: LearnBodyPart.allCases) func bodyPartCardAgainstWhite(_ part: LearnBodyPart) {
+        #expect(contrast(part.color, .white, .light) >= 3, "\(part)")
+    }
+
+    @Test(arguments: LearnNumber.allCases) func numberCardAgainstWhite(_ number: LearnNumber) {
+        #expect(contrast(number.color, .white, .light) >= 3, "\(number)")
+    }
+
+    @Test(arguments: LearnColor.allCases) func colorCardLabel(_ color: LearnColor) {
+        #expect(contrast(color.color, color.labelColor, .light) >= 3, "\(color)")
+    }
+
     @Test(arguments: DayOfWeek.allCases) func dayColorAgainstWhite(_ day: DayOfWeek) {
         #expect(contrast(day.color, .white, .light) >= 3, "\(day)")
     }

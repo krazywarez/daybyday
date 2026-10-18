@@ -15,7 +15,7 @@ struct FoodCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(food.color.gradient)
+                .fill(food.color)
                 .shadow(color: food.color.opacity(0.4), radius: 8, y: 4)
 
             VStack(spacing: 16) {
@@ -26,6 +26,7 @@ struct FoodCard: View {
                     .font(.heading(28))
                     .foregroundStyle(.white)
             }
+            .padding(16)
         }
         .scaleEffect(isTapped ? 1.12 : 1.0)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
@@ -38,6 +39,7 @@ struct FoodCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(food.name)
         .accessibilityAddTraits(.isButton)
     }
@@ -96,17 +98,17 @@ nonisolated enum LearnFood: Int, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .apple:      Color(red: 0.85, green: 0.2, blue: 0.2)    // red
-        case .banana:     Color(red: 0.95, green: 0.8, blue: 0.2)    // yellow
-        case .carrot:     Color(red: 1.0, green: 0.55, blue: 0.15)   // orange
+        case .banana:     Color(red: 0.64, green: 0.54, blue: 0.14)    // yellow
+        case .carrot:     Color(red: 0.83, green: 0.45, blue: 0.12)   // orange
         case .strawberry: Color(red: 0.9, green: 0.25, blue: 0.3)    // strawberry red
         case .grapes:     Color(red: 0.55, green: 0.3, blue: 0.7)    // purple
-        case .lemon:      Color(red: 0.9, green: 0.8, blue: 0.2)     // lemon yellow
-        case .broccoli:   Color(red: 0.3, green: 0.65, blue: 0.3)    // green
-        case .watermelon: Color(red: 0.35, green: 0.7, blue: 0.4)    // watermelon green
+        case .lemon:      Color(red: 0.62, green: 0.55, blue: 0.14)     // lemon yellow
+        case .broccoli:   Color(red: 0.29, green: 0.62, blue: 0.29)    // green
+        case .watermelon: Color(red: 0.31, green: 0.61, blue: 0.36)    // watermelon green
         case .cherry:     Color(red: 0.7, green: 0.15, blue: 0.2)    // dark red
-        case .orange:     Color(red: 1.0, green: 0.6, blue: 0.15)    // orange
-        case .corn:       Color(red: 0.9, green: 0.75, blue: 0.2)    // golden yellow
-        case .pear:       Color(red: 0.55, green: 0.75, blue: 0.3)   // pear green
+        case .orange:     Color(red: 0.79, green: 0.47, blue: 0.12)    // orange
+        case .corn:       Color(red: 0.65, green: 0.54, blue: 0.15)    // golden yellow
+        case .pear:       Color(red: 0.45, green: 0.6, blue: 0.24)   // pear green
         }
     }
 }

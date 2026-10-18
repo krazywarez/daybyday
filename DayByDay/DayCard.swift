@@ -25,6 +25,8 @@ struct DayCard: View {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
                 .fill(day.color)
                 .shadow(color: day.color.opacity(0.4), radius: 8, y: 4)
+                // Glow on the card only: on the label it would lower the contrast.
+                .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
 
             VStack(spacing: 16) {
                 Image(systemName: day.symbol)
@@ -36,6 +38,7 @@ struct DayCard: View {
                     .font(.heading(32))
                     .foregroundStyle(.white)
             }
+            .padding(16)
         }
         .overlay(alignment: .topTrailing) {
             if let picture {
@@ -54,7 +57,6 @@ struct DayCard: View {
                     .strokeBorder(.white, lineWidth: 5)
             }
         }
-        .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
         .scaleEffect(cardScale)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
         .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
@@ -66,6 +68,7 @@ struct DayCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(picture.map { "\(day.name), \($0.name)" } ?? day.name)
         .accessibilityAddTraits(.isButton)
     }

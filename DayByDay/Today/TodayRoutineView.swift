@@ -74,34 +74,36 @@ struct TodayRoutineView: View {
     }
 
     private func lineCard(_ line: RoutineScript.Line) -> some View {
-        VStack(spacing: 28) {
-            hearAgain
-            VStack(spacing: 20) {
-                Image(systemName: line.symbol)
-                    .font(.system(size: 110))
-                    .frame(height: 130)
-                Text(line.text)
-                    .font(.heading(32, weight: .heavy))
-                    .multilineTextAlignment(.center)
-                    .minimumScaleFactor(0.6)
-            }
-            .foregroundStyle(.white)
-            .padding(28)
-            .frame(maxWidth: 520, minHeight: 300)
-            .background(RoundedRectangle(cornerRadius: 36, style: .continuous).fill(TodayBanner.gradientColors[0]))
-            .accessibilityElement(children: .combine)
+        CenteredScrollView {
+            VStack(spacing: 28) {
+                hearAgain
+                VStack(spacing: 20) {
+                    Image(systemName: line.symbol)
+                        .font(.system(size: 110))
+                        .frame(height: 130)
+                    Text(line.text)
+                        .font(.heading(32, weight: .heavy))
+                        .multilineTextAlignment(.center)
+                        .minimumScaleFactor(0.6)
+                }
+                .foregroundStyle(.white)
+                .padding(28)
+                .frame(maxWidth: 520, minHeight: 300)
+                .background(RoundedRectangle(cornerRadius: 36, style: .continuous).fill(TodayBanner.gradientColors[0]))
+                .accessibilityElement(children: .combine)
 
-            Button(action: next) {
-                Image(systemName: "arrow.right")
-                    .font(.system(size: 40, weight: .heavy))
-                    .foregroundStyle(.white)
-                    .frame(width: 96, height: 96)
-                    .background(Circle().fill(RoundStyle.playAgainFill))
+                Button(action: next) {
+                    Image(systemName: "arrow.right")
+                        .font(.system(size: 40, weight: .heavy))
+                        .foregroundStyle(.white)
+                        .frame(width: 96, height: 96)
+                        .background(Circle().fill(RoundStyle.playAgainFill))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Next")
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Next")
+            .padding(24)
         }
-        .padding(24)
     }
 
     private var weatherPick: some View {
@@ -123,17 +125,7 @@ struct TodayRoutineView: View {
     }
 
     private var hearAgain: some View {
-        HStack(spacing: 12) {
-            GameMascot(state: $mascot)
-            Button(action: speakCurrent) {
-                Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                    .font(.heading(22))
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 14)
-                    .background(Capsule().fill(Color(.systemGray6)))
-            }
-            .buttonStyle(.plain)
-        }
+        PromptBar(mascot: $mascot, action: speakCurrent)
     }
 
     private func next() {

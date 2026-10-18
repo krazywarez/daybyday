@@ -21,8 +21,10 @@ struct MonthCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(month.color.gradient)
+                .fill(month.color)
                 .shadow(color: month.color.opacity(0.4), radius: 8, y: 4)
+                // Glow on the card only: on the label it would lower the contrast.
+                .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
 
             VStack(spacing: 16) {
                 Image(systemName: month.symbol)
@@ -34,6 +36,7 @@ struct MonthCard: View {
                     .font(.heading(32))
                     .foregroundStyle(.white)
             }
+            .padding(16)
         }
         .overlay {
             if isHighlighted {
@@ -41,7 +44,6 @@ struct MonthCard: View {
                     .strokeBorder(.white, lineWidth: 5)
             }
         }
-        .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
         .scaleEffect(cardScale)
         .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
         .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
@@ -53,6 +55,7 @@ struct MonthCard: View {
                 isTapped = false
             }
         }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(month.name)
         .accessibilityAddTraits(.isButton)
     }
@@ -109,16 +112,16 @@ nonisolated enum MonthOfYear: Int, CaseIterable, Identifiable {
 
     var color: Color {
         switch self {
-        case .january:   Color(red: 0.55, green: 0.75, blue: 0.95) // ice blue
+        case .january:   Color(red: 0.42, green: 0.56, blue: 0.72) // ice blue
         case .february:  Color(red: 0.9, green: 0.35, blue: 0.5)   // pink
-        case .march:     Color(red: 0.45, green: 0.8, blue: 0.55)  // spring green
-        case .april:     Color(red: 0.5, green: 0.65, blue: 0.9)   // rain blue
-        case .may:       Color(red: 0.95, green: 0.7, blue: 0.2)   // golden
-        case .june:      Color(red: 1.0, green: 0.55, blue: 0.25)  // warm orange
+        case .march:     Color(red: 0.35, green: 0.6, blue: 0.41)  // spring green
+        case .april:     Color(red: 0.43, green: 0.55, blue: 0.77)   // rain blue
+        case .may:       Color(red: 0.71, green: 0.52, blue: 0.15)   // golden
+        case .june:      Color(red: 0.83, green: 0.45, blue: 0.2)  // warm orange
         case .july:      Color(red: 0.85, green: 0.25, blue: 0.3)  // red
-        case .august:    Color(red: 0.2, green: 0.75, blue: 0.8)   // ocean teal
+        case .august:    Color(red: 0.16, green: 0.6, blue: 0.64)   // ocean teal
         case .september: Color(red: 0.6, green: 0.45, blue: 0.85)  // purple
-        case .october:   Color(red: 0.9, green: 0.5, blue: 0.15)   // pumpkin
+        case .october:   Color(red: 0.82, green: 0.46, blue: 0.14)   // pumpkin
         case .november:  Color(red: 0.7, green: 0.5, blue: 0.3)    // brown
         case .december:  Color(red: 0.3, green: 0.5, blue: 0.85)   // winter blue
         }

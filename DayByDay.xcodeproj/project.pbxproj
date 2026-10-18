@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		064C33BF388C0C164246C8C5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA83A180D07BFACBA92AC03E /* Foundation.framework */; };
 		8B1B4FF92F659AD1005C246F /* WeatherCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1B4FF82F659AD1005C246F /* WeatherCard.swift */; };
 		8B1B4FFB2F659AD1005C246F /* WeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1B4FFA2F659AD1005C246F /* WeatherView.swift */; };
 		8B1B4FFD2F659AD2005C246F /* BodyPartCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1B4FFC2F659AD2005C246F /* BodyPartCard.swift */; };
@@ -34,9 +35,17 @@
 			remoteGlobalIDString = 8B7051B12F5F908800491D58;
 			remoteInfo = DayByDay;
 		};
+		3A90A0A4698DD0B1921863E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8B7051AA2F5F908800491D58 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B7051B12F5F908800491D58;
+			remoteInfo = DayByDay;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		888B02E423CDBC1710668F44 /* DayByDayUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DayByDayUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B1B4FF82F659AD1005C246F /* WeatherCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCard.swift; sourceTree = "<group>"; };
 		8B1B4FFA2F659AD1005C246F /* WeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherView.swift; sourceTree = "<group>"; };
 		8B1B4FFC2F659AD2005C246F /* BodyPartCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyPartCard.swift; sourceTree = "<group>"; };
@@ -76,6 +85,13 @@
 			path = DayByDayTests;
 			sourceTree = "<group>";
 		};
+		63A6B6AB1DFD8F1A3F120BDC /* DayByDayUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = DayByDayUITests;
+			sourceTree = "<group>";
+		};
 		8B7051B42F5F908800491D58 /* DayByDay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -87,6 +103,14 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6F3337FFF2DE3E624FC30483 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				064C33BF388C0C164246C8C5 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8B7051AF2F5F908800491D58 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -144,6 +168,7 @@
 				8B1B50022F659AD4005C246F /* FoodView.swift */,
 				43AAA6C6355BFA1D8A629985 /* Frameworks */,
 				4FDEBF44C97D137EF31F348A /* DayByDayTests */,
+				63A6B6AB1DFD8F1A3F120BDC /* DayByDayUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -152,6 +177,7 @@
 			children = (
 				8B7051B22F5F908800491D58 /* DayByDay.app */,
 				B6E74F699AA6EB7ADABD5F88 /* DayByDayTests.xctest */,
+				888B02E423CDBC1710668F44 /* DayByDayUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -159,6 +185,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		403A770161DC84E4D6A3B44D /* DayByDayUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4896C67AB0D1CE76F1E50412 /* Build configuration list for PBXNativeTarget "DayByDayUITests" */;
+			buildPhases = (
+				E6FD65318FD1341227535EED /* Sources */,
+				6F3337FFF2DE3E624FC30483 /* Frameworks */,
+				860A78624F8B95D6FFD5B674 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F12AC1A8951D64662983E318 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				63A6B6AB1DFD8F1A3F120BDC /* DayByDayUITests */,
+			);
+			name = DayByDayUITests;
+			productName = DayByDayUITests;
+			productReference = 888B02E423CDBC1710668F44 /* DayByDayUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		62BDB36DEC1B9FC5E49D7819 /* DayByDayTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F99EE566298541D2131D7F82 /* Build configuration list for PBXNativeTarget "DayByDayTests" */;
@@ -231,11 +278,19 @@
 			targets = (
 				8B7051B12F5F908800491D58 /* DayByDay */,
 				62BDB36DEC1B9FC5E49D7819 /* DayByDayTests */,
+				403A770161DC84E4D6A3B44D /* DayByDayUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		860A78624F8B95D6FFD5B674 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8B7051B02F5F908800491D58 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -283,6 +338,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E6FD65318FD1341227535EED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -292,9 +354,33 @@
 			target = 8B7051B12F5F908800491D58 /* DayByDay */;
 			targetProxy = 1015CD2FFBC39F380BE3151E /* PBXContainerItemProxy */;
 		};
+		F12AC1A8951D64662983E318 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = DayByDay;
+			target = 8B7051B12F5F908800491D58 /* DayByDay */;
+			targetProxy = 3A90A0A4698DD0B1921863E6 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		473FC2426D94F491180BCDC1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ZCNAX3VL9D;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				PRODUCT_BUNDLE_IDENTIFIER = net.cleberg.DayByDay.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DayByDay;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		76F72CE42B474B4C420CFF4F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -460,7 +546,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = net.cleberg.DayByDay;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -494,7 +580,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = net.cleberg.DayByDay;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -527,9 +613,35 @@
 			};
 			name = Debug;
 		};
+		9063B041B4911ADEEE18B14C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ZCNAX3VL9D;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				PRODUCT_BUNDLE_IDENTIFIER = net.cleberg.DayByDay.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DayByDay;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4896C67AB0D1CE76F1E50412 /* Build configuration list for PBXNativeTarget "DayByDayUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				473FC2426D94F491180BCDC1 /* Release */,
+				9063B041B4911ADEEE18B14C /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8B7051AD2F5F908800491D58 /* Build configuration list for PBXProject "DayByDay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

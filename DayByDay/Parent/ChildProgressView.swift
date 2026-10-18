@@ -26,7 +26,7 @@ struct ChildProgressView: View {
                     .background(Circle().fill(category.color))
                 VStack(alignment: .leading, spacing: 4) {
                     Text(category.label)
-                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                        .font(.system(.title3, design: .rounded, weight: .semibold))
                     if let known = summary.known {
                         Text(known)
                     }

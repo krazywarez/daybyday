@@ -71,6 +71,7 @@ struct StickerCalendarView: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 7), spacing: 6) {
                 ForEach(Array(["S", "M", "T", "W", "T", "F", "S"].enumerated()), id: \.offset) { _, d in
                     Text(d).font(.heading(16)).foregroundStyle(.primary)
+                        .accessibilityHidden(true)
                 }
                 ForEach(Array(grid.cells.enumerated()), id: \.offset) { _, day in
                     if let day {
@@ -80,6 +81,8 @@ struct StickerCalendarView: View {
                     }
                 }
             }
+            // Seven columns leave no room for larger dates; VoiceOver reads each one in full.
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         }
         .padding(16)
     }
@@ -98,7 +101,7 @@ struct StickerCalendarView: View {
                             .background(Circle().fill(Color(.systemBackground)))
                     }
             } else {
-                Text("\(day)").font(.system(size: 18, weight: .semibold, design: .rounded))
+                Text("\(day)").font(.system(.body, design: .rounded, weight: .semibold))
             }
         }
         .frame(height: 48)

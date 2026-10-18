@@ -18,6 +18,8 @@ struct RoundView<Choice: View>: View {
     private let choice: (QuizItem) -> Choice
 
     @Environment(ProfileSession.self) private var session
+    /// Choices get wider as the text on them grows.
+    @ScaledMetric(relativeTo: .title2) private var choiceWidth: CGFloat = 150
     @State private var round: Round
     @State private var praise = PraisePhrases()
     @State private var celebrating = false
@@ -27,7 +29,9 @@ struct RoundView<Choice: View>: View {
     /// been overtaken stays quiet.
     @State private var speechToken = 0
 
-    private let columns = [GridItem(.adaptive(minimum: 150, maximum: 320), spacing: 20)]
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: choiceWidth, maximum: max(choiceWidth, 320)), spacing: 20)]
+    }
 
     init(source: any QuestionSource, game: Game, @ViewBuilder choice: @escaping (QuizItem) -> Choice) {
         self.source = source
@@ -55,19 +59,7 @@ struct RoundView<Choice: View>: View {
     private var question: some View {
         ScrollView {
             VStack(spacing: 28) {
-                HStack(spacing: 12) {
-                    GameMascot(state: $mascot)
-                    Button(action: speakPrompt) {
-                        Label("Hear it again", systemImage: "speaker.wave.2.fill")
-                            .font(.heading(24))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .padding(.horizontal, 28)
-                            .padding(.vertical, 16)
-                            .background(Capsule().fill(Color(.systemGray6)))
-                    }
-                    .buttonStyle(.plain)
-                }
+                PromptBar(mascot: $mascot, prompt: round.current.prompt, action: speakPrompt)
 
                 ProgressDots(filled: round.correctCount, total: Round.length)
 
@@ -79,7 +71,7 @@ struct RoundView<Choice: View>: View {
                     ForEach(round.current.choices) { item in
                         Button { tap(item) } label: {
                             choice(item)
-                                .frame(height: 160)
+                                .frame(minHeight: 160)
                                 .opacity(dimmed == item ? 0.4 : 1)
                         }
                         .buttonStyle(.plain)

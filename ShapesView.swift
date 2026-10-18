@@ -17,7 +17,7 @@ struct ShapesView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(LearnShape.allCases) { shape in
                     ShapeCard(shape: shape)
-                        .frame(height: 200)
+                        .frame(minHeight: 200)
                 }
             }
             .padding(32)
