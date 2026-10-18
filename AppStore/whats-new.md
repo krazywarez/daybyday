@@ -1,5 +1,9 @@
 # What's New
 
+## 2.0.2
+
+- The first-launch tip about downloading a better system voice is gone. Every word and prompt already plays in the app's own recorded voice.
+
 ## 2.0.1
 
 Accessibility improvements throughout.
