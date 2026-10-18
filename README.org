@@ -12,8 +12,7 @@ as large cards. tap a card to hear it read aloud.
 - offline. no network, no accounts, no ads
 
 * requires
-ios 26 or later. for better audio, download an enhanced voice under
-Settings > Accessibility > Read & Speak > Voices.
+ios 26 or later.
 
 * release
 =scripts/take-screenshots.sh= retakes =AppStore/screenshots= on the iPhone 18 Pro Max

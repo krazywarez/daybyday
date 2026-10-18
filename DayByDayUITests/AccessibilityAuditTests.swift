@@ -99,7 +99,7 @@ final class AccessibilityAuditTests: XCTestCase {
     private func launch(_ scene: String, textSize: String?) -> XCUIApplication {
         sizeName = textSize == nil ? "default" : "largest"
         let app = XCUIApplication()
-        app.launchArguments = ["-screenshot", scene, "-hasSeenVoiceTip", "YES"]
+        app.launchArguments = ["-screenshot", scene]
         if let textSize { app.launchArguments += ["-UIPreferredContentSizeCategoryName", textSize] }
         app.launch()
         return app

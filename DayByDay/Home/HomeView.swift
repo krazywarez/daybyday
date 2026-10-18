@@ -9,7 +9,6 @@ import SwiftUI
 struct HomeView: View {
     @Environment(ProfileSession.self) private var session
     @Environment(\.dynamicTypeSize) private var typeSize
-    @AppStorage("hasSeenVoiceTip") private var hasSeenVoiceTip = false
     @State private var showingParentArea = false
 
     /// Two square tiles a row; one wide tile at the accessibility text sizes.
@@ -38,9 +37,6 @@ struct HomeView: View {
                         }
                     }
 
-                    footerButton("Voice Quality Tips", systemImage: "speaker.wave.2.fill") {
-                        hasSeenVoiceTip = false
-                    }
                     footerButton("Grown-Ups", systemImage: "lock.fill") {
                         showingParentArea = true
                     }
@@ -62,13 +58,6 @@ struct HomeView: View {
                                 .frame(width: 40, height: 40)
                         }
                         .accessibilityLabel("Switch child")
-                    }
-                }
-            }
-            .overlay {
-                if !hasSeenVoiceTip {
-                    VoiceTipOverlay {
-                        withAnimation { hasSeenVoiceTip = true }
                     }
                 }
             }

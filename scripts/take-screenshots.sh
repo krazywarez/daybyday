@@ -47,7 +47,7 @@ shoot() { # device name, output folder
         # Set per launch: changing content_size restarts the status bar and drops the override.
         xcrun simctl status_bar "$device" override --time 9:41 --dataNetwork wifi --wifiMode active \
             --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
-        xcrun simctl launch "$device" "$bundle" -screenshot "$scene" -hasSeenVoiceTip YES >/dev/null
+        xcrun simctl launch "$device" "$bundle" -screenshot "$scene" >/dev/null
         file="$out/$2/$(printf %02d "$n")-$scene.png"
         # A screen that has not drawn yet is blank white, which compresses to a few KB.
         tries=0

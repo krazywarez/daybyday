@@ -140,49 +140,6 @@ struct ContentView: View {
     }
 }
 
-/// A one-time informational overlay for parents explaining how to download
-/// a higher-quality voice for the best experience. Dismissed with a single tap.
-struct VoiceTipOverlay: View {
-    let onDismiss: () -> Void
-
-    var body: some View {
-        ZStack {
-            Color.black.opacity(0.4)
-                .ignoresSafeArea()
-
-            CenteredScrollView {
-                VStack(spacing: 20) {
-                    Image(systemName: "speaker.wave.3.fill")
-                        .font(.system(size: 48))
-                        .foregroundStyle(.blue)
-
-                    Text("Better Voices Available")
-                        .font(.system(.title, design: .rounded, weight: .bold))
-
-                    Text("For the best experience, download an enhanced voice on your device.\n\nSettings → Accessibility → Read & Speak → Voices → English → tap a voice marked Enhanced or Premium to download it.")
-                        .font(.system(.body, design: .rounded))
-                        .multilineTextAlignment(.center)
-
-                    Text("Tap anywhere to dismiss")
-                        .font(.system(.callout, design: .rounded, weight: .medium))
-                        .padding(.top, 8)
-                }
-                .padding(40)
-                .frame(maxWidth: 520)
-                .background(
-                    RoundedRectangle(cornerRadius: 32, style: .continuous)
-                        .fill(.regularMaterial)
-                )
-                .padding(24)
-            }
-        }
-        .contentShape(Rectangle())
-        .onTapGesture(perform: onDismiss)
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isButton)
-    }
-}
-
 #Preview {
     let container = ProfileStore.makeContainer(inMemory: true)
     ContentView()
