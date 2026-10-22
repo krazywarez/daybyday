@@ -9,40 +9,13 @@ import SwiftUI
 /// Tapping the card plays a bounce animation and speaks the body part name aloud.
 struct BodyPartCard: View {
     let bodyPart: LearnBodyPart
-    @State private var isTapped = false
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(bodyPart.color)
-                .shadow(color: bodyPart.color.opacity(0.4), radius: 8, y: 4)
-
-            VStack(spacing: 16) {
-                Image(systemName: bodyPart.symbol)
-                    .font(.system(size: 64))
-                    .foregroundStyle(.white)
-                    .symbolRenderingMode(.hierarchical)
-
-                Text(bodyPart.name)
-                    .font(.heading(32))
-                    .foregroundStyle(.white)
-            }
-            .padding(16)
-        }
-        .scaleEffect(isTapped ? 1.12 : 1.0)
-        .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
-        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
-        .onTapGesture {
-            isTapped = true
+        TapCard(color: bodyPart.color, label: bodyPart.name) {
             SpeechSynthesizer.shared.speak(bodyPart.name)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                isTapped = false
-            }
+        } content: {
+            SymbolLabel(symbol: bodyPart.symbol, name: bodyPart.name)
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(bodyPart.name)
-        .accessibilityAddTraits(.isButton)
     }
 }
 

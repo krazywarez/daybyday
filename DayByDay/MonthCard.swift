@@ -10,54 +10,13 @@ import SwiftUI
 struct MonthCard: View {
     let month: MonthOfYear
     var isHighlighted = false
-    @State private var isTapped = false
-
-    private var cardScale: CGFloat {
-        if isTapped { return 1.12 }
-        if isHighlighted { return 1.04 }
-        return 1.0
-    }
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(month.color)
-                .shadow(color: month.color.opacity(0.4), radius: 8, y: 4)
-                // Glow on the card only: on the label it would lower the contrast.
-                .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
-
-            VStack(spacing: 16) {
-                Image(systemName: month.symbol)
-                    .font(.system(size: 64))
-                    .foregroundStyle(.white)
-                    .symbolRenderingMode(.hierarchical)
-
-                Text(month.name)
-                    .font(.heading(32))
-                    .foregroundStyle(.white)
-            }
-            .padding(16)
-        }
-        .overlay {
-            if isHighlighted {
-                RoundedRectangle(cornerRadius: 32, style: .continuous)
-                    .strokeBorder(.white, lineWidth: 5)
-            }
-        }
-        .scaleEffect(cardScale)
-        .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
-        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
-        .onTapGesture {
-            isTapped = true
+        TapCard(color: month.color, label: month.name, isHighlighted: isHighlighted) {
             SpeechSynthesizer.shared.speak(month.name)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                isTapped = false
-            }
+        } content: {
+            SymbolLabel(symbol: month.symbol, name: month.name)
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(month.name)
-        .accessibilityAddTraits(.isButton)
     }
 }
 

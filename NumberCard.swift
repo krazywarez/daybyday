@@ -10,22 +10,11 @@ import SwiftUI
 struct NumberCard: View {
     let number: LearnNumber
     var isHighlighted = false
-    @State private var isTapped = false
-
-    private var cardScale: CGFloat {
-        if isTapped { return 1.12 }
-        if isHighlighted { return 1.04 }
-        return 1.0
-    }
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(number.color)
-                .shadow(color: number.color.opacity(0.4), radius: 8, y: 4)
-                // Glow on the card only: on the label it would lower the contrast.
-                .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
-
+        TapCard(color: number.color, label: number.name, isHighlighted: isHighlighted) {
+            SpeechSynthesizer.shared.speak(number.name)
+        } content: {
             VStack(spacing: 10) {
                 Text("\(number.numeral)")
                     .font(.heading(60, weight: .heavy))
@@ -41,26 +30,6 @@ struct NumberCard: View {
             }
             .padding(16)
         }
-        .overlay {
-            if isHighlighted {
-                RoundedRectangle(cornerRadius: 32, style: .continuous)
-                    .strokeBorder(.white, lineWidth: 5)
-            }
-        }
-        .scaleEffect(cardScale)
-        .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
-        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
-        .onTapGesture {
-            isTapped = true
-            SpeechSynthesizer.shared.speak(number.name)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                isTapped = false
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(number.name)
-        .accessibilityAddTraits(.isButton)
     }
 }
 

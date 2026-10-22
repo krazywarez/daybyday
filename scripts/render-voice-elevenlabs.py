@@ -120,6 +120,25 @@ def encode(audio: array.array, out: Path) -> None:
                         str(wav), str(out)], check=True)
 
 
+def plan(lines: list, old: dict, out: Path, redo: list) -> tuple[list, list]:
+    """Splits lines into manifest entries to keep and (text, seed) pairs to render."""
+    kept, todo = [], []
+    for text in lines:
+        entry = old.get(text)
+        if entry and text not in redo and entry.get("engine") == MODEL and (out / entry["file"]).exists():
+            kept.append(entry)
+        else:
+            seed = entry["seed"] + 1 if entry and text in redo else 0
+            todo.append((text, seed))
+    return kept, todo
+
+
+def remove_stale(out: Path, keep: set) -> None:
+    for stale in [*out.glob("*.aac"), *out.glob("*.m4a")]:
+        if stale.name not in keep:
+            stale.unlink()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("lines", type=Path)
@@ -142,14 +161,7 @@ def main() -> None:
     manifest_path = args.out / "voice-manifest.json"
     old = {e["text"]: e for e in json.loads(manifest_path.read_text())} if manifest_path.exists() else {}
 
-    kept, todo = [], []
-    for text in lines:
-        entry = old.get(text)
-        if entry and text not in args.redo and entry.get("engine") == MODEL and (args.out / entry["file"]).exists():
-            kept.append(entry)
-        else:
-            seed = entry["seed"] + 1 if entry and text in args.redo else 0
-            todo.append((text, seed))
+    kept, todo = plan(lines, old, args.out, args.redo)
 
     def job(item):
         text, seed = item
@@ -167,10 +179,7 @@ def main() -> None:
                 write_manifest(manifest_path, kept + done + [e for t, e in old.items() if t not in fresh and e not in kept])
 
     entries = kept + done
-    keep = {e["file"] for e in entries}
-    for stale in [*args.out.glob("*.aac"), *args.out.glob("*.m4a")]:
-        if stale.name not in keep:
-            stale.unlink()
+    remove_stale(args.out, {e["file"] for e in entries})
     write_manifest(manifest_path, entries)
     print(f"{len(done)} rendered, {len(kept)} kept")
 

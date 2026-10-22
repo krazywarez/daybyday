@@ -9,32 +9,15 @@ import SwiftUI
 /// Tapping the card plays a bounce animation and speaks the letter aloud.
 struct LetterCard: View {
     let letter: LearnLetter
-    @State private var isTapped = false
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(letter.color)
-                .shadow(color: letter.color.opacity(0.4), radius: 8, y: 4)
-
+        TapCard(color: letter.color, label: letter.spokenName) {
+            CardVoice.shared.say(letter.cardLine, after: nil)
+        } content: {
             Text(letter.character)
                 .font(.heading(64, weight: .heavy))
                 .foregroundStyle(.white)
         }
-        .scaleEffect(isTapped ? 1.12 : 1.0)
-        .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
-        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
-        .onTapGesture {
-            isTapped = true
-            CardVoice.shared.say(letter.cardLine, after: nil)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                isTapped = false
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(letter.spokenName)
-        .accessibilityAddTraits(.isButton)
     }
 }
 

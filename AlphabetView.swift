@@ -8,19 +8,9 @@ import SwiftUI
 /// Displays all 26 letters A–Z as large, tappable cards in a scrollable grid.
 /// Uses a smaller minimum size to fit more letters across the screen.
 struct AlphabetView: View {
-    private let columns = [
-        GridItem(.adaptive(minimum: 140, maximum: 300), spacing: 20)
-    ]
-
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(LearnLetter.allCases) { letter in
-                    LetterCard(letter: letter)
-                        .frame(minHeight: 160)
-                }
-            }
-            .padding(32)
+        CardGrid(items: LearnLetter.allCases, column: GridItem(.adaptive(minimum: 140, maximum: 300), spacing: 20), spacing: 20, minHeight: 160) { letter in
+            LetterCard(letter: letter)
         }
         .onDisappear { CardVoice.shared.cancel() }
     }

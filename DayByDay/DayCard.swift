@@ -12,35 +12,17 @@ struct DayCard: View {
     let day: DayOfWeek
     var isHighlighted = false
     var picture: DayPictureKind? = nil
-    @State private var isTapped = false
-
-    private var cardScale: CGFloat {
-        if isTapped { return 1.12 }
-        if isHighlighted { return 1.04 }
-        return 1.0
-    }
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(day.color)
-                .shadow(color: day.color.opacity(0.4), radius: 8, y: 4)
-                // Glow on the card only: on the label it would lower the contrast.
-                .shadow(color: isHighlighted ? .white.opacity(0.8) : .clear, radius: 12)
-
-            VStack(spacing: 16) {
-                Image(systemName: day.symbol)
-                    .font(.system(size: 64))
-                    .foregroundStyle(.white)
-                    .symbolRenderingMode(.hierarchical)
-
-                Text(day.name)
-                    .font(.heading(32))
-                    .foregroundStyle(.white)
-            }
-            .padding(16)
-        }
-        .overlay(alignment: .topTrailing) {
+        TapCard(
+            color: day.color,
+            label: picture.map { "\(day.name), \($0.name)" } ?? day.name,
+            isHighlighted: isHighlighted
+        ) {
+            CardVoice.shared.say(Lines.dayCard(day, picture: picture), after: nil)
+        } content: {
+            SymbolLabel(symbol: day.symbol, name: day.name)
+        } badge: {
             if let picture {
                 Image(systemName: picture.symbol)
                     .font(.system(size: 30, weight: .bold))
@@ -51,26 +33,6 @@ struct DayCard: View {
                     .accessibilityHidden(true)
             }
         }
-        .overlay {
-            if isHighlighted {
-                RoundedRectangle(cornerRadius: 32, style: .continuous)
-                    .strokeBorder(.white, lineWidth: 5)
-            }
-        }
-        .scaleEffect(cardScale)
-        .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
-        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
-        .onTapGesture {
-            isTapped = true
-            CardVoice.shared.say(Lines.dayCard(day, picture: picture), after: nil)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                isTapped = false
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(picture.map { "\(day.name), \($0.name)" } ?? day.name)
-        .accessibilityAddTraits(.isButton)
     }
 }
 

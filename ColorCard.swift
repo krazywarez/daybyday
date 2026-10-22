@@ -8,32 +8,15 @@ import SwiftUI
 /// A single large card filled with a color. Tapping speaks the color name aloud.
 struct ColorCard: View {
     let learnColor: LearnColor
-    @State private var isTapped = false
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(learnColor.color)
-                .shadow(color: learnColor.color.opacity(0.4), radius: 8, y: 4)
-
+        TapCard(color: learnColor.color, label: learnColor.name) {
+            SpeechSynthesizer.shared.speak(learnColor.name)
+        } content: {
             Text(learnColor.name)
                 .font(.heading(36))
                 .foregroundStyle(learnColor.labelColor)
         }
-        .scaleEffect(isTapped ? 1.12 : 1.0)
-        .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
-        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
-        .onTapGesture {
-            isTapped = true
-            SpeechSynthesizer.shared.speak(learnColor.name)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                isTapped = false
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(learnColor.name)
-        .accessibilityAddTraits(.isButton)
     }
 }
 

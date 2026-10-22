@@ -10,14 +10,11 @@ import SwiftUI
 /// Each food displays its emoji at large size for instant recognition.
 struct FoodCard: View {
     let food: LearnFood
-    @State private var isTapped = false
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(food.color)
-                .shadow(color: food.color.opacity(0.4), radius: 8, y: 4)
-
+        TapCard(color: food.color, label: food.name) {
+            SpeechSynthesizer.shared.speak(food.name)
+        } content: {
             VStack(spacing: 16) {
                 Text(food.emoji)
                     .font(.system(size: 72))
@@ -28,22 +25,7 @@ struct FoodCard: View {
             }
             .padding(16)
         }
-        .scaleEffect(isTapped ? 1.12 : 1.0)
-        .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
-        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
-        .onTapGesture {
-            isTapped = true
-            SpeechSynthesizer.shared.speak(food.name)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                isTapped = false
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(food.name)
-        .accessibilityAddTraits(.isButton)
     }
-
 }
 
 // MARK: - Food model

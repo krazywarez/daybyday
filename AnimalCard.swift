@@ -9,14 +9,11 @@ import SwiftUI
 /// Tapping the card plays a bounce animation and speaks the animal name aloud.
 struct AnimalCard: View {
     let animal: LearnAnimal
-    @State private var isTapped = false
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(animal.color)
-                .shadow(color: animal.color.opacity(0.4), radius: 8, y: 4)
-
+        TapCard(color: animal.color, label: animal.name) {
+            CardVoice.shared.say(animal.cardLine, after: animal.sound)
+        } content: {
             VStack(spacing: 16) {
                 AnimalIcon(animal: animal)
                     .font(.system(size: 64))
@@ -29,20 +26,6 @@ struct AnimalCard: View {
             }
             .padding(16)
         }
-        .scaleEffect(isTapped ? 1.12 : 1.0)
-        .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
-        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
-        .onTapGesture {
-            isTapped = true
-            CardVoice.shared.say(animal.cardLine, after: animal.sound)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                isTapped = false
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(animal.name)
-        .accessibilityAddTraits(.isButton)
     }
 }
 

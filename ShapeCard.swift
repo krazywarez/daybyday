@@ -9,14 +9,11 @@ import SwiftUI
 /// Tapping the card plays a bounce animation and speaks the shape name aloud.
 struct ShapeCard: View {
     let shape: LearnShape
-    @State private var isTapped = false
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(shape.color)
-                .shadow(color: shape.color.opacity(0.4), radius: 8, y: 4)
-
+        TapCard(color: shape.color, label: shape.name) {
+            SpeechSynthesizer.shared.speak(shape.name)
+        } content: {
             VStack(spacing: 16) {
                 shape.shapeView
                     .frame(width: 80, height: 80)
@@ -28,20 +25,6 @@ struct ShapeCard: View {
             }
             .padding(16)
         }
-        .scaleEffect(isTapped ? 1.12 : 1.0)
-        .contentShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .rotation3DEffect(.degrees(isTapped ? 6 : 0), axis: (x: 1, y: 0, z: 0))
-        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: isTapped)
-        .onTapGesture {
-            isTapped = true
-            SpeechSynthesizer.shared.speak(shape.name)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                isTapped = false
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(shape.name)
-        .accessibilityAddTraits(.isButton)
     }
 }
 

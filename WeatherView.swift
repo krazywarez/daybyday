@@ -8,16 +8,12 @@ import SwiftUI
 /// Displays all 8 weather types as large, tappable cards in a scrollable grid.
 /// Shaking the device, or tapping the rain button, makes it rain.
 struct WeatherView: View {
-    private let columns = [
-        GridItem(.adaptive(minimum: 280), spacing: 24)
-    ]
-
     @State private var raining = false
     /// Bumped when the screen goes away, so a pending stop does nothing.
     @State private var generation = 0
 
     var body: some View {
-        ScrollView {
+        CardGrid(items: LearnWeather.allCases, column: .narrowCards) {
             Button(action: rain) {
                 Label("Shake for rain!", systemImage: "cloud.rain.fill")
                     .font(.heading(22))
@@ -27,14 +23,8 @@ struct WeatherView: View {
             }
             .buttonStyle(.plain)
             .padding(.top, 16)
-
-            LazyVGrid(columns: columns, spacing: 24) {
-                ForEach(LearnWeather.allCases) { weather in
-                    WeatherCard(weather: weather)
-                        .frame(minHeight: 200)
-                }
-            }
-            .padding(32)
+        } card: { weather in
+            WeatherCard(weather: weather)
         }
         .overlay { RainOverlay(isActive: raining) }
         .onShake(rain)

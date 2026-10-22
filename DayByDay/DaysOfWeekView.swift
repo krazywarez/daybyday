@@ -11,19 +11,9 @@ import SwiftUI
 struct DaysOfWeekView: View {
     @Environment(ProfileSession.self) private var session
 
-    private let columns = [
-        GridItem(.adaptive(minimum: 300, maximum: 500), spacing: 24)
-    ]
-
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 24) {
-                ForEach(DayOfWeek.allCases) { day in
-                    DayCard(day: day, isHighlighted: day == .current, picture: picture(on: day))
-                        .frame(minHeight: 200)
-                }
-            }
-            .padding(32)
+        CardGrid(items: DayOfWeek.allCases) { day in
+            DayCard(day: day, isHighlighted: day == .current, picture: picture(on: day))
         }
         .onDisappear { CardVoice.shared.cancel() }
     }
