@@ -41,7 +41,7 @@ shoot() { # device name, output folder
     xcrun simctl install "$device" "$app"
     mkdir -p "$out/$2"
     for scene in $scenes; do
-        n="$(printf '%s\n' $all | grep -nx "$scene" | cut -d: -f1)"
+        n="$(printf '%s\n' "$all" | tr ' ' '\n' | grep -nx "$scene" | cut -d: -f1)"
         [ -n "$n" ] || { echo "Unknown scene $scene; one of: $all" >&2; exit 1; }
         xcrun simctl terminate "$device" "$bundle" 2>/dev/null || true
         # Set per launch: changing content_size restarts the status bar and drops the override.
