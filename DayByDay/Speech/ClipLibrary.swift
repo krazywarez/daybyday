@@ -37,6 +37,11 @@ final class ClipLibrary {
         entries[sentence].map { Clip(url: directory.appendingPathComponent($0.file), seconds: $0.seconds) }
     }
 
+    /// Any clip, for warming up playback.
+    var anyClip: Clip? {
+        entries.keys.min().flatMap(clip(for:))
+    }
+
     /// One clip per sentence of `text`, or nil if any sentence has none.
     func clips(for text: String) -> [Clip]? {
         let sentences = SpokenText.sentences(text)
