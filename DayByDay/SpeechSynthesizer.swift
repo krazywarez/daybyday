@@ -21,13 +21,18 @@ final class SpeechSynthesizer: NSObject, AVSpeechSynthesizerDelegate, AVAudioPla
 
     /// Clips to play from; nil means always use the synthesizer.
     var library: ClipLibrary? = ClipLibrary.bundled
-    /// Gap between the sentences of a clip line. Each clip already starts with
-    /// ~90 ms of encoder lead-in and ends with ~40 ms of quiet, so the pause
-    /// a child hears is about 0.2 s.
-    static let sentenceGap = 0.05
+    /// Skipped at the start of every clip: the AAC encoder's 2112 priming
+    /// frames, which the ADTS files carry as silence.
+    static let leadIn = 2112.0 / 24_000
+    /// Gap between the sentences of a clip line. Each clip, after `leadIn`,
+    /// starts and ends with ~40 ms of quiet, so the pause a child hears is
+    /// about 0.2 s.
+    static let sentenceGap = 0.14
     /// Extra time past a clip's known length before a stalled clip is skipped.
     static let clipGrace = 1.5
     private var player: AVAudioPlayer?
+    /// Plays a clip silently at launch so the first real clip starts on time.
+    private var warmupPlayer: AVAudioPlayer?
     /// Counts players, so a watchdog only acts on the clip it was set for.
     private var playerID = 0
     private var queue: [ClipLibrary.Clip] = []
@@ -61,6 +66,14 @@ final class SpeechSynthesizer: NSObject, AVSpeechSynthesizerDelegate, AVAudioPla
     /// Speaks a pre-configured utterance directly. Used for warmup at launch.
     func speakUtterance(_ utterance: AVSpeechUtterance) {
         synthesizer.speak(utterance)
+    }
+
+    /// Loads the audio decoder and output by playing a clip at zero volume.
+    func warmUpClips() {
+        guard let url = library?.anyClip?.url, let player = try? AVAudioPlayer(contentsOf: url) else { return }
+        player.volume = 0
+        player.play()
+        warmupPlayer = player
     }
 
     func speak(_ text: String, completion: (() -> Void)? = nil) {
@@ -133,6 +146,7 @@ final class SpeechSynthesizer: NSObject, AVSpeechSynthesizerDelegate, AVAudioPla
             return
         }
         next.delegate = self
+        next.currentTime = Self.leadIn
         player = next
         playerID += 1
         let id = playerID

@@ -41,6 +41,7 @@ struct DayByDayApp: App {
                 let warmup = AVSpeechUtterance(string: "")
                 warmup.volume = 0
                 SpeechSynthesizer.shared.speakUtterance(warmup)
+                SpeechSynthesizer.shared.warmUpClips()
             }
         }
     }

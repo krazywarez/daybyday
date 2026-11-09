@@ -47,6 +47,22 @@ struct VoiceClipTests {
         #expect(off.isEmpty, "\(off.prefix(5))")
     }
 
+    /// Playback skips `SpeechSynthesizer.leadIn`; none of it may hold speech.
+    @Test func leadInIsQuiet() throws {
+        let dir = try #require(Self.manifestURL).deletingLastPathComponent()
+        var loud: [String] = []
+        for e in Self.entries {
+            let file = try AVAudioFile(forReading: dir.appendingPathComponent(e.file))
+            let buffer = try #require(AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: AVAudioFrameCount(file.length)))
+            try file.read(into: buffer)
+            let samples = UnsafeBufferPointer(start: buffer.floatChannelData![0], count: Int(buffer.frameLength))
+            let peak = samples.map(abs).max() ?? 0
+            let skipped = Int(SpeechSynthesizer.leadIn * file.processingFormat.sampleRate)
+            if samples.prefix(skipped).contains(where: { abs($0) > 0.01 * peak }) { loud.append(e.text) }
+        }
+        #expect(loud.isEmpty, "\(loud.prefix(5))")
+    }
+
     @Test func onlyListedNamesHaveGreetings() {
         #expect(Set(Self.entries.map(\.text).filter { $0.hasPrefix("Hi, ") })
                 == Set(Lines.spokenNames.map { "Hi, \($0)!" }))
