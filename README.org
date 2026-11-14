@@ -1,5 +1,7 @@
 #+title: day by day
 
+support this project through [[https://github.com/sponsors/ccleberg][github sponsors]].
+
 * what
 ios app for young children. days of the week, months, and seasons
 as large cards. tap a card to hear it read aloud.
