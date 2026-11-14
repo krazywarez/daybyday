@@ -3,15 +3,23 @@
 support this project through [[https://github.com/sponsors/ccleberg][github sponsors]].
 
 * what
-ios app for young children. days of the week, months, and seasons
-as large cards. tap a card to hear it read aloud.
+ios app of learning games for children aged 4 and 5. eleven topics:
+days, months, seasons, numbers, colors, shapes, alphabet, animals,
+weather, body parts, and food.
 
 * does
-- days, months, and seasons as big colorful cards
-- tap to hear it, apple on-device text-to-speech
-- today's day, current month, and current season are highlighted
-- built for ages 4-5. large tap targets. no reading required
-- offline. no network, no accounts, no ads
+- big cards for every topic, each word spoken in a recorded voice
+- games in every topic: find it, odd one out, listen and pick
+- ordering and counting: week train, year wheel, yesterday/today/tomorrow,
+  counting objects, bigger pile
+- tracing letters and shapes, mixing colors, dressing for the weather
+- a daily today routine: day, month, season, weather, and a calendar sticker
+- an owl who asks the questions and cheers
+- a profile for each child; practice repeats what a child misses
+- a grown-ups area behind a parent gate shows what each child knows
+- voiceover, voice control, and larger text
+- large tap targets. no reading required
+- offline. no network, no accounts, no ads, no tracking
 
 * requires
 ios 26 or later.
